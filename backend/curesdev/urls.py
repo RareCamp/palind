@@ -1,0 +1,40 @@
+from django.contrib import admin
+from django.urls import include, path
+from django.views.generic import TemplateView
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+from repository.views import (
+    DatasetDetailView,
+    LinkerDemo,
+    OrganizationDetailView,
+    SubmitView,
+    UploadCSV,
+    merge_view,
+)
+
+urlpatterns = [
+    # Home page
+    path("", TemplateView.as_view(template_name="home.html"), name="home"),
+    
+    # Create a submission
+    path("v2/submit/", SubmitView.as_view(), name="submit"),
+    
+    # Organization
+    path("organization/<int:pk>/", OrganizationDetailView.as_view(), name="organization"), 
+    path("dataset/<int:pk>/", DatasetDetailView.as_view(), name="dataset"),
+    path("dataset/<int:pk>/upload-csv", UploadCSV.as_view(), name="upload_csv"),
+
+    # Demos
+
+    path("bloom-filter-demo", TemplateView.as_view(template_name="bloom_filter_demo.html"), name="bloom-filter-demo"),
+    path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
+    path("merge-datasets", merge_view, name="merge-datasets"),
+    
+    # Admin site
+    path("admin/", admin.site.urls),
+    
+    # Debug toolbar
+    path("__debug__/", include("debug_toolbar.urls")),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

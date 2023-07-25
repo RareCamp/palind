@@ -1,0 +1,605 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block extra_head %}
+<style>
+  .container {
+    margin-top: 50px;
+    max-width: 1200px;
+  }
+
+  /*Background color*/
+  #grad1 {
+      background-color: : #9C27B0;
+      background-image: linear-gradient(120deg, #FF4081, #81D4FA);
+  }
+  
+  /*form styles*/
+  #msform {
+      text-align: center;
+      position: relative;
+      margin-top: 20px;
+  }
+  
+  #msform fieldset .form-card {
+      background: white;
+      border: 0 none;
+      border-radius: 0px;
+      box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+      padding: 20px 40px 30px 40px;
+      box-sizing: border-box;
+      width: 94%;
+      margin: 0 3% 20px 3%;
+  
+      /*stacking fieldsets above each other*/
+      position: relative;
+  }
+  
+  #msform fieldset {
+      background: white;
+      border: 0 none;
+      border-radius: 0.5rem;
+      box-sizing: border-box;
+      width: 100%;
+      margin: 0;
+      padding-bottom: 20px;
+  
+      /*stacking fieldsets above each other*/
+      position: relative;
+  }
+  
+  /*Hide all except first fieldset*/
+  #msform fieldset:not(:first-of-type) {
+      display: none;
+  }
+  
+  #msform fieldset .form-card {
+      text-align: left;
+      color: #9E9E9E;
+  }
+  
+  #msform input, #msform textarea {
+      padding: 0px 8px 4px 8px;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0px;
+      margin-bottom: 25px;
+      margin-top: 2px;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: montserrat;
+      color: #2C3E50;
+      font-size: 16px;
+      letter-spacing: 1px;
+  }
+  
+  #msform input:focus, #msform textarea:focus {
+      -moz-box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      box-shadow: none !important;
+      border: none;
+      font-weight: bold;
+      border-bottom: 2px solid skyblue;
+      outline-width: 0;
+  }
+  
+  /*Blue Buttons*/
+  #msform .action-button {
+      width: 100px;
+      background: skyblue;
+      font-weight: bold;
+      color: white;
+      border: 0 none;
+      border-radius: 0px;
+      cursor: pointer;
+      padding: 10px 5px;
+      margin: 10px 5px;
+  }
+  
+  #msform .action-button:hover, #msform .action-button:focus {
+      box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
+  }
+  
+  /*Previous Buttons*/
+  #msform .action-button-previous {
+      width: 100px;
+      background: #616161;
+      font-weight: bold;
+      color: white;
+      border: 0 none;
+      border-radius: 0px;
+      cursor: pointer;
+      padding: 10px 5px;
+      margin: 10px 5px;
+  }
+  
+  #msform .action-button-previous:hover, #msform .action-button-previous:focus {
+      box-shadow: 0 0 0 2px white, 0 0 0 3px #616161;
+  }
+  
+  /*Dropdown List Exp Date*/
+  select.list-dt {
+      border: none;
+      outline: 0;
+      border-bottom: 1px solid #ccc;
+      padding: 2px 5px 3px 5px;
+      margin: 2px;
+  }
+  
+  select.list-dt:focus {
+      border-bottom: 2px solid skyblue;
+  }
+  
+  /*The background card*/
+  .card {
+      z-index: 0;
+      border: none;
+      border-radius: 0.5rem;
+      position: relative;
+  }
+  
+  /*FieldSet headings*/
+  .fs-title {
+      font-size: 25px;
+      color: #2C3E50;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: left;
+  }
+  
+  /*progressbar*/
+  #progressbar {
+      margin-bottom: 30px;
+      overflow: hidden;
+      color: lightgrey;
+  }
+  
+  #progressbar .active {
+      color: #000000;
+  }
+  
+  #progressbar li {
+      list-style-type: none;
+      font-size: 12px;
+      width: 25%;
+      float: left;
+      position: relative;
+  }
+  
+  /* Icons in the ProgressBar */
+  #progressbar #upload:before {
+      padding-top: 5px;
+      content: url({% static "repository/table-solid.png" %});
+  }
+  
+  #progressbar #csv:before {
+      padding-top: 5px;
+      content: url({% static "repository/file-csv-solid.png" %});
+  }
+  
+  #progressbar #tokenize:before {
+    padding-top: 5px;
+    content: url({% static "repository/fa-fa-cogs.png" %});
+  }
+  
+  #progressbar #ids:before {
+    padding-top: 5px;
+    content: url({% static "repository/download-solid.png" %});
+  }
+  
+  /*ProgressBar before any progress*/
+  #progressbar li:before {
+      width: 50px;
+      height: 50px;
+      line-height: 45px;
+      display: block;
+      font-size: 18px;
+      color: #ffffff;
+      background: lightgray;
+      border-radius: 50%;
+      margin: 0 auto 10px auto;
+      padding: 2px;
+  }
+  
+  /*ProgressBar connectors*/
+  #progressbar li:after {
+      content: '';
+      width: 100%;
+      height: 2px;
+      background: lightgray;
+      position: absolute;
+      left: 0;
+      top: 25px;
+      z-index: -1;
+  }
+  
+  /*Color number of the step and the connector before it*/
+  #progressbar li.active:before, #progressbar li.active:after {
+      background: #ff5708;
+  }
+  
+  /*Imaged Radio Buttons*/
+  .radio-group {
+      position: relative;
+      margin-bottom: 25px;
+  }
+  
+  .radio {
+      display:inline-block;
+      width: 204;
+      height: 104;
+      border-radius: 0;
+      background: lightblue;
+      box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+      box-sizing: border-box;
+      cursor:pointer;
+      margin: 8px 2px; 
+  }
+  
+  .radio:hover {
+      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .radio.selected {
+      box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  /*Fit image in bootstrap div*/
+  .fit-image{
+      width: 100%;
+      object-fit: cover;
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<h1>
+  Load data into dataset
+</h1>
+<h4>
+  Organization:
+  <a href="{% url 'organization' dataset.organization.id %}">
+    {{ dataset.organization.name }}
+  </a>
+</h4>
+<h4>
+  Dataset:
+  <a href="{% url 'dataset' dataset.id %}">
+    {{ dataset.name }}
+  </a>
+</h4>
+
+<br />
+<br />
+<br />
+
+{% include "sha256.html" %}
+{% include "tokenize.html" %}
+
+<script>
+
+  // Fetch request to backend with authorization header
+  async function curesDevSubmit(data) {
+    await new Promise(r => setTimeout(r, 100));
+    const response = await fetch("http://localhost:8000/v2/submit/",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer {{ dataset.api_token }}",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      }
+    );
+    return await response.json();
+  }
+
+  async function curesDevUploadTokens(tokens, parsedColumns) {
+    const ids = tokens.map(async (row) => {
+      let requestData = {};
+      row.forEach((token, index) => {
+        requestData[parsedColumns[index]] = token;
+      });
+      const response = await curesDevSubmit(requestData);
+      return response.public_id;
+    });
+    return ids;
+  }
+
+  let data = {
+    fileUploaded: false,
+    tokenizing: false,
+    tokenized: false,
+    uploaded: false,
+    downloadReady: false,
+    tableHeader: [],
+    parsedColumns: [],
+    ignoredColumns: [],
+    clientIDs: [],
+    rows: [],
+    tokens: [],
+    ids: [],
+    fields: { {% for field in fields %}"{{ field.field }}": "{{ field.name }}",{% endfor %} },
+    columns: [],
+    rowsHtml: "",
+    loadAnother() {
+      this.fileUploaded = false;
+      this.tokenizing = false;
+      this.tokenized = false;
+      this.uploaded = false;
+      this.rows = [];
+      this.tokens = [];
+      this.ids = [];
+      this.clientIDs = [];
+      this.tableHeader = [];
+      this.parsedColumns = [];
+      this.ignoredColumns = [];
+      this.rowsHtml = "";
+      this.downloadReady = false;
+    },
+    chooseFile(file) {
+      var reader = new FileReader();
+      self = this;
+      reader.onload = (e) => {
+        var rows = e.target.result.split("\n");
+        self.rows = [];
+        self.clientIDs = [];
+        self.rowsHtml = "";
+
+        // Get indices of known columns
+        const headerRow = rows[0].split(",");
+        let knownColumnIndices = [];
+        let idColumnIndex = -1;
+        for (let i = 0; i < headerRow.length; i++) {
+          if (headerRow[i] in self.fields) {
+            knownColumnIndices.push(i);
+            this.parsedColumns.push(headerRow[i]);
+          }
+          else if (headerRow[i] == "id") {
+            idColumnIndex = i;
+          }
+          else {
+            this.ignoredColumns.push(headerRow[i]);
+          }
+        }
+
+        // Set table header
+        self.tableHeader = ["ID"].concat(knownColumnIndices.map((index) => {
+          return self.fields[headerRow[index]];
+        }));
+
+        // Fill rows
+        for (var i = 1; i < rows.length; i++) {
+          var cells = rows[i].split(",");
+          
+          self.clientIDs.push(cells[idColumnIndex]);
+
+          cells = knownColumnIndices.map((index) => {
+            return cells[index];
+          });
+          if (cells.every((cell) => cell !== undefined)) {
+            self.rows.push(cells);
+          }
+        }
+        self.rowsHtml = self.formatRows();
+      };
+      reader.readAsText(file);
+
+
+      this.fileUploaded = true;
+    },
+    formatRows() {
+      let ids = this.ids;
+      return this.rows.map((row, index) => {
+        let tr = "<tr>";
+        tr += "<td>" + this.clientIDs[index] + "</td>";
+        if (index < ids.length) {
+          let id_bolded = ids[index].slice(0, -4) + "<b>" + ids[index].slice(-4) + "</b>";
+          tr += "<td class='font-monospace' colspan=" + (row.length+1) + "><a href=''>" + id_bolded + "</a></td>";
+        }
+        else {
+          tr += row.map((cell, j) => {
+            if (index < this.tokens.length) {
+              let token_summary = this.tokens[index][j].slice(0, 5).map(bit => bit ? "1" : "0").join("");
+              return "<td class='font-monospace'>" + token_summary + "…</td>";
+            }
+            else {
+              return "<td>" + cell + "</td>";
+            }
+          }).join("");
+        }
+        
+        tr += "</tr>";
+        return tr;
+      }).join("");
+    },
+    tokenize: async function() {
+      this.tokenizing = true;
+
+      this.tokens = [];
+      for (let row of this.rows) {
+        this.tokens.push(await Promise.all(row.map(async (cell) => {
+          return await curesDevTokenize(cell);
+        })));
+        this.rowsHtml = this.formatRows();
+      }
+      this.tokenized = true;
+      this.tokenizing = false;
+    },
+    uploadTokens: async function() {
+      this.uploaded = true;
+      
+      this.ids = [];
+      for (let row of this.tokens) {
+        let requestData = {};
+        row.forEach((token, index) => {
+          requestData[this.parsedColumns[index] + "_token"] = token.map(bit => bit ? "1" : "0").join("");
+        });
+        const response = await curesDevSubmit(requestData);
+        this.ids.push(response.public_id);
+        this.tableHeader = this.tableHeader.slice(0, 1);
+        this.rowsHtml = this.formatRows();
+      }
+      this.downloadReady = true;
+    },
+    downloadIDs() {
+      let csvContent = "data:text/csv;charset=utf-8," + "id,curesdev_id\n" +
+        this.ids.map((id, index) => { return this.clientIDs[index] + "," + id; }).join("\n");
+
+      let encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "curesdev_ids.csv");
+      document.body.appendChild(link);
+      link.click();
+    },
+  };
+</script>
+
+<div x-data="data">
+
+  <!-- Steps summary -->
+  <form id="msform">
+    <ul id="progressbar">
+      <li class="active" id="csv"></i><strong>Load CSV</strong></li>
+      <li :class="{ 'active': fileUploaded }" id="tokenize"><strong>Tokenize</strong></li>
+      <li :class="{ 'active': tokenized }" id="upload"><strong>Send to CuresDev</strong></li>
+      <li :class="{ 'active': uploaded }" id="ids"><strong>Download IDs</strong></li>
+    </ul>
+  </form>
+
+  <!-- Buttons -->
+  <div class="row" style="margin: 50px 0">
+    <div class="col" x-show="!fileUploaded">
+
+      <div style="border: 3px dashed gray; min-height: 200px; text-align: center">
+        <!-- File upload -->
+        <p>
+          <input
+            type="file"
+            x-ref="file"
+            @change="chooseFile($refs.file.files[0]);"
+            name="csv_file"
+            id="csv_file"
+            class="form-control"
+            accept=".csv"
+            style="max-width: 300px; margin: 40px auto; min-height: 2"
+          />
+        or drag and drop files here
+
+        <!-- alert -->
+        <div class="alert alert-success" role="alert" style="margin-left: 40px; margin-right: 40px; margin-bottom: 40px">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          The CSV data will not be uploaded to CuresDev,
+          only the tokenized data will be sent.
+      </div>
+    </div>
+  </div>
+
+    <div class="col" x-cloak x-show="fileUploaded && !tokenized" >
+      <div class="d-grid gap-2">
+        <button @click="await tokenize()" type="button" class="btn btn-primary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px">
+          Tokenize
+        </button>
+      </div>
+    </div>
+    <div class="col" x-cloak x-show="fileUploaded && !tokenized" >
+      <div class="d-grid gap-2">
+        <button @click="loadAnother()" type="button" class="btn btn-outline-secondary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px">
+          Load another CSV
+        </button>
+      </div>
+    </div>
+    <div class="col" x-cloak x-show="(tokenizing || tokenized) && !uploaded" >
+      <div class="d-grid gap-2">
+        <button @click="await uploadTokens()" type="button" class="btn btn-primary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px" :disabled="!tokenized">
+          <i class="fa fa-upload" aria-hidden="true"></i>
+          Send to CuresDev
+        </button>
+      </div>
+    </div>
+    <div class="col" x-cloak x-show="uploaded" >
+      <div class="d-grid gap-2">
+        <button @click="downloadIDs" type="button" class="btn btn-primary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px" :disabled="!downloadReady">
+          <i class="fa fa-download" aria-hidden="true"></i>
+          Download CSV with IDs
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary of CSV parsing -->
+  <div class="row" x-show="false">
+    <div class="col">
+      <div x-cloak x-show="rows && fileUploaded && !tokenized" class="alert alert-info" role="alert">
+        <p>Loaded <b x-text="rows.length"></b> records. Columns parsed:</p>
+        <ul>
+          <template x-for="(head, index) in parsedColumns" :key="head">
+            <li><code x-text="head"></code></li>
+          </template>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div x-cloak x-show="ignoredColumns && fileUploaded && !tokenized" class="alert alert-danger" role="alert">
+        <p>Ignored the following columns:</p>
+        <ul>
+          <template x-for="(head, index) in ignoredColumns" :key="head">
+            <li><code x-text="head"></code></li>
+          </template>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div x-cloak x-show="!fileUploaded">
+    <h4 style="margin: 40px 0">Upload a CSV file with the following fields</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Column</th>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>ID</code></td>
+          <td>Unique identifier</td>
+          <td>After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
+        </tr>
+        {% for field in fields %}
+          <tr>
+            <td>
+              <code>{{ field.field }}</code>
+            </td>
+            <td>{{ field.name }}</td>
+            <td>{{ field.description }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table of CSV data -->
+  <table class="table" x-cloak x-show="fileUploaded">
+    <thead>
+      <tr>
+        <template x-for="(head, index) in tableHeader" :key="head">
+          <th x-text="head"></th>
+        </template>
+        <th x-show="uploaded">CuresDev ID</th>
+      </tr>
+    </thead>
+    <tbody x-html="rowsHtml">
+    </tbody>
+  </table>
+
+</div>
+
+{% endblock %}
+
