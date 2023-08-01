@@ -52,6 +52,8 @@ class PIITokenizer:
 
     def _tokenize(self, fields):
         # Dynamic number of hash functions
+        if fields == [""]:
+            return ""
         k = 1 + self.kn // len(set(fields))
 
         bf = [0] * self.l
@@ -121,10 +123,10 @@ class PIITokenizer:
         #
 
         # Names expanded with bigrams
-        first_name_token = self._tokenize(self.q_grams(first_name))
-        middle_name_token = self._tokenize(self.q_grams(middle_name))
-        last_name_token = self._tokenize(self.q_grams(last_name))
-        full_name_token = self._tokenize(self.q_grams(full_name))
+        first_name_token = self._tokenize(q_grams(first_name))
+        middle_name_token = self._tokenize(q_grams(middle_name))
+        last_name_token = self._tokenize(q_grams(last_name))
+        full_name_token = self._tokenize(q_grams(full_name))
 
         # Soundex
         first_name_soundex_token = self._tokenize([first_name_soundex])
@@ -136,7 +138,7 @@ class PIITokenizer:
         # Location at birth
         country_at_birth_token = self._tokenize([country_at_birth])
         state_at_birth_token = self._tokenize([state_at_birth])
-        city_at_birth_token = self._tokenize(self.q_grams([city_at_birth]))
+        city_at_birth_token = self._tokenize(q_grams(city_at_birth))
         zip_code_at_birth_token = self._tokenize([zip_code_at_birth])
         abbr_zip_code_at_birth_token = self._tokenize([abbr_zip_code_at_birth])
 
@@ -144,19 +146,19 @@ class PIITokenizer:
         date_of_birth_token = self._tokenize([date_of_birth])
 
         return {
-            "first_name": first_name_token,
-            "middle_name": middle_name_token,
-            "last_name": last_name_token,
-            "full_name": full_name_token,
-            "first_name_soundex": first_name_soundex_token,
-            "last_name_soundex": last_name_soundex_token,
-            "gender": gender_token,
-            "country_at_birth": country_at_birth_token,
-            "state_at_birth": state_at_birth_token,
-            "city_at_birth": city_at_birth_token,
-            "zip_code_at_birth": zip_code_at_birth_token,
-            "abbr_zip_code_at_birth": abbr_zip_code_at_birth_token,
-            "date_of_birth": date_of_birth_token,
+            "first_name_token": first_name_token,
+            "middle_name_token": middle_name_token,
+            "last_name_token": last_name_token,
+            "full_name_token": full_name_token,
+            "first_name_soundex_token": first_name_soundex_token,
+            "last_name_soundex_token": last_name_soundex_token,
+            "gender_token": gender_token,
+            "country_at_birth_token": country_at_birth_token,
+            "state_at_birth_token": state_at_birth_token,
+            "city_at_birth_token": city_at_birth_token,
+            "zip_code_at_birth_token": zip_code_at_birth_token,
+            "abbr_zip_code_at_birth_token": abbr_zip_code_at_birth_token,
+            "date_of_birth_token": date_of_birth_token,
         }
 
 

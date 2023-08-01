@@ -40,6 +40,42 @@ class TestPIITokenizer(unittest.TestCase):
         self.assertEqual(t.normalize("hello123", False), "hello")
         self.assertEqual(t.normalize("hell--o__12.3à", False), "hello")
 
+    def test_tokenize(self):
+        t = tokenizer.PIITokenizer()
+        tokens = t.tokenize(first_name="Albert", last_name="Einstein", date_of_birth="1879-03-14")
+
+        # Almost all tokens are empty
+        self.assertEqual(tokens["middle_name_token"], "")
+        self.assertEqual(tokens["gender_token"], "")
+        self.assertEqual(tokens["country_at_birth_token"], "")
+        self.assertEqual(tokens["state_at_birth_token"], "")
+        self.assertEqual(tokens["city_at_birth_token"], "")
+        self.assertEqual(tokens["zip_code_at_birth_token"], "")
+        self.assertEqual(tokens["abbr_zip_code_at_birth_token"], "")
+
+        # Required fields are not empty
+        self.assertNotEqual(tokens["first_name_token"], "")
+        self.assertNotEqual(tokens["last_name_token"], "")
+        self.assertNotEqual(tokens["date_of_birth_token"], "")
+        self.assertNotEqual(tokens["full_name_token"], "")
+        self.assertNotEqual(tokens["first_name_soundex_token"], "")
+        self.assertNotEqual(tokens["last_name_soundex_token"], "")
+
+        # They are strings of length 1000
+        self.assertEqual(len(tokens["first_name_token"]), 1000)
+        self.assertEqual(len(tokens["last_name_token"]), 1000)
+        self.assertEqual(len(tokens["date_of_birth_token"]), 1000)
+        self.assertEqual(len(tokens["full_name_token"]), 1000)
+        self.assertEqual(len(tokens["first_name_soundex_token"]), 1000)
+        self.assertEqual(len(tokens["last_name_soundex_token"]), 1000)
+
+        # Only formed by zeros and ones
+        self.assertEqual(set(tokens["first_name_token"]), {"0", "1"})
+        self.assertEqual(set(tokens["last_name_token"]), {"0", "1"})
+        self.assertEqual(set(tokens["date_of_birth_token"]), {"0", "1"})
+        self.assertEqual(set(tokens["full_name_token"]), {"0", "1"})
+        self.assertEqual(set(tokens["first_name_soundex_token"]), {"0", "1"})
+        self.assertEqual(set(tokens["last_name_soundex_token"]), {"0", "1"})
 
 if __name__ == '__main__':
     unittest.main()
