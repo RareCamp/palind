@@ -8,23 +8,23 @@ class TestSoundex(unittest.TestCase):
         self.assertEqual(tokenizer.soundex("Bangalore"), "B524")
 
         # From PHP docs
-        #self.assertEqual(tokenizer.soundex("Euler"), tokenizer.soundex("Ellery")) # E460
-        #self.assertEqual(tokenizer.soundex("Gauss"), tokenizer.soundex("Ghosh"))  # G200
-        #self.assertEqual(tokenizer.soundex("Hilbert"), tokenizer.soundex("Heilbronn"))  # H416
-        #self.assertEqual(tokenizer.soundex("Knuth"), tokenizer.soundex("Kant"))  # K530
-        #self.assertEqual(tokenizer.soundex("Lloyd"), tokenizer.soundex("Ladd"))  # L300
-        #self.assertEqual(tokenizer.soundex("Lukasiewicz"), tokenizer.soundex("Lissajous"))  # L222
+        # self.assertEqual(tokenizer.soundex("Euler"), tokenizer.soundex("Ellery")) # E460
+        # self.assertEqual(tokenizer.soundex("Gauss"), tokenizer.soundex("Ghosh"))  # G200
+        # self.assertEqual(tokenizer.soundex("Hilbert"), tokenizer.soundex("Heilbronn"))  # H416
+        # self.assertEqual(tokenizer.soundex("Knuth"), tokenizer.soundex("Kant"))  # K530
+        # self.assertEqual(tokenizer.soundex("Lloyd"), tokenizer.soundex("Ladd"))  # L300
+        # self.assertEqual(tokenizer.soundex("Lukasiewicz"), tokenizer.soundex("Lissajous"))  # L222
 
-        #self.assertEqual(tokenizer.soundex("Washington"), "W252")
-        #self.assertEqual(tokenizer.soundex("Lee"), "L000")
-        #self.assertEqual(tokenizer.soundex("Gutierrez"), "G362")
-        #self.assertEqual(tokenizer.soundex("Pfister"), "P123") # P236 according to PHP
-        #self.assertEqual(tokenizer.soundex("Jackson"), "J250")
-        #self.assertEqual(tokenizer.soundex("Tymczak"), "T522")
-        #self.assertEqual(tokenizer.soundex("A"), "A000")
-        #self.assertEqual(tokenizer.soundex("Çáŕẗéř "), "C636")
-        #self.assertEqual(tokenizer.soundex("Ashcroft "), "A261")
-        #self.assertEqual(tokenizer.soundex("¿"), "¿000")
+        # self.assertEqual(tokenizer.soundex("Washington"), "W252")
+        # self.assertEqual(tokenizer.soundex("Lee"), "L000")
+        # self.assertEqual(tokenizer.soundex("Gutierrez"), "G362")
+        # self.assertEqual(tokenizer.soundex("Pfister"), "P123") # P236 according to PHP
+        # self.assertEqual(tokenizer.soundex("Jackson"), "J250")
+        # self.assertEqual(tokenizer.soundex("Tymczak"), "T522")
+        # self.assertEqual(tokenizer.soundex("A"), "A000")
+        # self.assertEqual(tokenizer.soundex("Çáŕẗéř "), "C636")
+        # self.assertEqual(tokenizer.soundex("Ashcroft "), "A261")
+        # self.assertEqual(tokenizer.soundex("¿"), "¿000")
 
 
 class TestPIITokenizer(unittest.TestCase):
@@ -42,7 +42,9 @@ class TestPIITokenizer(unittest.TestCase):
 
     def test_tokenize(self):
         t = tokenizer.PIITokenizer()
-        tokens = t.tokenize(first_name="Albert", last_name="Einstein", date_of_birth="1879-03-14")
+        tokens = t.tokenize(
+            first_name="Albert", last_name="Einstein", date_of_birth="1879-03-14"
+        )
 
         # Almost all tokens are empty
         self.assertEqual(tokens["middle_name_token"], "")
@@ -61,13 +63,13 @@ class TestPIITokenizer(unittest.TestCase):
         self.assertNotEqual(tokens["first_name_soundex_token"], "")
         self.assertNotEqual(tokens["last_name_soundex_token"], "")
 
-        # They are strings of length 1000
-        self.assertEqual(len(tokens["first_name_token"]), 1000)
-        self.assertEqual(len(tokens["last_name_token"]), 1000)
-        self.assertEqual(len(tokens["date_of_birth_token"]), 1000)
-        self.assertEqual(len(tokens["full_name_token"]), 1000)
-        self.assertEqual(len(tokens["first_name_soundex_token"]), 1000)
-        self.assertEqual(len(tokens["last_name_soundex_token"]), 1000)
+        # They are strings of length 1024
+        self.assertEqual(len(tokens["first_name_token"]), 1024)
+        self.assertEqual(len(tokens["last_name_token"]), 1024)
+        self.assertEqual(len(tokens["date_of_birth_token"]), 1024)
+        self.assertEqual(len(tokens["full_name_token"]), 1024)
+        self.assertEqual(len(tokens["first_name_soundex_token"]), 1024)
+        self.assertEqual(len(tokens["last_name_soundex_token"]), 1024)
 
         # Only formed by zeros and ones
         self.assertEqual(set(tokens["first_name_token"]), {"0", "1"})
@@ -77,5 +79,17 @@ class TestPIITokenizer(unittest.TestCase):
         self.assertEqual(set(tokens["first_name_soundex_token"]), {"0", "1"})
         self.assertEqual(set(tokens["last_name_soundex_token"]), {"0", "1"})
 
-if __name__ == '__main__':
+    def test_submit(self):
+        t = tokenizer.PIITokenizer()
+        tokens = t.tokenize(
+            first_name="Albert", last_name="Einstein", date_of_birth="1879-03-14"
+        )
+        t.submit(
+            "http://localhost:8000/v2/submit/",
+            "7a26f7d4-4379-48af-9dfa-c09900afe694",
+            tokens,
+        )
+
+
+if __name__ == "__main__":
     unittest.main()

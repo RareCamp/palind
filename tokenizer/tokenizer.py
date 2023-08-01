@@ -4,9 +4,11 @@ from hashlib import sha256
 from math import exp, log
 from random import random
 
+import requests
+
 
 class PIITokenizer:
-    def __init__(self, l=1000, eps=3):
+    def __init__(self, l=1024, eps=3):
         self.l = l
         self.eps = eps
         self.kn = int(l * log(2))  # =~ 0.6931 * l
@@ -161,6 +163,18 @@ class PIITokenizer:
             "date_of_birth_token": date_of_birth_token,
         }
 
+    def submit(self, url, dataset_api_token, token):
+        # Do a post request, with the api token in the authorization header and the token as a json body
+        response = requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {dataset_api_token}",
+                "Content-Type": "application/json",
+            },
+            json=token,
+        )
+        print(response)
+
 
 # Q-grams
 
@@ -212,7 +226,7 @@ def soundex(token):
 
     # Trim or Pad to make Soundex a
     # 4-character code
-    #print(soundex)
+    # print(soundex)
     soundex = soundex[:4].ljust(4, "0")
 
     return soundex
