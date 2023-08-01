@@ -2,12 +2,11 @@ from collections import defaultdict
 from dataclasses import dataclass
 from hashlib import sha256
 from math import exp, log
-
-import numpy as np
+from random import random
 
 
 class PIITokenizer:
-    def __init__(self, l, k, eps):
+    def __init__(self, l=1000, eps=3):
         self.l = l
         self.eps = eps
         self.kn = int(l * log(2))  # =~ 0.6931 * l
@@ -62,10 +61,7 @@ class PIITokenizer:
                 index = int(hash, 16) % self.l
                 bf[index] = 1
         eta = 1.0 - 1.0 / (1.0 + exp(self.eps))
-        return np.array(
-            [bit if np.random.random() <= eta else 1 - bit for bit in bf],
-            dtype=np.uint8,
-        )
+        return "".join(map(str, [bit if random() <= eta else 1 - bit for bit in bf]))
 
     def tokenize(
         self,
@@ -214,7 +210,7 @@ def soundex(token):
 
     # Trim or Pad to make Soundex a
     # 4-character code
-    print(soundex)
+    #print(soundex)
     soundex = soundex[:4].ljust(4, "0")
 
     return soundex
