@@ -12,7 +12,6 @@ class PIITokenizer:
         self.eps = eps
         self.kn = int(l * log(2))  # =~ 0.6931 * l
 
-
     #
     # Normalize
     #
@@ -64,24 +63,24 @@ class PIITokenizer:
                 bf[index] = 1
         eta = 1.0 - 1.0 / (1.0 + exp(self.eps))
         return np.array(
-            [bit if np.random.random() <= eta else 1 - bit for bit in bf], dtype=np.uint8
+            [bit if np.random.random() <= eta else 1 - bit for bit in bf],
+            dtype=np.uint8,
         )
 
-    def tokenize(self,
-            first_name="",
-            middle_name="",
-            last_name="",
-            gender="",
-            date_of_birth="",
-            city_at_birth="",
-            address_at_bith="",
-            state_at_birth="",
-            country_at_birth="",
-            zip_code_at_birth="",
-            abbr_zip_code_at_birth=""):
-
-        # Require first, last and dob
-
+    def tokenize(
+        self,
+        first_name,
+        last_name,
+        date_of_birth,
+        middle_name="",
+        gender="",
+        city_at_birth="",
+        address_at_bith="",
+        zip_code_at_birth="",
+        abbr_zip_code_at_birth="",
+        state_at_birth="",
+        country_at_birth="",
+    ):
         #
         # Normalize names
         #
@@ -92,6 +91,10 @@ class PIITokenizer:
         gender = self.normalize(gender, allow_numbers=False)
         city_at_birth = self.normalize(city_at_birth, allow_numbers=False)
         address_at_bith = self.normalize(address_at_bith, allow_numbers=True)
+        zip_code_at_birth = self.normalize(zip_code_at_birth, allow_numbers=True)
+        abbr_zip_code_at_birth = self.normalize(
+            abbr_zip_code_at_birth, allow_numbers=True
+        )
 
         #
         # Validate input fields
@@ -99,7 +102,7 @@ class PIITokenizer:
 
         if gender:
             self._validate_gender(gender)
-        
+
         if date_of_birth:
             self._validate_date_of_birth(date_of_birth)
 
@@ -141,7 +144,6 @@ class PIITokenizer:
         zip_code_at_birth_token = self._tokenize([zip_code_at_birth])
         abbr_zip_code_at_birth_token = self._tokenize([abbr_zip_code_at_birth])
 
-
         # Date of birth
         date_of_birth_token = self._tokenize([date_of_birth])
 
@@ -156,6 +158,8 @@ class PIITokenizer:
             "country_at_birth": country_at_birth_token,
             "state_at_birth": state_at_birth_token,
             "city_at_birth": city_at_birth_token,
+            "zip_code_at_birth": zip_code_at_birth_token,
+            "abbr_zip_code_at_birth": abbr_zip_code_at_birth_token,
             "date_of_birth": date_of_birth_token,
         }
 
@@ -204,7 +208,7 @@ def soundex(token):
         for key in dictionary.keys():
             if char in key:
                 code = dictionary[key]
-                if code != '.':
+                if code != ".":
                     if code != soundex[-1]:
                         soundex += code
 
@@ -214,4 +218,3 @@ def soundex(token):
     soundex = soundex[:4].ljust(4, "0")
 
     return soundex
-

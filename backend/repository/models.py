@@ -124,32 +124,42 @@ class Submission(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     dataset_patient = models.ForeignKey(DatasetPatient, on_delete=models.CASCADE)
 
+    #
     # Tokens
+    #
+
+    # Required fields
     first_name_token = models.CharField(
         max_length=1024,
-        blank=True,
         validators=[MinLengthValidator(1024)],
         verbose_name="First name",
     )
+    last_name_token = models.CharField(
+        max_length=1024,
+        validators=[MinLengthValidator(1024)],
+        verbose_name="Last name",
+    )
+    date_of_birth_token = models.CharField(
+        max_length=1024,
+        validators=[MinLengthValidator(1024)],
+        verbose_name="Date of birth",
+        help_text="YYYY-MM-DD",
+    )
+
+    # Optional fields
     middle_name_token = models.CharField(
         max_length=1024,
         blank=True,
         validators=[MinLengthValidator(1024)],
         verbose_name="Middle name",
     )
-    last_name_token = models.CharField(
-        max_length=1024,
-        blank=True,
-        validators=[MinLengthValidator(1024)],
-        verbose_name="Last name",
-    )
+
     full_name_token = models.CharField(
         max_length=1024,
         blank=True,
         validators=[MinLengthValidator(1024)],
         verbose_name="Full name",
     )
-
     first_name_soundex_token = models.CharField(
         max_length=1024,
         blank=True,
@@ -171,20 +181,26 @@ class Submission(models.Model):
         help_text="M or F",
     )
 
-    date_of_birth_token = models.CharField(
-        max_length=1024,
-        blank=True,
-        validators=[MinLengthValidator(1024)],
-        verbose_name="Date of birth",
-        help_text="YYYY-MM-DD",
-    )
-
     city_at_birth_token = models.CharField(
         max_length=1024,
         blank=True,
         validators=[MinLengthValidator(1024)],
         verbose_name="City at birth",
         help_text="City name",
+    )
+    zip_code_at_birth_token = models.CharField(
+        max_length=1024,
+        blank=True,
+        validators=[MinLengthValidator(1024)],
+        verbose_name="Zip code at birth",
+        help_text="Zip code",
+    )
+    abbr_zip_code_at_birth_token = models.CharField(
+        max_length=1024,
+        blank=True,
+        validators=[MinLengthValidator(1024)],
+        verbose_name="Abbreviated zip code at birth",
+        help_text="Abbreviated zip code",
     )
     address_at_bith_token = models.CharField(
         max_length=1024,
