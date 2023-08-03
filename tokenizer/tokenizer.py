@@ -164,8 +164,7 @@ class PIITokenizer:
         }
 
     def submit(self, url, dataset_api_token, token):
-        # Do a post request, with the api token in the authorization header and the token as a json body
-        response = requests.post(
+        return requests.post(
             url,
             headers={
                 "Authorization": f"Bearer {dataset_api_token}",
@@ -173,7 +172,6 @@ class PIITokenizer:
             },
             json=token,
         )
-        print(response)
 
 
 # Q-grams
