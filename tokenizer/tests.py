@@ -96,7 +96,7 @@ class TestPIITokenizer(unittest.TestCase):
         )
 
 
-class TestQGrams(unittest.TestCase):
+class TestBigrams(unittest.TestCase):
     def test_bigrams(self):
         self.assertEqual(tokenizer.bigrams("hello"), ["he:1", "el:1", "ll:1", "lo:1"])
         self.assertEqual(tokenizer.bigrams(""), [""])
