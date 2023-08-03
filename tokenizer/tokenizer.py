@@ -1,5 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import date
 from hashlib import sha256
 from math import exp, log
 from random import random
@@ -29,16 +30,15 @@ class PIITokenizer:
 
         return name
 
+    def normalize_date_of_birth(self, date_of_birth):
+        return date.fromisoformat(date_of_birth)
+
     #
     # Validators
     #
 
     def _validate_gender(self, gender):
         assert gender in ["m", "f"]
-
-    def _validate_date_of_birth(self, date_of_birth):
-        # TODO
-        assert date_of_birth != ""
 
     def _validate_country(self, country):
         # TODO: check 2 and 3 letter country codes
@@ -104,7 +104,7 @@ class PIITokenizer:
             self._validate_gender(gender)
 
         if date_of_birth:
-            self._validate_date_of_birth(date_of_birth)
+            date_of_birth = self.normalize_date_of_birth(date_of_birth)
 
         if country_at_birth:
             self._validate_country(country_at_birth)

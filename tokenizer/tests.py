@@ -1,3 +1,4 @@
+from datetime import date
 import unittest
 
 import tokenizer
@@ -78,6 +79,10 @@ class TestPIITokenizer(unittest.TestCase):
         self.assertEqual(set(tokens["full_name_token"]), {"0", "1"})
         self.assertEqual(set(tokens["first_name_soundex_token"]), {"0", "1"})
         self.assertEqual(set(tokens["last_name_soundex_token"]), {"0", "1"})
+
+    def test_normalize_date_of_birth(self):
+        t = tokenizer.PIITokenizer()
+        self.assertEqual(t.normalize_date_of_birth("1879-03-14"), date(1879, 3, 14))
 
     def test_submit(self):
         t = tokenizer.PIITokenizer()
