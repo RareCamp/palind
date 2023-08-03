@@ -1,5 +1,4 @@
 from collections import defaultdict
-from dataclasses import dataclass
 from datetime import date
 from hashlib import sha256
 from math import exp, log
@@ -125,10 +124,10 @@ class PIITokenizer:
         #
 
         # Names expanded with bigrams
-        first_name_token = self._tokenize(q_grams(first_name))
-        middle_name_token = self._tokenize(q_grams(middle_name))
-        last_name_token = self._tokenize(q_grams(last_name))
-        full_name_token = self._tokenize(q_grams(full_name))
+        first_name_token = self._tokenize(bigrams(first_name))
+        middle_name_token = self._tokenize(bigrams(middle_name))
+        last_name_token = self._tokenize(bigrams(last_name))
+        full_name_token = self._tokenize(bigrams(full_name))
 
         # Soundex
         first_name_soundex_token = self._tokenize([first_name_soundex])
@@ -140,7 +139,7 @@ class PIITokenizer:
         # Location at birth
         country_at_birth_token = self._tokenize([country_at_birth])
         state_at_birth_token = self._tokenize([state_at_birth])
-        city_at_birth_token = self._tokenize(q_grams(city_at_birth))
+        city_at_birth_token = self._tokenize(bigrams(city_at_birth))
         zip_code_at_birth_token = self._tokenize([zip_code_at_birth])
         abbr_zip_code_at_birth_token = self._tokenize([abbr_zip_code_at_birth])
 
@@ -177,16 +176,20 @@ class PIITokenizer:
 # Q-grams
 
 
-def q_grams(s, q=2, prefix=""):
-    if len(s) < q:
-        return [s] + list(s)
+def bigrams(s):
+    if len(s) == 0:
+        return [""]
+    if len(s) == 1:
+        return [s + ":1"]
+    if len(s) == 2:
+        return [s + ":1", s[0] + ":1", s[1] + ":1"]
 
     times_seen = defaultdict(int)
     grams = []
-    for i in range(len(s) - q + 1):
-        gram = s[i : i + q]
+    for i in range(len(s) - 1):
+        gram = s[i : i + 2]
         times_seen[gram] += 1
-        grams += [f"{prefix}{gram}:{times_seen[gram]}"]
+        grams += [f"{gram}:{times_seen[gram]}"]
 
     return grams
 

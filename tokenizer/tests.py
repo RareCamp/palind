@@ -96,5 +96,23 @@ class TestPIITokenizer(unittest.TestCase):
         )
 
 
+class TestQGrams(unittest.TestCase):
+    def test_bigrams(self):
+        self.assertEqual(tokenizer.bigrams("hello"), ["he:1", "el:1", "ll:1", "lo:1"])
+        self.assertEqual(tokenizer.bigrams(""), [""])
+        self.assertEqual(tokenizer.bigrams("a"), ["a:1"])
+        self.assertEqual(tokenizer.bigrams("ab"), ["ab:1", "a:1", "b:1"])
+        self.assertEqual(tokenizer.bigrams("abc"), ["ab:1", "bc:1"])
+        self.assertEqual(tokenizer.bigrams("aaa"), ["aa:1", "aa:2"])
+        self.assertEqual(tokenizer.bigrams("aaaa"), ["aa:1", "aa:2", "aa:3"])
+        self.assertEqual(
+            tokenizer.bigrams("barbara"),
+            ["ba:1", "ar:1", "rb:1", "ba:2", "ar:2", "ra:1"],
+        )
+        self.assertEqual(
+            tokenizer.bigrams("he llo"), ["he:1", "e :1", " l:1", "ll:1", "lo:1"]
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
