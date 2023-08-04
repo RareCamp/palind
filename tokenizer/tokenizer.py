@@ -51,6 +51,9 @@ class PIITokenizer:
     #
 
     def _tokenize(self, fields):
+        if fields == [""]:
+            return ""
+
         return tokenize(fields, self.l, self.eps)
 
     def tokenize(
@@ -161,9 +164,6 @@ class PIITokenizer:
 
 
 def tokenize(fields, l=1024, eps=3.0):
-    if fields == [""]:
-        return ""
-
     kn = int(l * log(2))  # =~ 0.6931 * l
 
     # Dynamic number of hash functions
