@@ -186,7 +186,7 @@ def bigrams(s):
     elif len(s) == 1:
         grams = [s]
     elif len(s) <= 3:
-        grams = q_grams(s, 2) + list(s)
+        grams = q_grams(s, 2) + q_grams(s, 1)
     else:
         grams = q_grams(s, 2)
 
