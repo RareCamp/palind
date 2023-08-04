@@ -11,7 +11,6 @@ class PIITokenizer:
     def __init__(self, l=1024, eps=3):
         self.l = l
         self.eps = eps
-        self.kn = int(l * log(2))  # =~ 0.6931 * l
 
     #
     # Normalize
@@ -52,19 +51,7 @@ class PIITokenizer:
     #
 
     def _tokenize(self, fields):
-        # Dynamic number of hash functions
-        if fields == [""]:
-            return ""
-        k = 1 + self.kn // len(set(fields))
-
-        bf = [0] * self.l
-        for field in fields:
-            for i in range(k):
-                hash = sha256(f"{field}#{i}".encode("utf-8")).hexdigest()
-                index = int(hash, 16) % self.l
-                bf[index] = 1
-        eta = 1.0 - 1.0 / (1.0 + exp(self.eps))
-        return "".join(map(str, [bit if random() <= eta else 1 - bit for bit in bf]))
+        return tokenize(fields, self.l, self.eps)
 
     def tokenize(
         self,
@@ -171,6 +158,25 @@ class PIITokenizer:
             },
             json=token,
         )
+
+
+def tokenize(fields, l=1024, eps=3.0):
+    if fields == [""]:
+        return ""
+
+    kn = int(l * log(2))  # =~ 0.6931 * l
+
+    # Dynamic number of hash functions
+    k = 1 + kn // len(set(fields))
+
+    bf = [0] * l
+    for field in fields:
+        for i in range(k):
+            hash = sha256(f"{field}#{i}".encode("utf-8")).hexdigest()
+            index = int(hash, 16) % l
+            bf[index] = 1
+    eta = 1.0 - 1.0 / (1.0 + exp(eps))
+    return "".join(map(str, [bit if random() <= eta else 1 - bit for bit in bf]))
 
 
 # Q-grams
