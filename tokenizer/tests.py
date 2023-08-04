@@ -96,25 +96,21 @@ class TestPIITokenizer(unittest.TestCase):
         )
 
 
-class TestBigrams(unittest.TestCase):
-    def test_bigrams(self):
-        self.assertEqual(tokenizer.bigrams("hello"), ["he:1", "el:1", "ll:1", "lo:1"])
-        self.assertEqual(tokenizer.bigrams(""), [""])
-        self.assertEqual(tokenizer.bigrams("a"), ["a:1"])
-        self.assertEqual(tokenizer.bigrams("ab"), ["ab:1", "a:1", "b:1"])
+class TestExpand(unittest.TestCase):
+    def test_expand(self):
+        self.assertEqual(tokenizer.expand("hello"), ["he:1", "el:1", "ll:1", "lo:1"])
+        self.assertEqual(tokenizer.expand(""), [""])
+        self.assertEqual(tokenizer.expand("a"), ["a:1"])
+        self.assertEqual(tokenizer.expand("ab"), ["ab:1", "a:1", "b:1"])
+        self.assertEqual(tokenizer.expand("abc"), ["ab:1", "bc:1", "a:1", "b:1", "c:1"])
+        self.assertEqual(tokenizer.expand("aaa"), ["aa:1", "aa:2", "a:1", "a:2", "a:3"])
+        self.assertEqual(tokenizer.expand("aaaa"), ["aa:1", "aa:2", "aa:3"])
         self.assertEqual(
-            tokenizer.bigrams("abc"), ["ab:1", "bc:1", "a:1", "b:1", "c:1"]
-        )
-        self.assertEqual(
-            tokenizer.bigrams("aaa"), ["aa:1", "aa:2", "a:1", "a:2", "a:3"]
-        )
-        self.assertEqual(tokenizer.bigrams("aaaa"), ["aa:1", "aa:2", "aa:3"])
-        self.assertEqual(
-            tokenizer.bigrams("barbara"),
+            tokenizer.expand("barbara"),
             ["ba:1", "ar:1", "rb:1", "ba:2", "ar:2", "ra:1"],
         )
         self.assertEqual(
-            tokenizer.bigrams("he llo"), ["he:1", "e :1", " l:1", "ll:1", "lo:1"]
+            tokenizer.expand("he llo"), ["he:1", "e :1", " l:1", "ll:1", "lo:1"]
         )
 
     def test_q_grams(self):

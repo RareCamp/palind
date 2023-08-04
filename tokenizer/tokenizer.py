@@ -124,10 +124,10 @@ class PIITokenizer:
         #
 
         # Names expanded with bigrams
-        first_name_token = self._tokenize(bigrams(first_name))
-        middle_name_token = self._tokenize(bigrams(middle_name))
-        last_name_token = self._tokenize(bigrams(last_name))
-        full_name_token = self._tokenize(bigrams(full_name))
+        first_name_token = self._tokenize(expand(first_name))
+        middle_name_token = self._tokenize(expand(middle_name))
+        last_name_token = self._tokenize(expand(last_name))
+        full_name_token = self._tokenize(expand(full_name))
 
         # Soundex
         first_name_soundex_token = self._tokenize([first_name_soundex])
@@ -139,7 +139,7 @@ class PIITokenizer:
         # Location at birth
         country_at_birth_token = self._tokenize([country_at_birth])
         state_at_birth_token = self._tokenize([state_at_birth])
-        city_at_birth_token = self._tokenize(bigrams(city_at_birth))
+        city_at_birth_token = self._tokenize(expand(city_at_birth))
         zip_code_at_birth_token = self._tokenize([zip_code_at_birth])
         abbr_zip_code_at_birth_token = self._tokenize([abbr_zip_code_at_birth])
 
@@ -180,7 +180,7 @@ def q_grams(s, q):
     return [s[i : i + q] for i in range(len(s) - q + 1)]
 
 
-def bigrams(s):
+def expand(s):
     if len(s) == 0:
         return [""]
     elif len(s) == 1:
