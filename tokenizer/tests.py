@@ -102,8 +102,12 @@ class TestBigrams(unittest.TestCase):
         self.assertEqual(tokenizer.bigrams(""), [""])
         self.assertEqual(tokenizer.bigrams("a"), ["a:1"])
         self.assertEqual(tokenizer.bigrams("ab"), ["ab:1", "a:1", "b:1"])
-        self.assertEqual(tokenizer.bigrams("abc"), ["ab:1", "bc:1"])
-        self.assertEqual(tokenizer.bigrams("aaa"), ["aa:1", "aa:2"])
+        self.assertEqual(
+            tokenizer.bigrams("abc"), ["ab:1", "bc:1", "a:1", "b:1", "c:1"]
+        )
+        self.assertEqual(
+            tokenizer.bigrams("aaa"), ["aa:1", "aa:2", "a:1", "a:2", "a:3"]
+        )
         self.assertEqual(tokenizer.bigrams("aaaa"), ["aa:1", "aa:2", "aa:3"])
         self.assertEqual(
             tokenizer.bigrams("barbara"),

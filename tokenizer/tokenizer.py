@@ -176,25 +176,23 @@ class PIITokenizer:
 # Q-grams
 
 
+def q_grams(s, q):
+    return [s[i : i + q] for i in range(len(s) - q + 1)]
+
+
 def bigrams(s):
     if len(s) == 0:
         return [""]
-    if len(s) == 1:
-        return [s + ":1"]
-    if len(s) == 2:
-        return [s + ":1", s[0] + ":1", s[1] + ":1"]
+    elif len(s) == 1:
+        grams = [s]
+    elif len(s) <= 3:
+        grams = q_grams(s, 2) + list(s)
+    else:
+        grams = q_grams(s, 2)
 
     counter = Counter()
-
-    def times_seen(g):
-        counter.update([g])
-        return counter[g]
-
-    return [f"{g}:{times_seen(g)}" for g in q_grams(s, 2)]
-
-
-def q_grams(s, q):
-    return [s[i : i + q] for i in range(len(s) - q + 1)]
+    times_seen = lambda g: counter.update([g]) or counter[g]
+    return [f"{g}:{times_seen(g)}" for g in grams]
 
 
 def soundex(token):
@@ -230,7 +228,6 @@ def soundex(token):
 
     # Trim or Pad to make Soundex a
     # 4-character code
-    # print(soundex)
     soundex = soundex[:4].ljust(4, "0")
 
     return soundex
