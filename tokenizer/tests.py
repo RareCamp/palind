@@ -113,6 +113,24 @@ class TestBigrams(unittest.TestCase):
             tokenizer.bigrams("he llo"), ["he:1", "e :1", " l:1", "ll:1", "lo:1"]
         )
 
+    def test_q_grams(self):
+        self.assertEqual(tokenizer.q_grams("hello", 1), ["h", "e", "l", "l", "o"])
+        self.assertEqual(tokenizer.q_grams("hello", 2), ["he", "el", "ll", "lo"])
+        self.assertEqual(tokenizer.q_grams("hello", 3), ["hel", "ell", "llo"])
+        self.assertEqual(tokenizer.q_grams("hello", 4), ["hell", "ello"])
+        self.assertEqual(tokenizer.q_grams("hello", 5), ["hello"])
+        self.assertEqual(tokenizer.q_grams("hello", 6), [])
+
+        self.assertEqual(tokenizer.q_grams("aa", 1), ["a", "a"])
+        self.assertEqual(tokenizer.q_grams("aa", 2), ["aa"])
+        self.assertEqual(tokenizer.q_grams("aa", 3), [])
+
+        self.assertEqual(tokenizer.q_grams("a", 1), ["a"])
+        self.assertEqual(tokenizer.q_grams("a", 2), [])
+
+        self.assertEqual(tokenizer.q_grams("", 1), [])
+        self.assertEqual(tokenizer.q_grams("", 2), [])
+
 
 if __name__ == "__main__":
     unittest.main()

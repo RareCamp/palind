@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import Counter
 from datetime import date
 from hashlib import sha256
 from math import exp, log
@@ -184,14 +184,17 @@ def bigrams(s):
     if len(s) == 2:
         return [s + ":1", s[0] + ":1", s[1] + ":1"]
 
-    times_seen = defaultdict(int)
-    grams = []
-    for i in range(len(s) - 1):
-        gram = s[i : i + 2]
-        times_seen[gram] += 1
-        grams += [f"{gram}:{times_seen[gram]}"]
+    counter = Counter()
 
-    return grams
+    def times_seen(g):
+        counter.update([g])
+        return counter[g]
+
+    return [f"{g}:{times_seen(g)}" for g in q_grams(s, 2)]
+
+
+def q_grams(s, q):
+    return [s[i : i + q] for i in range(len(s) - q + 1)]
 
 
 def soundex(token):
