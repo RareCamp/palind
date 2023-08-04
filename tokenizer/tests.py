@@ -103,6 +103,7 @@ class TestExpand(unittest.TestCase):
         self.assertEqual(tokenizer.expand("a"), ["a:1"])
         self.assertEqual(tokenizer.expand("ab"), ["ab:1", "a:1", "b:1"])
         self.assertEqual(tokenizer.expand("abc"), ["ab:1", "bc:1", "a:1", "b:1", "c:1"])
+        self.assertEqual(tokenizer.expand("aab"), ["aa:1", "ab:1", "a:1", "a:2", "b:1"])
         self.assertEqual(tokenizer.expand("aaa"), ["aa:1", "aa:2", "a:1", "a:2", "a:3"])
         self.assertEqual(tokenizer.expand("aaaa"), ["aa:1", "aa:2", "aa:3"])
         self.assertEqual(

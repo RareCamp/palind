@@ -181,6 +181,13 @@ def q_grams(s, q):
 
 
 def expand(s):
+    """
+    Expand a string with q-grams, counting the number of times each q-gram appears.
+    - Empty strings are expanded to [""].
+    - Strings of length 1 are expanded to ["s:1"].
+    - Strings of length 2 and 3 are expanded with q-grams of size 1 and 2: "aab" -> ["aa:1", "ab:1", "a:1", "a:2", "b:1"]
+    - Strings of length 4 or more are expanded with q-grams of size 2: "hello" -> ["he:1", "el:1", "ll:1", "lo:1"]
+    """
     if len(s) == 0:
         return [""]
     elif len(s) == 1:
