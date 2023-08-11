@@ -163,7 +163,7 @@ class PIITokenizer:
         )
 
 
-def tokenize(fields, l=1024, eps=3.0):
+def tokenize(fields, l=1024, eps=3.0, eta=None):
     kn = int(l * log(2))  # =~ 0.6931 * l
 
     # Dynamic number of hash functions
@@ -175,7 +175,9 @@ def tokenize(fields, l=1024, eps=3.0):
             hash = sha256(f"{field}#{i}".encode("utf-8")).hexdigest()
             index = int(hash, 16) % l
             bf[index] = 1
-    eta = 1.0 - 1.0 / (1.0 + exp(eps))
+
+    if eta is None:  # eta = probability of keeping the bit the same
+        eta = 1.0 - 1.0 / (1.0 + exp(eps))
     return "".join(map(str, [bit if random() <= eta else 1 - bit for bit in bf]))
 
 
