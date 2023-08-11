@@ -28,6 +28,9 @@ class PIITokenizer:
 
         return name
 
+    def normalize_name(self, name):
+        return self.normalize(name, allow_numbers=False)
+
     def normalize_date_of_birth(self, date_of_birth):
         return date.fromisoformat(date_of_birth)
 
@@ -62,6 +65,7 @@ class PIITokenizer:
         last_name,
         date_of_birth,
         middle_name="",
+        former_name="",
         gender="",
         city_at_birth="",
         address_at_bith="",
@@ -69,21 +73,38 @@ class PIITokenizer:
         abbr_zip_code_at_birth="",
         state_at_birth="",
         country_at_birth="",
+
+        # Parental information
+        parent1_first_name="",
+        parent1_last_name="",
+        parent1_email="",
+        parent2_first_name="",
+        parent2_last_name="",
+        parent2_email="",
     ):
         #
         # Normalize names
         #
 
-        first_name = self.normalize(first_name, allow_numbers=False)
-        middle_name = self.normalize(middle_name, allow_numbers=False)
-        last_name = self.normalize(last_name, allow_numbers=False)
-        gender = self.normalize(gender, allow_numbers=False)
-        city_at_birth = self.normalize(city_at_birth, allow_numbers=False)
+        first_name = self.normalize_name(first_name)
+        middle_name = self.normalize_name(middle_name)
+        last_name = self.normalize_name(last_name)
+        former_name = self.normalize_name(former_name)
+        parent1_first_name = self.normalize_name(parent1_first_name)
+        parent1_last_name = self.normalize_name(parent1_last_name)
+        parent2_first_name = self.normalize_name(parent2_first_name)
+        parent2_last_name = self.normalize_name(parent2_last_name)
+        gender = self.normalize_name(gender)
+        city_at_birth = self.normalize_name(city_at_birth)
+
+        # Fields with allowed numbers
         address_at_bith = self.normalize(address_at_bith, allow_numbers=True)
         zip_code_at_birth = self.normalize(zip_code_at_birth, allow_numbers=True)
         abbr_zip_code_at_birth = self.normalize(
             abbr_zip_code_at_birth, allow_numbers=True
         )
+
+        # TODO: normalize and validate email
 
         #
         # Validate input fields
@@ -109,6 +130,9 @@ class PIITokenizer:
         first_name_soundex = soundex(first_name)
         last_name_soundex = soundex(last_name)
 
+        parent1_full_name = self.normalize(f"{parent1_first_name}{parent1_last_name}")
+        parent2_full_name = self.normalize(f"{parent2_first_name}{parent2_last_name}")
+
         #
         # Tokenize
         #
@@ -118,10 +142,20 @@ class PIITokenizer:
         middle_name_token = self._tokenize(expand(middle_name))
         last_name_token = self._tokenize(expand(last_name))
         full_name_token = self._tokenize(expand(full_name))
+        parent1_first_name_token = self._tokenize(expand(parent1_first_name))
+        parent1_last_name_token = self._tokenize(expand(parent1_last_name))
+        parent2_first_name_token = self._tokenize(expand(parent2_first_name))
+        parent2_last_name_token = self._tokenize(expand(parent2_last_name))
+        parent1_full_name_token = self._tokenize(expand(parent1_full_name))
+        parent2_full_name_token = self._tokenize(expand(parent2_full_name))
 
         # Soundex
         first_name_soundex_token = self._tokenize([first_name_soundex])
         last_name_soundex_token = self._tokenize([last_name_soundex])
+        parent1_first_name_soundex_token = self._tokenize([soundex(parent1_first_name)])
+        parent1_last_name_soundex_token = self._tokenize([soundex(parent1_last_name)])
+        parent2_first_name_soundex_token = self._tokenize([soundex(parent2_first_name)])
+        parent2_last_name_soundex_token = self._tokenize([soundex(parent2_last_name)])
 
         # Gender
         gender_token = self._tokenize([gender])
@@ -150,6 +184,18 @@ class PIITokenizer:
             "zip_code_at_birth_token": zip_code_at_birth_token,
             "abbr_zip_code_at_birth_token": abbr_zip_code_at_birth_token,
             "date_of_birth_token": date_of_birth_token,
+
+            # Parental information
+            "parent1_first_name_token": parent1_first_name_token,
+            "parent1_last_name_token": parent1_last_name_token,
+            "parent1_full_name_token": parent1_full_name_token,
+            "parent1_first_name_soundex_token": parent1_first_name_soundex_token,
+            "parent1_last_name_soundex_token": parent1_last_name_soundex_token,
+            "parent2_first_name_token": parent2_first_name_token,
+            "parent2_last_name_token": parent2_last_name_token,
+            "parent2_full_name_token": parent1_full_name_token,
+            "parent2_first_name_soundex_token": parent2_first_name_soundex_token,
+            "parent2_last_name_soundex_token": parent2_last_name_soundex_token,
         }
 
     def submit(self, url, dataset_api_token, token):
