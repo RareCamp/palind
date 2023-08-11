@@ -73,7 +73,6 @@ class PIITokenizer:
         abbr_zip_code_at_birth="",
         state_at_birth="",
         country_at_birth="",
-
         # Parental information
         parent1_first_name="",
         parent1_last_name="",
@@ -104,7 +103,9 @@ class PIITokenizer:
             abbr_zip_code_at_birth, allow_numbers=True
         )
 
-        # TODO: normalize and validate email
+        # Emails are just striped from whitespace
+        parent1_email = parent1_email.strip()
+        parent2_email = parent2_email.strip()
 
         #
         # Validate input fields
@@ -148,6 +149,8 @@ class PIITokenizer:
         parent2_last_name_token = self._tokenize(expand(parent2_last_name))
         parent1_full_name_token = self._tokenize(expand(parent1_full_name))
         parent2_full_name_token = self._tokenize(expand(parent2_full_name))
+        parent1_email_token = self._tokenize([parent1_email])
+        parent2_email_token = self._tokenize([parent2_email])
 
         # Soundex
         first_name_soundex_token = self._tokenize([first_name_soundex])
@@ -184,18 +187,19 @@ class PIITokenizer:
             "zip_code_at_birth_token": zip_code_at_birth_token,
             "abbr_zip_code_at_birth_token": abbr_zip_code_at_birth_token,
             "date_of_birth_token": date_of_birth_token,
-
             # Parental information
             "parent1_first_name_token": parent1_first_name_token,
             "parent1_last_name_token": parent1_last_name_token,
             "parent1_full_name_token": parent1_full_name_token,
             "parent1_first_name_soundex_token": parent1_first_name_soundex_token,
             "parent1_last_name_soundex_token": parent1_last_name_soundex_token,
+            "parent1_email_token": parent1_email_token,
             "parent2_first_name_token": parent2_first_name_token,
             "parent2_last_name_token": parent2_last_name_token,
-            "parent2_full_name_token": parent1_full_name_token,
+            "parent2_full_name_token": parent2_full_name_token,
             "parent2_first_name_soundex_token": parent2_first_name_soundex_token,
             "parent2_last_name_soundex_token": parent2_last_name_soundex_token,
+            "parent2_email_token": parent2_email_token,
         }
 
     def submit(self, url, dataset_api_token, token):
