@@ -203,7 +203,7 @@ class PIITokenizer:
         }
 
     def submit(self, url, dataset_api_token, token):
-        return requests.post(
+        response = requests.post(
             url,
             headers={
                 "Authorization": f"Bearer {dataset_api_token}",
@@ -211,6 +211,11 @@ class PIITokenizer:
             },
             json=token,
         )
+        response.raise_for_status()
+        return response.json()
+
+    def columns(self):
+        return list(self.tokenize("", "", "").keys())
 
 
 def tokenize(fields, l=1024, eps=3.0, eta=None):
@@ -264,6 +269,9 @@ def soundex(token):
     """Source: https://www.geeksforgeeks.org/implement-phonetic-search-in-python-with-soundex-algorithm/"""
     token = token.upper()
     soundex = ""
+
+    if token == "":
+        return "0000"
 
     # Retain the First Letter
     soundex += token[0]
