@@ -136,19 +136,37 @@ bigrams("barbara) = ["ba:1", "ar:1", "rb:1", "ba:2", "ar:2", "ra:1"]
 
 # Appendix B: privacy guarantees
 
-The privacy guarantees of the tokenizer are based on the differential privacy mechanism that is applied to each token.
-This mechanism consists on flipping each bit of the token with probability:
+## Differential privacy
 
-$$P_{\text{flip}} = \frac1{1+e^\varepsilon}$$
+We use differential privacy to prevent dictionary attacks on the tokenized values.
+Differential privacy is a mathematical framework that provides a formal guarantee of privacy for the individuals in the dataset.
+It is based on the idea that the tokens generated from PII are not deterministic, but a random amount of noise is added to them.
 
-where $\varepsilon$ is a parameter named the privacy budget.
+This noise is controlled by a parameter called privacy budget ($\epsilon$).
+Each bit of the Bloom filter is flipped with probability:
 
-An epsilon of 3 (~5% flip rate) is used for all "name" fields, where the name is expanded into bigrams.
+$$P_\text{flip}=\frac{1}{1 + e^\epsilon}$$
 
-Fields with lower cardinality that are not expanded into bigrams are more susceptible to a dictionary attack, and thus a lower privacy budget is used for them.
-We analyzed what epsilon value is needed to reduce the dictionary attack success rate to 75% for different cardinalities, and applied the following values:
+## Preventing dictionary attacks for low cardinality fields
 
-| Type of field        | Cardinality | Epsilon |
+Fields with low cardinalities, such as sex (male or female), country (about 200 countries in the world), or date of birth (about 36,500 days in the last century) are vulnerable to dictionary attacks.
+If the Bloom filter is kept unchanged, or only a small amount of noise is added, an attacker can easily compute the Bloom filter for each possible value to find a match.
+
+For these fields, adding extra noise can prevent this kind of attack at the expense of lower accuracy guarantees in the linking phase.
+
+We analyzed the accuracy an attacker would get in their attempted reversal of the tokenization process, for different probabilities of flipping a bit in the Bloom filter. The results are shown in the figure below.
+
+![Accuracy of token reversal for different probabilities of flipping a bit](../paper/token_reversal.png)
+
+The figure shows that when flipping 42% or less of the bits, the real value is recoverable in almost 100% of the cases. However, the probability of identifying the tokenized value decreases and gets completely random at 50% of flipped bits, as expected.
+
+Therefore, we recommend a flipping probability of about 46% (epsilon = 0.2) which makes linkage feasible but prevents dictionary attacks from having certainty about the real value.
+
+We repeated the same analysis for higher cardinality fields.
+
+By targeting a 95% accuracy for the linkage, we settled on the following epsilon values for the differential privacy:
+
+| Field                | Cardinality | Epsilon |
 | -------------------- | ----------- |---------|
 | Sex                  | 2           | 0.2     |
 | Date                 | 36500       | 0.4     |
