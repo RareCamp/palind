@@ -50,6 +50,8 @@ class Dataset(models.Model):
     description = models.TextField()
     tags = models.ManyToManyField(Tag, blank=True)
 
+    public = models.BooleanField(default=False)
+
     organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
