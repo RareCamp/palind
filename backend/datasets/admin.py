@@ -52,5 +52,3 @@ admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(PublicID, PublicIDAdmin)
 admin.site.register(DatasetPatient, DatasetPatientAdmin)
 admin.site.register(Submission, SubmissionAdmin)
-
-# admin.site.register(GlobalPatient)
