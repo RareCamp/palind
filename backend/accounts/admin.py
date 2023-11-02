@@ -1,8 +1,12 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser, Organization
+
+
+admin.site.unregister(Group)
 
 
 class CustomUserAdmin(UserAdmin):
