@@ -1,4 +1,5 @@
 import uuid
+from django.conf import settings
 
 
 from django.core.validators import MinLengthValidator
@@ -10,23 +11,23 @@ import numpy as np
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField("auth.User", on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to="profile_pictures", null=True, blank=True)
 
     def __str__(self):
         return self.user.username
 
 
-class Organization(models.Model):
-    name = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    users = models.ManyToManyField("auth.User")
+# class Organization(models.Model):
+#     name = models.CharField(max_length=200)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     users = models.ManyToManyField("auth.User")
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
-    class Meta:
-        verbose_name = "     Organization"
+#     class Meta:
+#         verbose_name = "     Organization"
 
 
 def dice(a, b) -> float:
@@ -69,8 +70,8 @@ class Dataset(models.Model):
     description = models.TextField()
     tags = models.ManyToManyField(DatasetTag, blank=True)
 
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    created_by = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     api_token = models.CharField(max_length=36, default=uuid.uuid4, editable=False)
 

@@ -8,7 +8,7 @@ from django.views import View
 from django.views.generic import DetailView, TemplateView, ListView, CreateView
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Dataset, DatasetPatient, Organization, Submission, are_similar, dice
+from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 
 #############
 # Dashboard #
@@ -101,14 +101,14 @@ class SubmitView(View):
         return JsonResponse({"public_id": patient.public_id.url()})
 
 
-class OrganizationDetailView(DetailView):
-    model = Organization
-    template_name = "organization.html"
-    context_object_name = "organization"
+# class OrganizationDetailView(DetailView):
+#     model = Organization
+#     template_name = "organization.html"
+#     context_object_name = "organization"
 
-    # Only allow users who are part of the organization to view it
-    def get_queryset(self):
-        return Organization.objects.filter(users=self.request.user)
+#     # Only allow users who are part of the organization to view it
+#     def get_queryset(self):
+#         return Organization.objects.filter(users=self.request.user)
 
 
 #########

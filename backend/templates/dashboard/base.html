@@ -59,19 +59,20 @@
             <div class="sidebar-user" style="position: absolute; bottom: 10px">
               <div class="d-flex justify-content-center">
                 <div class="flex-shrink-0">
-                  <img src="{{ request.user.userprofile.picture.url }}"
-                       class="avatar img-fluid rounded me-1"
-                       alt="Profile picture" />
+                  {% if request.user.picture %}
+                    <img src="{{ request.user.picture.url }}"
+                        class="avatar img-fluid rounded me-1"
+                        alt="Profile picture" />
+                  {% endif %}
                 </div>
                 <div class="flex-grow-1 ps-2">
                   <a class="sidebar-user-title dropdown-toggle"
                      href="#"
                      data-bs-toggle="dropdown">
                     {% if not request.user.first_name and not request.user.last_name %}
-                      {{ request.user.username }}
+                      {{ request.user.email }}
                     {% else %}
                       {{ request.user.first_name }}
-                      {{ request.user.profile_set }}
                       {{ request.user.last_name }}
                     {% endif %}
                   </a>
@@ -81,7 +82,7 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="log-out"></i> Log out</a>
                   </div>
-                  <div class="sidebar-user-subtitle">{{ request.user.organization_set.first.name }}</div>
+                  <div class="sidebar-user-subtitle">{{ request.user.organization.name }}</div>
                 </div>
               </div>
             </div>

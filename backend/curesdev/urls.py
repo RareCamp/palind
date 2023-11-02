@@ -8,7 +8,6 @@ from django.conf.urls.static import static
 from repository.views import (
     DatasetDetailView,
     LinkerDemo,
-    OrganizationDetailView,
     SubmitView,
     UploadCSV,
     DatasetCreateView,
@@ -23,11 +22,11 @@ urlpatterns = (
         # Create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
         # Organization
-        path(
-            "organization/<int:pk>/",
-            OrganizationDetailView.as_view(),
-            name="organization",
-        ),
+        # path(
+        #     "organization/<int:pk>/",
+        #     OrganizationDetailView.as_view(),
+        #     name="organization",
+        # ),
         path("dataset/<int:pk>/upload-csv", UploadCSV.as_view(), name="upload_csv"),
         # Demos
         path(

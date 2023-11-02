@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import (
-    Organization,
     DatasetTag,
     Dataset,
     PublicID,
@@ -43,13 +42,6 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_filter = ("dataset", "protocol_version")
 
 
-class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ("name", "users_list")
-
-    def users_list(self, obj):
-        return ", ".join([u.username for u in obj.users.all()])
-
-
 class PublicIDAdmin(admin.ModelAdmin):
     list_display = ("id", "dataset_patient")
 
@@ -60,7 +52,6 @@ class PublicIDAdmin(admin.ModelAdmin):
 admin.site.register(DatasetTag)
 admin.site.register(UserProfile)
 admin.site.register(Dataset, DatasetAdmin)
-admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(PublicID, PublicIDAdmin)
 admin.site.register(DatasetPatient, DatasetPatientAdmin)
 admin.site.register(Submission, SubmissionAdmin)
