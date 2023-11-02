@@ -41,9 +41,9 @@ class CustomUserAdmin(UserAdmin):
 
 
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ("name", "users_list")
+    list_display = ("name", "users")
 
-    def users_list(self, obj):
+    def users(self, obj):
         return ", ".join([u.email for u in obj.users.all()])
 
 
