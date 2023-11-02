@@ -1,5 +1,69 @@
 {% extends "dashboard/base.html" %}
 {% block content %}
-<h1>{{ dataset.name }}</h1>
-<p>{{ dataset.description }}</p>
+  <div class="row mb-2 mb-xl-3">
+    <div class="col-auto d-none d-sm-block">
+      <h3>
+        <strong>{{ dataset.name }}</strong>
+        <select class="form-select form-select-sm bg-light border-0 ml-1" style="width: auto; display: inline">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+        <span class="badge bg-success" style="font-size: .8rem">
+          <i class="fas fa-lock-open"></i>
+          &nbsp;
+          Public
+        </span>
+        <button class="btn btn-outline-secondary">
+          <i class="fas fa-edit"></i>
+          Edit
+        </button>
+      </h3>
+      {% for tag in dataset.tags.all %}
+        <span class="badge badge-primary-light">{{ tag.name }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="col-auto ms-auto text-end mt-n1">
+      <a href="#" class="btn btn-light bg-white me-2">
+        <span class="fas fa-file-csv me-2"></span>
+        Export all data
+      </a>
+      <a href="#" class="btn btn-primary">
+        <span class="fas fa-plus me-2"></span>
+        Load new data
+      </a>
+    </div>
+  </div>
+
+  <p class="mb-5">{{ dataset.description }}</p>
+
+  <div class="card">
+    <div class="card-header pb-0">
+      <div class="card-title mb-0 float-end">
+        {{ dataset.datasetpatient_set.count }} unique patients
+      </div>
+      <h5 class="card-title mb-0">History of IDs submitted</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-responsive table-striped" style="width:100%">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for patient in dataset.datasetpatient_set.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ patient.public_id }}</td>
+              <td>{{ patient.created_at }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 {% endblock content %}
