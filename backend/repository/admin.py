@@ -7,7 +7,6 @@ from .models import (
     DatasetPatient,
     GlobalPatient,
     Submission,
-    UserProfile,
 )
 
 
@@ -50,7 +49,6 @@ class PublicIDAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DatasetTag)
-admin.site.register(UserProfile)
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(PublicID, PublicIDAdmin)
 admin.site.register(DatasetPatient, DatasetPatientAdmin)

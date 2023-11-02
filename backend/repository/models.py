@@ -10,14 +10,6 @@ from django.dispatch import receiver
 import numpy as np
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to="profile_pictures", null=True, blank=True)
-
-    def __str__(self):
-        return self.user.username
-
-
 # class Organization(models.Model):
 #     name = models.CharField(max_length=200)
 #     created_at = models.DateTimeField(auto_now_add=True)
