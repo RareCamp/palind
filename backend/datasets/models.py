@@ -110,6 +110,12 @@ def create_public_id(sender, instance, created, **kwargs):
         instance.save()
 
 
+class Run(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+
 class Submission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
