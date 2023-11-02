@@ -10,18 +10,6 @@ from django.dispatch import receiver
 import numpy as np
 
 
-# class Organization(models.Model):
-#     name = models.CharField(max_length=200)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     users = models.ManyToManyField("auth.User")
-
-#     def __str__(self):
-#         return self.name
-
-#     class Meta:
-#         verbose_name = "     Organization"
-
-
 def dice(a, b) -> float:
     a = np.array([x == "1" for x in a])
     b = np.array([x == "1" for x in b])
