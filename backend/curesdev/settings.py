@@ -32,7 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "accounts",
-    "repository",
+    "datasets",
+    # "repository",  # DEPRECATED
     "django_extensions",
     "debug_toolbar",
     "django.contrib.admin",

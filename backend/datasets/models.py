@@ -36,7 +36,7 @@ def are_similar(a, b):
     return sum(dice > THRESHOLD for dice in dices) >= len(dices) - 1
 
 
-class DatasetTag(models.Model):
+class Tag(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Dataset(models.Model):
 
     name = models.CharField(max_length=200)
     description = models.TextField()
-    tags = models.ManyToManyField(DatasetTag, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

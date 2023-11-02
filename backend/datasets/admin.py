@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    DatasetTag,
+    Tag,
     Dataset,
     PublicID,
     DatasetPatient,
@@ -48,7 +48,7 @@ class PublicIDAdmin(admin.ModelAdmin):
         return obj.datasetpatient
 
 
-admin.site.register(DatasetTag)
+admin.site.register(Tag)
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(PublicID, PublicIDAdmin)
 admin.site.register(DatasetPatient, DatasetPatientAdmin)
