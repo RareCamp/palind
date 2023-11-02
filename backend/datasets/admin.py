@@ -5,7 +5,6 @@ from .models import (
     Dataset,
     PublicID,
     DatasetPatient,
-    GlobalPatient,
     Submission,
 )
 
