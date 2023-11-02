@@ -71,9 +71,6 @@ class Dataset(models.Model):
         submission.dataset_patient = patient
         submission.save()
 
-    def number_of_unique_patients(self):
-        return self.datasetpatient_set.values("global_patient").distinct().count()
-
     class Meta:
         verbose_name = "    Dataset"
 
