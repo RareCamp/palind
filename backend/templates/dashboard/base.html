@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description"
+          content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+    <title>CuresDev dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet">
+    <link href="{% static 'css/light.css' %}" rel="stylesheet">
+    <style>
+		.card-title {
+			color: #333;
+		}
+	
+    </style>
+    <!--
+  HOW TO USE: 
+  data-theme: default (default), dark, light, colored
+  data-layout: fluid (default), boxed
+  data-sidebar-position: left (default), right
+  data-sidebar-layout: default (default), compact
+-->
+    <body data-theme="default"
+          data-layout="fluid"
+          data-sidebar-position="left"
+          data-sidebar-layout="default">
+      <div class="wrapper">
+        <nav id="sidebar" class="sidebar js-sidebar">
+          <div class="sidebar-content js-simplebar">
+            <a class="sidebar-brand" href="{% url 'datasets' %}">
+              <span class="sidebar-brand-text align-middle">
+                <img class="p-2" width="65" height="65" src="{% static 'img/curesdev_logo.png' %}" alt="CuresDev Logo">
+                CURES DEV
+                <!--sup><small class="badge bg-primary text-uppercase">Pro</small></sup -->
+              </span>
+              <svg class="sidebar-brand-icon align-middle"
+                   width="32px"
+                   height="32px"
+                   viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="#FFFFFF"
+                   stroke-width="1.5"
+                   stroke-linecap="square"
+                   stroke-linejoin="miter"
+                   color="#FFFFFF"
+                   style="margin-left: -3px">
+                <path d="M12 4L20 8.00004L12 12L4 8.00004L12 4Z"></path>
+                <path d="M20 12L12 16L4 12"></path>
+                <path d="M20 16L12 20L4 16"></path>
+              </svg>
+            </a>
+            <div class="sidebar-user" style="position: absolute; bottom: 10px">
+              <div class="d-flex justify-content-center">
+                <div class="flex-shrink-0">
+                  <img src="{{ request.user.userprofile.picture.url }}"
+                       class="avatar img-fluid rounded me-1"
+                       alt="Profile picture" />
+                </div>
+                <div class="flex-grow-1 ps-2">
+                  <a class="sidebar-user-title dropdown-toggle"
+                     href="#"
+                     data-bs-toggle="dropdown">
+                    {% if not request.user.first_name and not request.user.last_name %}
+                      {{ request.user.username }}
+                    {% else %}
+                      {{ request.user.first_name }}
+                      {{ request.user.profile_set }}
+                      {{ request.user.last_name }}
+                    {% endif %}
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-start">
+                    <a class='dropdown-item' href='/profile'><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+                    <a class='dropdown-item' href='/settings'><i class="align-middle me-1" data-feather="users"></i> Organization</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="log-out"></i> Log out</a>
+                  </div>
+                  <div class="sidebar-user-subtitle">{{ request.user.organization_set.first.name }}</div>
+                </div>
+              </div>
+            </div>
+            <ul class="sidebar-nav">
+              <li class="sidebar-header">PALIND</li>
+              <li class="sidebar-item active">
+                <a class='sidebar-link' href='/datasets'>
+                  <i class="align-middle" data-feather="database"></i> <span class="align-middle">Datasets</span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class='sidebar-link' href='#'>
+                  <i class="align-middle" data-feather="git-merge"></i> <span class="align-middle">Crosswalk</span>
+                </a>
+              </li>
+              {% if request.user.is_superuser %}
+                <li class="sidebar-header">ADMIN</li>
+                <li class="sidebar-item">
+                  <a class='sidebar-link' href='/admin'>
+                    <i class="align-middle" data-feather="tool"></i> <span class="align-middle">Admin page</span>
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </nav>
+        <div class="main">
+          <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+              <i class="hamburger align-self-center"></i>
+            </a>
+          </nav>
+          <main class="content">
+            {% block content %}
+            {% endblock content %}
+          </main>
+          <footer class="footer">
+            <div class="container-fluid">
+              <div class="row text-muted">
+                <div class="col-6 text-start">
+                  <p class="mb-0">
+                    <a href="https://curesdev.com" target="_blank" class="text-muted"><strong>CuresDev</strong></a> &copy;
+                  </p>
+                </div>
+                <div class="col-6 text-end">
+                  <ul class="list-inline">
+                    <li class="list-inline-item">
+                      <a class="text-muted" href="#">Support</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a class="text-muted" href="#">Privacy</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a class="text-muted" href="#">Terms</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <script src="{% static 'js/app.js' %}"></script>
+    </body>
+  </html>

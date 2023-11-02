@@ -1,0 +1,66 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+  <div class="container-fluid p-0">
+    <div class="row mb-2 mb-xl-3">
+      <div class="col-auto d-none d-sm-block">
+        <h3>
+          <strong>Datasets</strong> Dashboard
+        </h3>
+      </div>
+      <div class="col-auto ms-auto text-end mt-n1">
+        <a href="{% url 'dataset_create' %}" class="btn btn-primary">New Dataset</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xl-12 col-xxl-5 d-flex">
+        <div class="w-100">
+          <div class="row">
+            {% for dataset in datasets %}
+              <div class="col-sm-4">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <div class="card-actions float-end">
+                          <div class="dropdown position-relative">
+                            <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                              <span data-feather="settings"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                              <a class="dropdown-item" href="{% url 'dataset' dataset.pk %}">
+                                View details
+                              </a>
+                              <a class="dropdown-item" href="#">Edit dataset</a>
+                              <a class="dropdown-item" href="#">Another action</a>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                          </div>
+                        </div>
+                        <h3 class="card-title mb-3">
+                          {{ dataset.name }}
+                        </h3>
+                      </div>
+                    </div>
+                    <p class="text-muted mb-2">
+                      {{ dataset.description }}
+                    </p>
+                    {% if dataset.tags %}
+                      <div class="mb-3">
+                        {% for tag in dataset.tags.all %}
+                          <span class="badge badge-primary-light">{{ tag.name }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                    <p class="mb-3">
+                      <strong>{{ dataset.number_of_unique_patients }} unique patients</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

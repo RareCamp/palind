@@ -5,10 +5,43 @@ import uuid
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Dataset, DatasetPatient, Organization, Submission, are_similar, dice
+
+#############
+# Dashboard #
+#############
+
+
+class DatasetsView(ListView):
+    model = Dataset
+    template_name = "dashboard/datasets.html"
+    context_object_name = "datasets"
+
+    def get_queryset(self):
+        return Dataset.objects.filter(organization__users=self.request.user)
+
+
+class DatasetDetailView(DetailView):
+    model = Dataset
+    template_name = "dashboard/dataset.html"
+    context_object_name = "dataset"
+
+    # Only allow users who are part of the organization to view it
+    def get_queryset(self):
+        return Dataset.objects.filter(organization__users=self.request.user)
+
+
+class DatasetCreateView(CreateView):
+    model = Dataset
+    template_name = "dashboard/dataset_form.html"
+    fields = ["name", "description", "tags"]
+
+    def form_valid(self, form):
+        form.instance.organization = self.request.user.organization
+        return super().form_valid(form)
 
 
 #######
@@ -76,16 +109,6 @@ class OrganizationDetailView(DetailView):
     # Only allow users who are part of the organization to view it
     def get_queryset(self):
         return Organization.objects.filter(users=self.request.user)
-
-
-class DatasetDetailView(DetailView):
-    model = Dataset
-    template_name = "dataset.html"
-    context_object_name = "dataset"
-
-    # Only allow users who are part of the organization to view it
-    def get_queryset(self):
-        return Dataset.objects.filter(organization__users=self.request.user)
 
 
 #########

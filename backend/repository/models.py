@@ -9,6 +9,14 @@ from django.dispatch import receiver
 import numpy as np
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField("auth.User", on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to="profile_pictures", null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+
 class Organization(models.Model):
     name = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -47,11 +55,19 @@ def are_similar(a, b):
     return sum(dice > THRESHOLD for dice in dices) >= len(dices) - 1
 
 
+class DatasetTag(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Dataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     name = models.CharField(max_length=200)
     description = models.TextField()
+    tags = models.ManyToManyField(DatasetTag, blank=True)
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     created_by = models.ForeignKey("auth.User", on_delete=models.CASCADE)
@@ -71,6 +87,9 @@ class Dataset(models.Model):
         patient = DatasetPatient.objects.create(dataset=self)
         submission.dataset_patient = patient
         submission.save()
+
+    def number_of_unique_patients(self):
+        return self.datasetpatient_set.values("global_patient").distinct().count()
 
     class Meta:
         verbose_name = "    Dataset"
