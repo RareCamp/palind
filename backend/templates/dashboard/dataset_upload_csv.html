@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "dashboard/base.html" %}
 
 {% load static %}
 
@@ -257,18 +257,8 @@
 
 {% block content %}
 <h1>
-  Load data into dataset
+  Load data into <strong>{{ dataset.name }}</strong>
 </h1>
-<h4>
-  Organization:
-  {{ dataset.organization.name }}
-</h4>
-<h4>
-  Dataset:
-  <a href="{% url 'dataset_detail' dataset.id %}">
-    {{ dataset.name }}
-  </a>
-</h4>
 
 <br />
 <br />

@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from accounts.views import OrganizationDetailView
 from datasets.views import (
     DatasetDetailView,
     LinkerDemo,
@@ -14,6 +15,7 @@ from datasets.views import (
     DatasetsView,
     DatasetUpdateView,
     DatasetDeleteView,
+    DatasetUploadCSV,
     merge_view,
 )
 
@@ -23,12 +25,6 @@ urlpatterns = (
         path("", TemplateView.as_view(template_name="home.html"), name="home"),
         # Create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
-        # Organization
-        # path(
-        #     "organization/<int:pk>/",
-        #     OrganizationDetailView.as_view(),
-        #     name="organization",
-        # ),
         path("dataset/<int:pk>/upload-csv", UploadCSV.as_view(), name="upload_csv"),
         # Demos
         path(
@@ -38,7 +34,13 @@ urlpatterns = (
         ),
         path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
         path("merge-datasets", merge_view, name="merge-datasets"),
-        # Dashboard
+        # Accounts
+        path(
+            "organization/<int:pk>/",
+            OrganizationDetailView.as_view(),
+            name="organization_detail",
+        ),
+        # Datasets
         path("datasets/", DatasetsView.as_view(), name="dataset_list"),
         path("dataset/<int:pk>/", DatasetDetailView.as_view(), name="dataset_detail"),
         path(
@@ -48,6 +50,11 @@ urlpatterns = (
             "dataset/<int:pk>/delete",
             DatasetDeleteView.as_view(),
             name="dataset_delete",
+        ),
+        path(
+            "dataset/<int:pk>/upload",
+            DatasetUploadCSV.as_view(),
+            name="dataset_upload_csv",
         ),
         path("datasets/new/", DatasetCreateView.as_view(), name="dataset_create"),
         # Admin site

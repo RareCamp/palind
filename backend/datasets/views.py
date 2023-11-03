@@ -16,6 +16,8 @@ from django.views.generic import (
 )
 from django.views.decorators.csrf import csrf_exempt
 
+from accounts.models import Organization
+
 from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 
 #############
@@ -78,6 +80,30 @@ class DatasetDeleteView(DeleteView):
         return Dataset.objects.filter(organization=self.request.user.organization)
 
 
+class DatasetUploadCSV(DetailView):
+    model = Dataset
+    template_name = "dashboard/dataset_upload_csv.html"
+    context_object_name = "dataset"
+
+    def get_queryset(self):
+        return Dataset.objects.filter(organization=self.request.user.organization)
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+        data["fields"] = [
+            {
+                "field": f.name.replace("_token", ""),
+                "name": f.verbose_name,
+                "description": f.help_text,
+            }
+            for f in Submission._meta.get_fields()
+            if f.name.endswith("_token")
+            and "soundex" not in f.name
+            and "full" not in f.name
+        ]
+        return data
+
+
 #######
 # API #
 #######
@@ -99,6 +125,7 @@ class SubmitView(View):
 
         # Find dataset with this token
         try:
+            print(token)
             dataset = Dataset.objects.get(api_token=token)
         except:
             return HttpResponse(status=401, content="Invalid token")
