@@ -12,6 +12,8 @@ from datasets.views import (
     UploadCSV,
     DatasetCreateView,
     DatasetsView,
+    DatasetUpdateView,
+    DatasetDeleteView,
     merge_view,
 )
 
@@ -37,8 +39,16 @@ urlpatterns = (
         path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
         path("merge-datasets", merge_view, name="merge-datasets"),
         # Dashboard
-        path("datasets/", DatasetsView.as_view(), name="datasets"),
-        path("dataset/<int:pk>/", DatasetDetailView.as_view(), name="dataset"),
+        path("datasets/", DatasetsView.as_view(), name="dataset_list"),
+        path("dataset/<int:pk>/", DatasetDetailView.as_view(), name="dataset_detail"),
+        path(
+            "dataset/<int:pk>/edit", DatasetUpdateView.as_view(), name="dataset_update"
+        ),
+        path(
+            "dataset/<int:pk>/delete",
+            DatasetDeleteView.as_view(),
+            name="dataset_delete",
+        ),
         path("datasets/new/", DatasetCreateView.as_view(), name="dataset_create"),
         # Admin site
         path("admin/", admin.site.urls),

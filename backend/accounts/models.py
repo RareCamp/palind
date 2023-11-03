@@ -28,5 +28,10 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    def full_name(self):
+        if self.first_name == "" and self.last_name == "":
+            return self.email
+        return f"{self.first_name} {self.last_name}"
+
     class Meta:
         verbose_name = "User"

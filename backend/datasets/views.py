@@ -3,9 +3,17 @@ from typing import Any, Dict
 import uuid
 
 from django.http import JsonResponse, HttpResponse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView, TemplateView, ListView, CreateView
+from django.views.generic import (
+    DetailView,
+    TemplateView,
+    ListView,
+    CreateView,
+    DeleteView,
+    UpdateView,
+)
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Dataset, DatasetPatient, Submission, are_similar, dice
@@ -17,7 +25,7 @@ from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 
 class DatasetsView(ListView):
     model = Dataset
-    template_name = "dashboard/datasets.html"
+    template_name = "dashboard/dataset_list.html"
     context_object_name = "datasets"
 
     def get_queryset(self):
@@ -26,7 +34,7 @@ class DatasetsView(ListView):
 
 class DatasetDetailView(DetailView):
     model = Dataset
-    template_name = "dashboard/dataset.html"
+    template_name = "dashboard/dataset_detail.html"
     context_object_name = "dataset"
 
     # Only allow users who are part of the organization to view it
@@ -36,12 +44,38 @@ class DatasetDetailView(DetailView):
 
 class DatasetCreateView(CreateView):
     model = Dataset
-    template_name = "dashboard/dataset_form.html"
+    template_name = "dashboard/dataset_create.html"
     fields = ["name", "description", "tags"]
 
     def form_valid(self, form):
+        form.instance.public = True  # TODO: remove this
+        form.instance.created_by = self.request.user
         form.instance.organization = self.request.user.organization
         return super().form_valid(form)
+
+
+class DatasetUpdateView(UpdateView):
+    model = Dataset
+    template_name = "dashboard/dataset_update.html"
+    fields = ["name", "description", "tags"]
+
+    def get_queryset(self):
+        return Dataset.objects.filter(organization=self.request.user.organization)
+
+    def form_valid(self, form):
+        form.instance.public = True  # TODO: remove this
+        form.instance.created_by = self.request.user
+        form.instance.organization = self.request.user.organization
+        return super().form_valid(form)
+
+
+class DatasetDeleteView(DeleteView):
+    model = Dataset
+    template_name = "dashboard/dataset_confirm_delete.html"
+    success_url = reverse_lazy("dataset_list")
+
+    def get_queryset(self):
+        return Dataset.objects.filter(organization=self.request.user.organization)
 
 
 #######

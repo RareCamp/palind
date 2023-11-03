@@ -6,6 +6,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 
 import numpy as np
 
@@ -47,7 +48,7 @@ class Dataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     public = models.BooleanField(default=False)
@@ -70,6 +71,9 @@ class Dataset(models.Model):
         patient = DatasetPatient.objects.create(dataset=self)
         submission.dataset_patient = patient
         submission.save()
+
+    def get_absolute_url(self):
+        return reverse("dataset_detail", kwargs={"pk": self.pk})
 
     class Meta:
         verbose_name = "    Dataset"

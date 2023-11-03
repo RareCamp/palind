@@ -20,13 +20,6 @@
 		}
 	
     </style>
-    <!--
-  HOW TO USE: 
-  data-theme: default (default), dark, light, colored
-  data-layout: fluid (default), boxed
-  data-sidebar-position: left (default), right
-  data-sidebar-layout: default (default), compact
--->
     <body data-theme="default"
           data-layout="fluid"
           data-sidebar-position="left"
@@ -34,7 +27,7 @@
       <div class="wrapper">
         <nav id="sidebar" class="sidebar js-sidebar">
           <div class="sidebar-content js-simplebar">
-            <a class="sidebar-brand" href="{% url 'datasets' %}">
+            <a class="sidebar-brand" href="{% url 'dataset_list' %}">
               <span class="sidebar-brand-text align-middle">
                 <img class="p-2" width="65" height="65" src="{% static 'img/curesdev_logo.png' %}" alt="CuresDev Logo">
                 CURES DEV
@@ -69,20 +62,15 @@
                   <a class="sidebar-user-title dropdown-toggle"
                      href="#"
                      data-bs-toggle="dropdown">
-                    {% if not request.user.first_name and not request.user.last_name %}
-                      {{ request.user.email }}
-                    {% else %}
-                      {{ request.user.first_name }}
-                      {{ request.user.last_name }}
-                    {% endif %}
+                      {{ request.user.full_name }}
                   </a>
                   <div class="dropdown-menu dropdown-menu-start">
-                    <a class='dropdown-item' href='/profile'>
+                    <a class='dropdown-item' href="#">
                       <i class="fa-solid fa-user"></i>
                       &nbsp;
                       Profile
                     </a>
-                    <a class='dropdown-item' href='/settings'>
+                    <a class='dropdown-item' href="#">
                       <i class="fa-solid fa-building"></i>
                       &nbsp;
                       Organization
@@ -97,12 +85,12 @@
             <ul class="sidebar-nav">
               <li class="sidebar-header">PALIND</li>
               <li class="sidebar-item active">
-                <a class='sidebar-link' href='/datasets'>
+                <a class="sidebar-link" href="{% url 'dataset_list' %}">
                   <i class="align-middle" data-feather="database"></i> <span class="align-middle">Datasets</span>
                 </a>
               </li>
               <li class="sidebar-item">
-                <a class='sidebar-link' href='#'>
+                <a class="sidebar-link" href="#"">
                   <i class="align-middle" data-feather="git-merge"></i> <span class="align-middle">Crosswalk</span>
                 </a>
               </li>
