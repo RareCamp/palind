@@ -2,7 +2,7 @@ import json
 from typing import Any, Dict
 import uuid
 
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -78,6 +78,12 @@ class DatasetDeleteView(DeleteView):
 
     def get_queryset(self):
         return Dataset.objects.filter(organization=self.request.user.organization)
+
+    def form_valid(self, form):
+        self.object = self.get_object()
+        self.object.to_delete = True
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class DatasetUploadCSV(DetailView):
