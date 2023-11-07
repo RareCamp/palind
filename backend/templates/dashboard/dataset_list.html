@@ -17,10 +17,11 @@
           <div class="row">
             {% for dataset in datasets %}
               <div class="col-sm-4">
-                <div class="card">
+                <div class="card" style="cursor: pointer" onclick="window.location.href='{% url 'dataset_detail' dataset.pk %}'">
                   <div class="card-body">
                     <div class="row">
                       <div class="col mt-0">
+                        {% comment %}
                         <div class="card-actions float-end">
                           <div class="dropdown position-relative">
                             <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
@@ -46,6 +47,7 @@
                             </div>
                           </div>
                         </div>
+                        {% endcomment %}
                         <h3 class="card-title mb-3">
                           {{ dataset.name }}
                         </h3>
@@ -55,10 +57,15 @@
                       {{ dataset.description }}
                     </p>
                     {% if dataset.tags %}
-                      <div class="mb-3">
+                      <div class="mb-2">
                         {% for tag in dataset.tags.all %}
                           <span class="badge badge-primary-light">{{ tag.name }}</span>
                         {% endfor %}
+                      </div>
+                    {% endif %}
+                    {% if dataset.to_delete %}
+                      <div class="mb-3">
+                        <span class="badge badge-danger-light">Scheduled for deletion</span>
                       </div>
                     {% endif %}
                     <p class="mb-3">

@@ -1,56 +1,65 @@
 {% extends "dashboard/base.html" %}
 {% block content %}
-  <div class="row mb-2 mb-xl-3">
-    <div class="col-auto d-none d-sm-block">
-      <h3>
-        <strong>{{ dataset.name }}</strong>
-        <select class="form-select form-select-sm bg-light border-0 ml-1" style="width: auto; display: inline">
-          <option value="public">Public</option>
-          <option value="private">Private</option>
-        </select>
-        <span class="badge bg-success" style="font-size: .8rem">
-          <i class="fas fa-lock-open"></i>
-          &nbsp;
-          Public
-        </span>
-        <a class="btn btn-outline-secondary" href="{% url 'dataset_update' dataset.pk %}">
-          <i class="fas fa-edit"></i>
-          Edit
-        </a>
-        <a class="btn btn-outline-danger" href="{% url 'dataset_delete' dataset.pk %}">
-          <i class="fas fa-trash"></i>
-          Delete
-        </a>
-      </h3>
-      <h5>
-        <i class="fas fa-building"></i>
-        {{ dataset.organization.name }}
-      </h5>
-      {% for tag in dataset.tags.all %}
-        <span class="badge badge-primary-light">{{ tag.name }}</span>
-      {% endfor %}
-    </div>
 
-    <div class="col-auto ms-auto text-end mt-n1">
-      <a href="#" class="btn btn-light bg-white me-2">
-        <span class="fas fa-file-csv me-2"></span>
-        Export all data
-      </a>
-      <a href="#" class="btn btn-primary">
-        <span class="fas fa-plus me-2"></span>
-        Load new data
-      </a>
-    </div>
-  </div>
-
-  <p class="mb-5">{{ dataset.description }}</p>
+  <p class="mb-4">
+    <a href="{% url 'dataset_list' %}">
+      <i class="fas fa-arrow-left me-2"></i>
+      Go back to all datasets
+    </a>
+  </p>
 
   <div class="card">
     <div class="card-header pb-0">
-      <div class="card-title mb-0 float-end">
-        {{ dataset.datasetpatient_set.count }} unique patients
+      <div class="row mb-2 mb-xl-3">
+        <div class="col-auto d-none d-sm-block">
+          <h3>
+            <strong>{{ dataset.name }}</strong>
+          </h3>
+          <span class="badge bg-primary">
+            {{ dataset.organization.name }}
+          </span>
+          &nbsp;
+          <span class="badge bg-success">
+            Public
+          </span>
+          &nbsp;
+          {% for tag in dataset.tags.all %}
+            <span class="badge badge-primary-light">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+
+        <div class="col-auto ms-auto text-end mt-n1">
+          <a class="btn btn-outline-secondary" href="{% url 'dataset_update' dataset.pk %}">
+            <i class="fas fa-edit"></i>
+            Edit
+          </a>
+        </div>
       </div>
-      <h5 class="card-title mb-0">History of IDs submitted</h5>
+      <p class="mb-5">{{ dataset.description }}</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header pb-0">
+      <div class="row mb-2 mb-xl-3">
+        <div class="col-auto d-none d-sm-block">
+          <h5 class="card-title mb-0">
+            History of IDs submitted
+            {{ dataset.datasetpatient_set.count }} unique patients
+          </h5>
+        </div>
+
+        <div class="col-auto ms-auto text-end mt-n1">
+          <a href="#" class="btn btn-light bg-white me-2">
+            <span class="fas fa-file-csv me-2"></span>
+            Export all data
+          </a>
+          <a href="{% url 'dataset_upload_csv' dataset.pk %}" class="btn btn-primary">
+            <span class="fas fa-plus me-2"></span>
+            Load new data
+          </a>
+        </div>
+      </div>
     </div>
     <div class="card-body">
       <table class="table table-responsive table-striped" style="width:100%">

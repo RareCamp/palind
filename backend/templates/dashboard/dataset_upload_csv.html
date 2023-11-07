@@ -2,9 +2,13 @@
 
 {% load static %}
 
-
 {% block extra_head %}
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
 <style>
+  [x-cloak] { display: none !important; }
+
   .container {
     margin-top: 50px;
     max-width: 1200px;
@@ -268,7 +272,6 @@
 {% include "tokenize.html" %}
 
 <script>
-
   // Fetch request to backend with authorization header
   async function curesDevSubmit(data) {
     await new Promise(r => setTimeout(r, 100));
@@ -479,11 +482,12 @@
         or drag and drop files here
 
         <!-- alert -->
-        <div class="alert alert-success" role="alert" style="margin-left: 40px; margin-right: 40px; margin-bottom: 40px">
+        <div class="alert-message alert-primary" style="margin-left: 10%; margin-right: 10%; margin-bottom: 40px; width: 80%">
           <i class="fa fa-info-circle" aria-hidden="true"></i>
+          &nbsp;
           The CSV data will not be uploaded to CuresDev,
           only the tokenized data will be sent.
-      </div>
+        </div>
     </div>
   </div>
 
