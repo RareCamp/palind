@@ -51,12 +51,14 @@ class Dataset(models.Model):
     description = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    public = models.BooleanField(default=False)
+    public = models.BooleanField(default=True)
 
     organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     api_token = models.CharField(max_length=36, default=uuid.uuid4, editable=False)
+
+    to_delete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
