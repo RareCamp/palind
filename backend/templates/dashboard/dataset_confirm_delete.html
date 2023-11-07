@@ -48,13 +48,17 @@
         </tbody>
       </table>
       
-      <form method="post">
+      <form method="post" class="mb-3">
         {% csrf_token %}
         <button type="submit" class="btn btn-outline-danger">
           <i class="fas fa-trash"></i>
           Delete dataset
         </button>
       </form>
+
+      <p>
+        Note: the dataset will not be immediately deleted, but will be scheduled for deletion.
+      </p>
     </div>
   </div>
 {% endblock content %}
