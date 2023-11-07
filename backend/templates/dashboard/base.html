@@ -149,6 +149,38 @@
         </footer>
       </div>
     </div>
+    <script src="https://unpkg.com/htmx.org@1.9.8"></script>
     <script src="{% static 'js/app.js' %}"></script>
+
+    {% comment %}
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script>
+      const notyf = new Notyf({
+        duration: 0,
+        position: {
+          x: 'right',
+          y: 'top',
+        },
+        types: [
+          {
+            type: 'info',
+            background: '#3b7ddd',
+            dismissible: true,
+            icon: {
+              className: 'fa fa-code-merge',
+              tagName: 'i',
+              color: 'white',
+            }
+          }
+        ]
+      });
+      notyf.open({
+        type: 'info',
+        message: 'Gary Peyton is requesting a Crosswalk for Dataset Registry Main.',
+      });
+    </script>
+    {% endcomment %}
+    
+    {% block extra_bottom %}{% endblock extra_bottom %}
   </body>
 </html>
