@@ -140,3 +140,7 @@ INTERNAL_IPS = [
 ]
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+LOGIN_REDIRECT_URL = "/datasets/"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

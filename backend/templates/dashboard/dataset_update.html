@@ -1,5 +1,12 @@
 {% extends "dashboard/base.html" %}
 {% block content %}
+    <p class="mb-4">
+        <a href="{% url 'dataset_detail' dataset.pk %}">
+            <i class="fas fa-arrow-left me-2"></i>
+            Go back to dataset <strong>{{ dataset.name }}</strong>
+        </a>
+    </p>
+
     <h1 class="mb-4">
         Edit dataset
     </h1>

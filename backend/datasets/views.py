@@ -1,7 +1,9 @@
+import csv
 import json
 from typing import Any, Dict
 import uuid
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -25,7 +27,7 @@ from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 #############
 
 
-class DatasetsView(ListView):
+class DatasetListView(LoginRequiredMixin, ListView):
     model = Dataset
     template_name = "dashboard/dataset_list.html"
     context_object_name = "datasets"
@@ -34,7 +36,7 @@ class DatasetsView(ListView):
         return Dataset.objects.filter(organization__users=self.request.user)
 
 
-class DatasetDetailView(DetailView):
+class DatasetDetailView(LoginRequiredMixin, DetailView):
     model = Dataset
     template_name = "dashboard/dataset_detail.html"
     context_object_name = "dataset"
@@ -44,7 +46,7 @@ class DatasetDetailView(DetailView):
         return Dataset.objects.filter(organization__users=self.request.user)
 
 
-class DatasetCreateView(CreateView):
+class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
     template_name = "dashboard/dataset_create.html"
     fields = ["name", "description", "tags"]
@@ -56,7 +58,7 @@ class DatasetCreateView(CreateView):
         return super().form_valid(form)
 
 
-class DatasetUpdateView(UpdateView):
+class DatasetUpdateView(LoginRequiredMixin, UpdateView):
     model = Dataset
     template_name = "dashboard/dataset_update.html"
     fields = ["name", "description", "tags"]
@@ -71,7 +73,7 @@ class DatasetUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class DatasetDeleteView(DeleteView):
+class DatasetDeleteView(LoginRequiredMixin, DeleteView):
     model = Dataset
     template_name = "dashboard/dataset_confirm_delete.html"
     success_url = reverse_lazy("dataset_list")
@@ -86,7 +88,7 @@ class DatasetDeleteView(DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DatasetUploadCSV(DetailView):
+class DatasetUploadCSV(LoginRequiredMixin, DetailView):
     model = Dataset
     template_name = "dashboard/dataset_upload_csv.html"
     context_object_name = "dataset"
@@ -108,6 +110,26 @@ class DatasetUploadCSV(DetailView):
             and "full" not in f.name
         ]
         return data
+
+
+class DatasetExportCSVView(LoginRequiredMixin, DetailView):
+    model = Dataset
+
+    def get_queryset(self):
+        return Dataset.objects.filter(organization=self.request.user.organization)
+
+    def render_to_response(self, context, **response_kwargs):
+        dataset = self.get_object()
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="palind_dataset.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(["patient_id", "created_at"])
+
+        for patient in dataset.datasetpatient_set.all():
+            writer.writerow([patient.public_id, patient.created_at])
+
+        return response
 
 
 #######
@@ -183,36 +205,8 @@ class SubmitView(View):
 #########
 
 
-# Dataset detailview
-class UploadCSV(DetailView):
-    model = Dataset
-    template_name = "upload_csv.html"
-    context_object_name = "dataset"
-
-    # Only allow users who are part of the organization to view it
-    def get_queryset(self):
-        return (
-            Dataset.objects.all()
-        )  # filter(organization__users__contains=self.request.user)
-
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        data = super().get_context_data(**kwargs)
-        data["fields"] = [
-            {
-                "field": f.name.replace("_token", ""),
-                "name": f.verbose_name,
-                "description": f.help_text,
-            }
-            for f in Submission._meta.get_fields()
-            if f.name.endswith("_token")
-            and "soundex" not in f.name
-            and "full" not in f.name
-        ]
-        return data
-
-
-class LinkerDemo(TemplateView):
-    template_name = "linker_demo.html"
+class LinkerDemo(LoginRequiredMixin, TemplateView):
+    template_name = "demos/linker_demo.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         data = super().get_context_data(**kwargs)

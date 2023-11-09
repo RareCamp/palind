@@ -3,12 +3,7 @@
 {% load static %}
 
 {% block extra_head %}
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-
 <style>
-  [x-cloak] { display: none !important; }
-
   .container {
     margin-top: 50px;
     max-width: 1200px;
@@ -256,17 +251,21 @@
       object-fit: cover;
   }
 </style>
-{% endblock %}
+{% endblock extra_head %}
 
 
 {% block content %}
-<h1>
-  Load data into <strong>{{ dataset.name }}</strong>
-</h1>
 
-<br />
-<br />
-<br />
+<p class="mb-4">
+  <a href="{% url 'dataset_detail' dataset.pk %}">
+    <i class="fas fa-arrow-left me-2"></i>
+    Go back to dataset <strong>{{ dataset.name }}</strong>
+  </a>
+</p>
+
+<h2 class="mb-4">
+  Load data to <strong>{{ dataset.name }}</strong>
+</h2>
 
 {% include "sha256.html" %}
 {% include "tokenize.html" %}
@@ -274,7 +273,7 @@
 <script>
   // Fetch request to backend with authorization header
   async function curesDevSubmit(data) {
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 0));
     const response = await fetch("http://localhost:8000/v2/submit/",
       {
         method: "POST",
@@ -304,8 +303,8 @@
     fileUploaded: false,
     tokenizing: false,
     tokenized: false,
+    uploading: false,
     uploaded: false,
-    downloadReady: false,
     tableHeader: [],
     parsedColumns: [],
     ignoredColumns: [],
@@ -316,21 +315,6 @@
     fields: { {% for field in fields %}"{{ field.field }}": "{{ field.name }}",{% endfor %} },
     columns: [],
     rowsHtml: "",
-    loadAnother() {
-      this.fileUploaded = false;
-      this.tokenizing = false;
-      this.tokenized = false;
-      this.uploaded = false;
-      this.rows = [];
-      this.tokens = [];
-      this.ids = [];
-      this.clientIDs = [];
-      this.tableHeader = [];
-      this.parsedColumns = [];
-      this.ignoredColumns = [];
-      this.rowsHtml = "";
-      this.downloadReady = false;
-    },
     chooseFile(file) {
       var reader = new FileReader();
       self = this;
@@ -421,7 +405,7 @@
       this.tokenizing = false;
     },
     uploadTokens: async function() {
-      this.uploaded = true;
+      this.uploading = true;
       
       this.ids = [];
       for (let row of this.tokens) {
@@ -434,164 +418,157 @@
         this.tableHeader = this.tableHeader.slice(0, 1);
         this.rowsHtml = this.formatRows();
       }
-      this.downloadReady = true;
-    },
-    downloadIDs() {
-      let csvContent = "data:text/csv;charset=utf-8," + "id,curesdev_id\n" +
-        this.ids.map((id, index) => { return this.clientIDs[index] + "," + id; }).join("\n");
-
-      let encodedUri = encodeURI(csvContent);
-      var link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "curesdev_ids.csv");
-      document.body.appendChild(link);
-      link.click();
+      this.uploaded = true;
     },
   };
 </script>
 
-<div x-data="data">
+<div class="card">
+  <div class="card-body">
+    <div x-data="data">
+      <!-- Buttons -->
+      <div class="row" x-show="!fileUploaded">
+        <div class="col" >
+          <div style="border: 3px dashed gray; min-height: 200px; text-align: center">
+            <!-- File upload -->
+            <p>
+              <input
+                type="file"
+                x-ref="file"
+                @change="chooseFile($refs.file.files[0]);"
+                name="csv_file"
+                id="csv_file"
+                class="form-control"
+                accept=".csv"
+                style="max-width: 300px; margin: 40px auto; min-height: 2"
+              />
+            or drag and drop files here
+            </p>
 
-  <!-- Steps summary -->
-  <form id="msform">
-    <ul id="progressbar">
-      <li class="active" id="csv"></i><strong>Load CSV</strong></li>
-      <li :class="{ 'active': fileUploaded }" id="tokenize"><strong>Tokenize</strong></li>
-      <li :class="{ 'active': tokenized }" id="upload"><strong>Send to CuresDev</strong></li>
-      <li :class="{ 'active': uploaded }" id="ids"><strong>Download IDs</strong></li>
-    </ul>
-  </form>
-
-  <!-- Buttons -->
-  <div class="row" style="margin: 50px 0">
-    <div class="col" x-show="!fileUploaded">
-
-      <div style="border: 3px dashed gray; min-height: 200px; text-align: center">
-        <!-- File upload -->
-        <p>
-          <input
-            type="file"
-            x-ref="file"
-            @change="chooseFile($refs.file.files[0]);"
-            name="csv_file"
-            id="csv_file"
-            class="form-control"
-            accept=".csv"
-            style="max-width: 300px; margin: 40px auto; min-height: 2"
-          />
-        or drag and drop files here
-
-        <!-- alert -->
-        <div class="alert-message alert-primary" style="margin-left: 10%; margin-right: 10%; margin-bottom: 40px; width: 80%">
-          <i class="fa fa-info-circle" aria-hidden="true"></i>
-          &nbsp;
-          The CSV data will not be uploaded to CuresDev,
-          only the tokenized data will be sent.
+            <!-- alert -->
+            <div class="alert-message alert-primary" style="margin-left: 10%; margin-right: 10%; margin-bottom: 40px; width: 80%">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              &nbsp;
+              The CSV data will not be uploaded to CuresDev,
+              only the tokenized data will be sent.
+            </div>
+          </div>
         </div>
-    </div>
-  </div>
+      </div>
 
-    <div class="col" x-cloak x-show="fileUploaded && !tokenized" >
-      <div class="d-grid gap-2">
-        <button @click="await tokenize()" type="button" class="btn btn-primary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px">
-          Tokenize
+      <div class="text-end mb-3">
+        <button
+          x-cloak
+          x-show="fileUploaded && !tokenized"
+          @click="await tokenize()"
+          style="margin-left: 1rem"
+          class="btn btn-primary btn-lg ml-2">
+            <i class="fa fa-cogs" aria-hidden="true"></i>
+            &nbsp;
+            Tokenize
+      </button>
+        <a
+          x-cloak
+          x-show="fileUploaded && !tokenized"
+          href="{% url 'dataset_upload_csv' dataset.pk %}"
+          type="button"
+          style="margin-left: 1rem"
+          class="btn btn-outline-secondary btn-lg">
+            <i class="fa-solid fa-rotate-left"></i>
+            &nbsp;
+            Load another CSV
+        </a>
+        <button
+          x-cloak
+          x-show="(tokenizing || tokenized) && !uploading"
+          @click="await uploadTokens()" type="button"
+          class="btn btn-primary btn-lg"
+          style="margin-left: 1rem"
+          :disabled="!tokenized">
+            <i class="fa fa-upload" aria-hidden="true"></i>
+            &nbsp;
+            Upload tokens
         </button>
       </div>
-    </div>
-    <div class="col" x-cloak x-show="fileUploaded && !tokenized" >
-      <div class="d-grid gap-2">
-        <button @click="loadAnother()" type="button" class="btn btn-outline-secondary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px">
-          Load another CSV
-        </button>
-      </div>
-    </div>
-    <div class="col" x-cloak x-show="(tokenizing || tokenized) && !uploaded" >
-      <div class="d-grid gap-2">
-        <button @click="await uploadTokens()" type="button" class="btn btn-primary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px" :disabled="!tokenized">
-          <i class="fa fa-upload" aria-hidden="true"></i>
-          Send to CuresDev
-        </button>
-      </div>
-    </div>
-    <div class="col" x-cloak x-show="uploaded" >
-      <div class="d-grid gap-2">
-        <button @click="downloadIDs" type="button" class="btn btn-primary btn-lg btn-block" style="padding-top: 25px; padding-bottom: 25px" :disabled="!downloadReady">
-          <i class="fa fa-download" aria-hidden="true"></i>
-          Download CSV with IDs
-        </button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Summary of CSV parsing -->
-  <div class="row" x-show="false">
-    <div class="col">
-      <div x-cloak x-show="rows && fileUploaded && !tokenized" class="alert alert-info" role="alert">
-        <p>Loaded <b x-text="rows.length"></b> records. Columns parsed:</p>
-        <ul>
-          <template x-for="(head, index) in parsedColumns" :key="head">
-            <li><code x-text="head"></code></li>
-          </template>
-        </ul>
+      <div x-cloak x-show="uploaded" class="alert alert-success alert-dismissible" role="alert">
+        <div class="alert-icon">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="alert-message">
+          All tokens uploaded successfully! Go back to dataset <strong><a href="{% url 'dataset_detail' dataset.pk %}">{{ dataset.name }}</a></strong>.
+        </div>
       </div>
-    </div>
-    <div class="col">
-      <div x-cloak x-show="ignoredColumns && fileUploaded && !tokenized" class="alert alert-danger" role="alert">
-        <p>Ignored the following columns:</p>
-        <ul>
-          <template x-for="(head, index) in ignoredColumns" :key="head">
-            <li><code x-text="head"></code></li>
-          </template>
-        </ul>
-      </div>
-    </div>
-  </div>
 
-  <!-- Instructions -->
-  <div x-cloak x-show="!fileUploaded">
-    <h4 style="margin: 40px 0">Upload a CSV file with the following fields</h4>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Column</th>
-          <th>Field</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>ID</code></td>
-          <td>Unique identifier</td>
-          <td>After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
-        </tr>
-        {% for field in fields %}
+      <!-- Summary of CSV parsing -->
+      <div class="row" x-show="false">
+        <div class="col">
+          <div x-cloak x-show="rows && fileUploaded && !tokenized" class="alert alert-info" role="alert">
+            <p>Loaded <b x-text="rows.length"></b> records. Columns parsed:</p>
+            <ul>
+              <template x-for="(head, index) in parsedColumns" :key="head">
+                <li><code x-text="head"></code></li>
+              </template>
+            </ul>
+          </div>
+        </div>
+        <div class="col">
+          <div x-cloak x-show="ignoredColumns && fileUploaded && !tokenized" class="alert alert-danger" role="alert">
+            <p>Ignored the following columns:</p>
+            <ul>
+              <template x-for="(head, index) in ignoredColumns" :key="head">
+                <li><code x-text="head"></code></li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div x-cloak x-show="!fileUploaded">
+        <h4 style="margin: 40px 0">Upload a CSV file with the following fields</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Field</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ID</code></td>
+              <td>Unique identifier</td>
+              <td>After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
+            </tr>
+            {% for field in fields %}
+              <tr>
+                <td>
+                  <code>{{ field.field }}</code>
+                </td>
+                <td>{{ field.name }}</td>
+                <td>{{ field.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Table of CSV data -->
+      <table class="table" x-cloak x-show="fileUploaded">
+        <thead>
           <tr>
-            <td>
-              <code>{{ field.field }}</code>
-            </td>
-            <td>{{ field.name }}</td>
-            <td>{{ field.description }}</td>
+            <template x-for="(head, index) in tableHeader" :key="head">
+              <th x-text="head"></th>
+            </template>
+            <th x-show="uploaded">CuresDev ID</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody x-html="rowsHtml">
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <!-- Table of CSV data -->
-  <table class="table" x-cloak x-show="fileUploaded">
-    <thead>
-      <tr>
-        <template x-for="(head, index) in tableHeader" :key="head">
-          <th x-text="head"></th>
-        </template>
-        <th x-show="uploaded">CuresDev ID</th>
-      </tr>
-    </thead>
-    <tbody x-html="rowsHtml">
-    </tbody>
-  </table>
-
 </div>
-
-{% endblock %}
+{% endblock content %}
 

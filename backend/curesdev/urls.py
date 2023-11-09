@@ -7,42 +7,38 @@ from django.conf.urls.static import static
 
 from accounts.views import OrganizationDetailView
 from datasets.views import (
-    DatasetDetailView,
     LinkerDemo,
     SubmitView,
-    UploadCSV,
     DatasetCreateView,
-    DatasetsView,
+    DatasetListView,
+    DatasetDetailView,
     DatasetUpdateView,
     DatasetDeleteView,
     DatasetUploadCSV,
+    DatasetExportCSVView,
     merge_view,
 )
 
 urlpatterns = (
     [
-        # Home page
-        path("", TemplateView.as_view(template_name="home.html"), name="home"),
-        # Create a submission
+        # API: create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
-        path("dataset/<int:pk>/upload-csv", UploadCSV.as_view(), name="upload_csv"),
-        # Demos
-        path(
-            "bloom-filter-demo",
-            TemplateView.as_view(template_name="bloom_filter_demo.html"),
-            name="bloom-filter-demo",
-        ),
-        path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
-        path("merge-datasets", merge_view, name="merge-datasets"),
         # Accounts
         path(
             "organization/<int:pk>/",
             OrganizationDetailView.as_view(),
             name="organization_detail",
         ),
+        # Login, logout, etc.
+        path("accounts/", include("django.contrib.auth.urls")),
         # Datasets
-        path("datasets/", DatasetsView.as_view(), name="dataset_list"),
+        path("datasets/", DatasetListView.as_view(), name="dataset_list"),
         path("dataset/<int:pk>/", DatasetDetailView.as_view(), name="dataset_detail"),
+        path(
+            "dataset/<int:pk>/export",
+            DatasetExportCSVView.as_view(),
+            name="dataset_export",
+        ),
         path(
             "dataset/<int:pk>/edit", DatasetUpdateView.as_view(), name="dataset_update"
         ),
@@ -57,6 +53,14 @@ urlpatterns = (
             name="dataset_upload_csv",
         ),
         path("datasets/new/", DatasetCreateView.as_view(), name="dataset_create"),
+        # Demos
+        path(
+            "bloom-filter-demo",
+            TemplateView.as_view(template_name="demos/bloom_filter_demo.html"),
+            name="bloom-filter-demo",
+        ),
+        path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
+        path("merge-datasets", merge_view, name="merge-datasets"),
         # Admin site
         path("admin/", admin.site.urls),
         # Debug toolbar
