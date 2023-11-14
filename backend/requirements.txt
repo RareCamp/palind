@@ -1,4 +1,5 @@
 asgiref==3.7.2
+backports.zoneinfo==0.2.1
 beautifulsoup4==4.12.2
 black==23.7.0
 click==8.1.6
@@ -17,7 +18,7 @@ html-void-elements==0.1.0
 jsbeautifier==1.14.9
 json5==0.9.14
 mypy-extensions==1.0.0
-numpy==1.25.1
+numpy==1.24.4
 packaging==23.1
 pathspec==0.11.1
 Pillow==10.1.0
