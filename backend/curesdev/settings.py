@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [".awsapprunner.com"]
 
+CSRF_TRUSTED_ORIGINS = ["https://*.us-east-1.awsapprunner.com"]
+
 
 # Application definition
 
