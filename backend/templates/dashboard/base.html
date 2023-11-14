@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+<div class="wrapper">
+  <nav id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+      <a class="sidebar-brand" href="{% url 'dataset_list' %}">
+        <span class="sidebar-brand-text align-middle">
+          <img class="p-2" width="65" height="65" src="{% static 'img/curesdev_logo.png' %}" alt="CuresDev Logo">
+          CURES DEV
+          <!--sup><small class="badge bg-primary text-uppercase">Pro</small></sup -->
+        </span>
+        <svg class="sidebar-brand-icon align-middle"
+              width="32px"
+              height="32px"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              stroke-width="1.5"
+              stroke-linecap="square"
+              stroke-linejoin="miter"
+              color="#FFFFFF"
+              style="margin-left: -3px">
+          <path d="M12 4L20 8.00004L12 12L4 8.00004L12 4Z"></path>
+          <path d="M20 12L12 16L4 12"></path>
+          <path d="M20 16L12 20L4 16"></path>
+        </svg>
+      </a>
+      <div class="sidebar-user" style="position: absolute; bottom: 10px">
+        <div class="d-flex justify-content-center">
+          <div class="flex-shrink-0">
+            {% if request.user.picture %}
+              <img src="{{ request.user.picture.url }}"
+                  class="avatar img-fluid rounded me-1"
+                  alt="Profile picture" />
+            {% endif %}
+          </div>
+          <div class="flex-grow-1 ps-2">
+            <a class="sidebar-user-title dropdown-toggle"
+                href="#"
+                data-bs-toggle="dropdown">
+                {{ request.user.full_name }}
+            </a>
+            <div class="dropdown-menu dropdown-menu-start">
+              <a class='dropdown-item' href="#">
+                <i class="fa-solid fa-user"></i>
+                &nbsp;
+                Profile
+              </a>
+              <a class="dropdown-item" href="{% url 'organization_detail' user.organization.pk %}">
+                <i class="fa-solid fa-building"></i>
+                &nbsp;
+                Organization
+              </a>
+              <a class="dropdown-item" href="{% url 'password_change' %}">
+                <i class="fa-solid fa-key"></i>
+                &nbsp;
+                Change password
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'logout' %}"><i class="align-middle me-1" data-feather="log-out"></i> Log out</a>
+            </div>
+            <div class="sidebar-user-subtitle">{{ request.user.organization.name }}</div>
+          </div>
+        </div>
+      </div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-header">PALIND</li>
+        <li class="sidebar-item {% if "dataset" in request.resolver_match.url_name %}active{% endif %}">
+          <a class="sidebar-link" href="{% url 'dataset_list' %}">
+            <i class="align-middle" data-feather="database"></i> <span class="align-middle">Datasets</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="#">
+            <i class="align-middle" data-feather="git-merge"></i> <span class="align-middle">Crosswalk</span>
+          </a>
+        </li>
+        {% if request.user.is_superuser %}
+          <li class="sidebar-header">ADMIN</li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="/admin">
+              <i class="align-middle" data-feather="tool"></i> <span class="align-middle">Admin page</span>
+            </a>
+          </li>
+          <li class="sidebar-header">DEMO</li>
+          <li class="sidebar-item {% if request.resolver_match.url_name == "linker-demo" %}active{% endif %}">
+            <a class="sidebar-link" href="{% url 'linker-demo' %}">
+              <i class="fa fa-link" aria-hidden="true"></i>
+              <span class="align-middle">Linker</span>
+            </a>
+          </li>
+          <li class="sidebar-item {% if request.resolver_match.url_name == "bloom-filter-demo" %}active{% endif %}">
+            <a class="sidebar-link" href="{% url 'bloom-filter-demo' %}">
+              <i class="fa fa-barcode" aria-hidden="true"></i>
+              <span class="align-middle">Tokenizer</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+  <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+      <a class="sidebar-toggle js-sidebar-toggle">
+        <i class="hamburger align-self-center"></i>
+      </a>
+    </nav>
+    <main class="content">
+      {% block content %}
+      {% endblock content %}
+    </main>
+    <footer class="footer">
+      <div class="container-fluid">
+        <div class="row text-muted">
+          <div class="col-6 text-start">
+            <p class="mb-0">
+              <a href="https://curesdev.com" target="_blank" class="text-muted"><strong>CuresDev</strong></a> &copy;
+            </p>
+          </div>
+          <div class="col-6 text-end">
+            <ul class="list-inline">
+              <li class="list-inline-item">
+                <a class="text-muted" href="#">Support</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted" href="#">Privacy</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted" href="#">Terms</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+<script src="https://unpkg.com/htmx.org@1.9.8"></script>
+<script src="{% static 'js/app.js' %}"></script>
+
+{% comment %}
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+<script>
+  const notyf = new Notyf({
+    duration: 0,
+    position: {
+      x: 'right',
+      y: 'top',
+    },
+    types: [
+      {
+        type: 'info',
+        background: '#3b7ddd',
+        dismissible: true,
+        icon: {
+          className: 'fa fa-code-merge',
+          tagName: 'i',
+          color: 'white',
+        }
+      }
+    ]
+  });
+  notyf.open({
+    type: 'info',
+    message: 'Gary Peyton is requesting a Crosswalk for Dataset Registry Main.',
+  });
+</script>
+{% endcomment %}
+
+{% block extra_bottom %}{% endblock extra_bottom %}
+{% endblock body %}

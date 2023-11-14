@@ -1,0 +1,83 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+  <div class="container-fluid p-0">
+    <div class="row mb-2 mb-xl-3">
+      <div class="col-auto d-none d-sm-block">
+        <h3>
+          <strong>Datasets</strong>
+        </h3>
+      </div>
+      <div class="col-auto ms-auto text-end mt-n1">
+        <a href="{% url 'dataset_create' %}" class="btn btn-primary">New Dataset</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xl-12 col-xxl-5 d-flex">
+        <div class="w-100">
+          <div class="row">
+            {% for dataset in datasets %}
+              <div class="col-sm-4">
+                <div class="card" style="cursor: pointer" onclick="window.location.href='{% url 'dataset_detail' dataset.pk %}'">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        {% comment %}
+                        <div class="card-actions float-end">
+                          <div class="dropdown position-relative">
+                            <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                              <span data-feather="settings"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                              <a class="dropdown-item" href="{% url 'dataset_detail' dataset.pk %}">
+                                <i class="fas fa-eye me-1"></i>
+                                View details
+                              </a>
+                              <a class="dropdown-item" href="{% url 'dataset_update' dataset.pk %}">
+                                <i class="fas fa-edit me-1"></i>
+                                Edit dataset
+                              </a>
+                              <a class="dropdown-item" href="{% url 'dataset_upload_csv' dataset.pk %}">
+                                <i class="fas fa-upload me-1"></i>
+                                Upload data
+                              </a>
+                              <a class="dropdown-item" href="{% url 'dataset_delete' dataset.pk %}">
+                                <i class="fas fa-trash-alt me-1"></i>
+                                Delete dataset
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        {% endcomment %}
+                        <h3 class="card-title mb-3">
+                          {{ dataset.name }}
+                        </h3>
+                      </div>
+                    </div>
+                    <p class="text-muted mb-2">
+                      {{ dataset.description }}
+                    </p>
+                    {% if dataset.tags %}
+                      <div class="mb-2">
+                        {% for tag in dataset.tags.all %}
+                          <span class="badge badge-primary-light">{{ tag.name }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                    {% if dataset.to_delete %}
+                      <div class="mb-3">
+                        <span class="badge badge-danger-light">Scheduled for deletion</span>
+                      </div>
+                    {% endif %}
+                    <p class="mb-3">
+                      <strong>{{ dataset.datasetpatient_set.count }} unique patients</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

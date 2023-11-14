@@ -1,0 +1,24 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+    <p class="mb-4">
+        <a href="{% url 'dataset_detail' dataset.pk %}">
+            <i class="fas fa-arrow-left me-2"></i>
+            Go back to dataset <strong>{{ dataset.name }}</strong>
+        </a>
+    </p>
+
+    <h1 class="mb-4">
+        Edit dataset
+    </h1>
+    {% include "dashboard/dataset_form.html" %}
+
+    <h3 class="text-danger mb-4">Delete dataset</h3>
+    <p class="text-danger mb-4">
+        Click on the following button to delete the dataset:
+    </p>
+    <a class="btn btn-outline-danger" href="{% url 'dataset_delete' dataset.pk %}">
+        <i class="fas fa-trash"></i>
+        Delete dataset
+    </a>
+
+{% endblock content %}

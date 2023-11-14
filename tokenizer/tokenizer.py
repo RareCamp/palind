@@ -49,6 +49,14 @@ class PIITokenizer:
         # TODO: check US states
         pass
 
+    def _validate_email(self, email):
+        # TODO: check email
+        pass
+
+    def _validate_omim(self, omim):
+        # TODO: check OMIM
+        pass
+
     #
     # Tokenizers
     #
@@ -67,6 +75,7 @@ class PIITokenizer:
         middle_name="",
         former_name="",
         gender="",
+        email="",
         city_at_birth="",
         address_at_bith="",
         zip_code_at_birth="",
@@ -80,6 +89,9 @@ class PIITokenizer:
         parent2_first_name="",
         parent2_last_name="",
         parent2_email="",
+        # OMIM
+        gene_name="",
+        omim="",
     ):
         #
         # Normalize names
@@ -104,12 +116,17 @@ class PIITokenizer:
         )
 
         # Emails are just striped from whitespace
+        email = email.strip()
         parent1_email = parent1_email.strip()
         parent2_email = parent2_email.strip()
 
         #
         # Validate input fields
         #
+
+        if email:
+            self._validate_email(email)
+        # TODO: parents emails
 
         if gender:
             self._validate_gender(gender)
@@ -122,6 +139,9 @@ class PIITokenizer:
 
         if state_at_birth:
             self._validate_state(state_at_birth)
+
+        if omim:
+            self._validate_omim(omim)
 
         #
         # Create derived fields
@@ -149,6 +169,9 @@ class PIITokenizer:
         parent2_last_name_token = self._tokenize(expand(parent2_last_name))
         parent1_full_name_token = self._tokenize(expand(parent1_full_name))
         parent2_full_name_token = self._tokenize(expand(parent2_full_name))
+
+        # Emails are not expanded
+        email_token = self._tokenize([email])
         parent1_email_token = self._tokenize([parent1_email])
         parent2_email_token = self._tokenize([parent2_email])
 
@@ -173,6 +196,9 @@ class PIITokenizer:
         # Date of birth
         date_of_birth_token = self._tokenize([date_of_birth])
 
+        # OMIM
+        omim_token = self._tokenize([omim])
+
         return {
             "first_name_token": first_name_token,
             "middle_name_token": middle_name_token,
@@ -180,6 +206,7 @@ class PIITokenizer:
             "full_name_token": full_name_token,
             "first_name_soundex_token": first_name_soundex_token,
             "last_name_soundex_token": last_name_soundex_token,
+            "email_token": email_token,
             "gender_token": gender_token,
             "country_at_birth_token": country_at_birth_token,
             "state_at_birth_token": state_at_birth_token,
@@ -200,6 +227,8 @@ class PIITokenizer:
             "parent2_first_name_soundex_token": parent2_first_name_soundex_token,
             "parent2_last_name_soundex_token": parent2_last_name_soundex_token,
             "parent2_email_token": parent2_email_token,
+            # OMIM
+            "omim_token": omim_token,
         }
 
     def submit(self, url, dataset_api_token, token):
