@@ -50,10 +50,12 @@
         </div>
 
         <div class="col-auto ms-auto text-end mt-n1">
+          {% comment %}
           <a href="{% url 'dataset_export' dataset.pk %}" class="btn btn-light bg-white me-2">
             <span class="fas fa-file-csv me-2"></span>
             Export all data
           </a>
+          {% endcomment %}
           <a href="{% url 'dataset_upload_csv' dataset.pk %}" class="btn btn-primary">
             <span class="fas fa-plus me-2"></span>
             Load new data
