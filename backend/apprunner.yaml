@@ -9,3 +9,6 @@ run:
   command: sh startup.sh
   network:
     port: 8000
+  secrets:
+    - name: DATABASE_SECRET
+      value-from: "arn:aws:secretsmanager:us-east-1:762786077843:secret:dev/PALIND/Postgres-NV3uf6"
