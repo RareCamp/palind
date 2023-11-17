@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import json
 import os
 
 import dj_database_url
@@ -87,19 +86,8 @@ WSGI_APPLICATION = "curesdev.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if "DATABASE_SECRET" in os.environ:
-    database_secret = os.environ.get("DATABASE_SECRET")
-    db_url = json.loads(database_secret)["DATABASE_URL"]
-    DATABASES = {"default": dj_database_url.parse(db_url)}
-else:
-    DATABASES = {"default": dj_database_url.parse("sqlite:///db.sqlite3")}
-
-# DATABASES = {
-#    "default": {
-#        "ENGINE": "django.db.backends.sqlite3",
-#        "NAME": BASE_DIR / "db.sqlite3",
-#    }
-# }
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db.sqlite3")
+DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
 
 
 # Password validation
