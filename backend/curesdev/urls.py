@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView, TemplateView
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -21,6 +21,7 @@ from datasets.views import (
 
 urlpatterns = (
     [
+        path("", RedirectView.as_view(url="/datasets"), name="home"),
         # API: create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
         # Accounts
