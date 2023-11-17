@@ -1,0 +1,17 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+    <p class="mb-4">
+        <a href="{% url 'dataset_list' %}">
+        <i class="fas fa-arrow-left me-2"></i>
+        Go back to all datasets
+        </a>
+    </p>
+
+    <h1 class="mb-4">
+        Create a new dataset
+    </h1>
+    <!--p class="mb-4">
+        First create a dataset, then tokenize and get patient IDs.
+    </p-->
+    {% include "dashboard/dataset_form.html" %}
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+  <h1 class="mb-4">
+    Are you sure you want to delete dataset <strong>{{ dataset.name }}</strong>?
+  </h1>
+
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-sm mt-2 mb-4">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <td>{{ dataset.name }}</td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>{{ dataset.description }}</td>
+          </tr>
+          <tr>
+            <th>Organization</th>
+            <td>{{ dataset.organization.name }}</td>
+          </tr>
+          <tr>
+            <th>Created by</th>
+            <td>{{ dataset.created_by.full_name }}</td>
+          </tr>
+          <tr>
+            <th>Created at</th>
+            <td>{{ dataset.created_at }}</td>
+          </tr>
+          <tr>
+            <th>Status</th>
+            <td>
+              {% if dataset.public %}
+                <span class="badge bg-success">Public</span>
+              {% else %}
+                <span class="badge bg-secondary">Private</span>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th>Patients</th>
+            <td>
+              {{ dataset.datasetpatient_set.count }} patients
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <form method="post" class="mb-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">
+          <i class="fas fa-trash"></i>
+          Delete dataset
+        </button>
+      </form>
+
+      <p>
+        Note: the dataset will not be immediately deleted, but will be scheduled for deletion.
+      </p>
+    </div>
+  </div>
+{% endblock content %}

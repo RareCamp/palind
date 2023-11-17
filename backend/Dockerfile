@@ -8,7 +8,8 @@ RUN python -m pip install -r requirements.txt
 WORKDIR /app
 COPY curesdev curesdev
 COPY manage.py manage.py
-COPY repository repository
+COPY datasets datasets
+COPY accounts accounts
 COPY static static
 COPY templates templates
 

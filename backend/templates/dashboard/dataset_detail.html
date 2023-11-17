@@ -1,0 +1,88 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+  <p class="mb-4">
+    <a href="{% url 'dataset_list' %}">
+      <i class="fas fa-arrow-left me-2"></i>
+      Go back to all datasets
+    </a>
+  </p>
+
+  <div class="card">
+    <div class="card-header pb-0">
+      <div class="row mb-2 mb-xl-3">
+        <div class="col-auto d-none d-sm-block">
+          <h3>
+            <strong>{{ dataset.name }}</strong>
+          </h3>
+          <span class="badge bg-primary">
+            {{ dataset.organization.name }}
+          </span>
+          &nbsp;
+          <span class="badge bg-success">
+            Public
+          </span>
+          &nbsp;
+          {% for tag in dataset.tags.all %}
+            <span class="badge badge-primary-light">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+
+        <div class="col-auto ms-auto text-end mt-n1">
+          <a class="btn btn-outline-secondary" href="{% url 'dataset_update' dataset.pk %}">
+            <i class="fas fa-edit"></i>
+            Edit
+          </a>
+        </div>
+      </div>
+      <p class="mb-5">{{ dataset.description }}</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header pb-0">
+      <div class="row mb-2 mb-xl-3">
+        <div class="col-auto d-none d-sm-block">
+          <h5 class="card-title mb-0">
+            History of IDs submitted
+            {{ dataset.datasetpatient_set.count }} unique patients
+          </h5>
+        </div>
+
+        <div class="col-auto ms-auto text-end mt-n1">
+          {% comment %}
+          <a href="{% url 'dataset_export' dataset.pk %}" class="btn btn-light bg-white me-2">
+            <span class="fas fa-file-csv me-2"></span>
+            Export all data
+          </a>
+          {% endcomment %}
+          <a href="{% url 'dataset_upload_csv' dataset.pk %}" class="btn btn-primary">
+            <span class="fas fa-plus me-2"></span>
+            Load new data
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="table table-responsive table-striped" style="width:100%">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for patient in dataset.datasetpatient_set.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ patient.public_id }}</td>
+              <td>{{ patient.created_at }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endblock content %}
