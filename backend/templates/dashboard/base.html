@@ -48,11 +48,13 @@
                 &nbsp;
                 Profile
               </a>
-              <a class="dropdown-item" href="{% url 'organization_detail' user.organization.pk %}">
-                <i class="fa-solid fa-building"></i>
-                &nbsp;
-                Organization
-              </a>
+              {% if user.organization %}
+                <a class="dropdown-item" href="{% url 'organization_detail' user.organization.pk %}">
+                  <i class="fa-solid fa-building"></i>
+                  &nbsp;
+                  Organization
+                </a>
+              {% endif %}
               <a class="dropdown-item" href="{% url 'password_change' %}">
                 <i class="fa-solid fa-key"></i>
                 &nbsp;
@@ -61,7 +63,9 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'logout' %}"><i class="align-middle me-1" data-feather="log-out"></i> Log out</a>
             </div>
-            <div class="sidebar-user-subtitle">{{ request.user.organization.name }}</div>
+            {% if user.organization %}
+              <div class="sidebar-user-subtitle">{{ request.user.organization.name }}</div>
+            {% endif %}
           </div>
         </div>
       </div>

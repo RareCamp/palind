@@ -14,14 +14,14 @@
       background-color: : #9C27B0;
       background-image: linear-gradient(120deg, #FF4081, #81D4FA);
   }
-  
+
   /*form styles*/
   #msform {
       text-align: center;
       position: relative;
       margin-top: 20px;
   }
-  
+
   #msform fieldset .form-card {
       background: white;
       border: 0 none;
@@ -31,11 +31,11 @@
       box-sizing: border-box;
       width: 94%;
       margin: 0 3% 20px 3%;
-  
+
       /*stacking fieldsets above each other*/
       position: relative;
   }
-  
+
   #msform fieldset {
       background: white;
       border: 0 none;
@@ -44,21 +44,21 @@
       width: 100%;
       margin: 0;
       padding-bottom: 20px;
-  
+
       /*stacking fieldsets above each other*/
       position: relative;
   }
-  
+
   /*Hide all except first fieldset*/
   #msform fieldset:not(:first-of-type) {
       display: none;
   }
-  
+
   #msform fieldset .form-card {
       text-align: left;
       color: #9E9E9E;
   }
-  
+
   #msform input, #msform textarea {
       padding: 0px 8px 4px 8px;
       border: none;
@@ -73,7 +73,7 @@
       font-size: 16px;
       letter-spacing: 1px;
   }
-  
+
   #msform input:focus, #msform textarea:focus {
       -moz-box-shadow: none !important;
       -webkit-box-shadow: none !important;
@@ -83,7 +83,7 @@
       border-bottom: 2px solid skyblue;
       outline-width: 0;
   }
-  
+
   /*Blue Buttons*/
   #msform .action-button {
       width: 100px;
@@ -96,11 +96,11 @@
       padding: 10px 5px;
       margin: 10px 5px;
   }
-  
+
   #msform .action-button:hover, #msform .action-button:focus {
       box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
   }
-  
+
   /*Previous Buttons*/
   #msform .action-button-previous {
       width: 100px;
@@ -113,11 +113,11 @@
       padding: 10px 5px;
       margin: 10px 5px;
   }
-  
+
   #msform .action-button-previous:hover, #msform .action-button-previous:focus {
       box-shadow: 0 0 0 2px white, 0 0 0 3px #616161;
   }
-  
+
   /*Dropdown List Exp Date*/
   select.list-dt {
       border: none;
@@ -126,11 +126,11 @@
       padding: 2px 5px 3px 5px;
       margin: 2px;
   }
-  
+
   select.list-dt:focus {
       border-bottom: 2px solid skyblue;
   }
-  
+
   /*The background card*/
   .card {
       z-index: 0;
@@ -138,7 +138,7 @@
       border-radius: 0.5rem;
       position: relative;
   }
-  
+
   /*FieldSet headings*/
   .fs-title {
       font-size: 25px;
@@ -147,18 +147,18 @@
       font-weight: bold;
       text-align: left;
   }
-  
+
   /*progressbar*/
   #progressbar {
       margin-bottom: 30px;
       overflow: hidden;
       color: lightgrey;
   }
-  
+
   #progressbar .active {
       color: #000000;
   }
-  
+
   #progressbar li {
       list-style-type: none;
       font-size: 12px;
@@ -166,28 +166,28 @@
       float: left;
       position: relative;
   }
-  
+
   /* Icons in the ProgressBar */
   #progressbar #upload:before {
       padding-top: 5px;
       content: url({% static "repository/table-solid.png" %});
   }
-  
+
   #progressbar #csv:before {
       padding-top: 5px;
       content: url({% static "repository/file-csv-solid.png" %});
   }
-  
+
   #progressbar #tokenize:before {
     padding-top: 5px;
     content: url({% static "repository/fa-fa-cogs.png" %});
   }
-  
+
   #progressbar #ids:before {
     padding-top: 5px;
     content: url({% static "repository/download-solid.png" %});
   }
-  
+
   /*ProgressBar before any progress*/
   #progressbar li:before {
       width: 50px;
@@ -201,7 +201,7 @@
       margin: 0 auto 10px auto;
       padding: 2px;
   }
-  
+
   /*ProgressBar connectors*/
   #progressbar li:after {
       content: '';
@@ -213,18 +213,18 @@
       top: 25px;
       z-index: -1;
   }
-  
+
   /*Color number of the step and the connector before it*/
   #progressbar li.active:before, #progressbar li.active:after {
       background: #ff5708;
   }
-  
+
   /*Imaged Radio Buttons*/
   .radio-group {
       position: relative;
       margin-bottom: 25px;
   }
-  
+
   .radio {
       display:inline-block;
       width: 204;
@@ -234,17 +234,17 @@
       box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
       box-sizing: border-box;
       cursor:pointer;
-      margin: 8px 2px; 
+      margin: 8px 2px;
   }
-  
+
   .radio:hover {
       box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
   }
-  
+
   .radio.selected {
       box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
   }
-  
+
   /*Fit image in bootstrap div*/
   .fit-image{
       width: 100%;
@@ -274,7 +274,7 @@
   // Fetch request to backend with authorization header
   async function curesDevSubmit(data) {
     await new Promise(r => setTimeout(r, 0));
-    const response = await fetch("http://localhost:8000/v2/submit/",
+    const response = await fetch("/v2/submit/",
       {
         method: "POST",
         headers: {
@@ -349,7 +349,7 @@
         // Fill rows
         for (var i = 1; i < rows.length; i++) {
           var cells = rows[i].split(",");
-          
+
           self.clientIDs.push(cells[idColumnIndex]);
 
           cells = knownColumnIndices.map((index) => {
@@ -386,7 +386,7 @@
             }
           }).join("");
         }
-        
+
         tr += "</tr>";
         return tr;
       }).join("");
@@ -406,7 +406,7 @@
     },
     uploadTokens: async function() {
       this.uploading = true;
-      
+
       this.ids = [];
       for (let row of this.tokens) {
         let requestData = {};

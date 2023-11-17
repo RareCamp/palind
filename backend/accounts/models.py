@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField("email address", unique=True)
     picture = models.ImageField(upload_to="profile_pictures", null=True, blank=True)
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="users"
+        Organization, on_delete=models.CASCADE, related_name="users", null=True
     )
 
     USERNAME_FIELD = "email"
