@@ -287,22 +287,8 @@
     return await response.json();
   }
 
-  async function curesDevUploadTokens(tokens, parsedColumns) {
-    const ids = tokens.map(async (row) => {
-      let requestData = {};
-      row.forEach((token, index) => {
-        requestData[parsedColumns[index]] = token;
-      });
-      const response = await curesDevSubmit(requestData);
-      return response.public_id;
-    });
-    return ids;
-  }
-
   let data = {
     fileUploaded: false,
-    tokenizing: false,
-    tokenized: false,
     uploading: false,
     uploaded: false,
     tableHeader: [],
@@ -391,9 +377,10 @@
         return tr;
       }).join("");
     },
-    tokenize: async function() {
-      this.tokenizing = true;
+    uploadTokens: async function() {
+      this.uploading = true;
 
+      // Tokenize
       this.tokens = [];
       for (let row of this.rows) {
         this.tokens.push(await Promise.all(row.map(async (cell) => {
@@ -401,11 +388,6 @@
         })));
         this.rowsHtml = this.formatRows();
       }
-      this.tokenized = true;
-      this.tokenizing = false;
-    },
-    uploadTokens: async function() {
-      this.uploading = true;
 
       this.ids = [];
       for (let row of this.tokens) {
@@ -418,7 +400,20 @@
         this.tableHeader = this.tableHeader.slice(0, 1);
         this.rowsHtml = this.formatRows();
       }
+
+      this.uploading = false;
       this.uploaded = true;
+    },
+    downloadIDs() {
+      let csvContent = "data:text/csv;charset=utf-8," + "id,curesdev_id\n" +
+        this.ids.map((id, index) => { return this.clientIDs[index] + "," + id; }).join("\n");
+
+      let encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "curesdev_ids.csv");
+      document.body.appendChild(link);
+      link.click();
     },
   };
 </script>
@@ -445,12 +440,14 @@
             or drag and drop files here
             </p>
 
-            <!-- alert -->
-            <div class="alert-message alert-primary" style="margin-left: 10%; margin-right: 10%; margin-bottom: 40px; width: 80%">
-              <i class="fa fa-info-circle" aria-hidden="true"></i>
-              &nbsp;
-              The CSV data will not be uploaded to CuresDev,
+            <div class="alert alert-primary" role="alert" style="margin-left: 10%; margin-right: 10%; margin-bottom: 40px; margin-top: 30px; width: 80%">
+              <div class="alert-icon">
+                <i class="fa fa-info-circle"></i>
+              </div>
+              <div class="alert-message">
+                The CSV data will not be uploaded to CuresDev,
               only the tokenized data will be sent.
+              </div>
             </div>
           </div>
         </div>
@@ -459,17 +456,17 @@
       <div class="text-end mb-3">
         <button
           x-cloak
-          x-show="fileUploaded && !tokenized"
-          @click="await tokenize()"
+          x-show="fileUploaded && !(uploading || uploaded)"
+          @click="await uploadTokens()"
           style="margin-left: 1rem"
           class="btn btn-primary btn-lg ml-2">
             <i class="fa fa-cogs" aria-hidden="true"></i>
             &nbsp;
-            Tokenize
+            Generate
       </button>
         <a
           x-cloak
-          x-show="fileUploaded && !tokenized"
+          x-show="fileUploaded && !(uploading || uploaded)"
           href="{% url 'dataset_upload_csv' dataset.pk %}"
           type="button"
           style="margin-left: 1rem"
@@ -478,32 +475,40 @@
             &nbsp;
             Load another CSV
         </a>
-        <button
-          x-cloak
-          x-show="(tokenizing || tokenized) && !uploading"
-          @click="await uploadTokens()" type="button"
-          class="btn btn-primary btn-lg"
-          style="margin-left: 1rem"
-          :disabled="!tokenized">
-            <i class="fa fa-upload" aria-hidden="true"></i>
-            &nbsp;
-            Upload tokens
-        </button>
       </div>
 
-      <div x-cloak x-show="uploaded" class="alert alert-success alert-dismissible" role="alert">
+      <div x-cloak x-show="uploading" class="alert alert-info" role="alert">
+        <div class="alert-icon">
+          <div class="spinner-border spinner-border-sm" role="status"></div>
+        </div>
+        <div class="alert-message">
+          Uploading tokens
+          <span x-text="ids.length"></span>
+          /
+          <span x-text="rows.length"></span>
+        </div>
+      </div>
+
+      <div x-cloak x-show="uploaded" class="alert alert-success" role="alert">
         <div class="alert-icon">
           <i class="fa-solid fa-check"></i>
         </div>
         <div class="alert-message">
-          All tokens uploaded successfully! Go back to dataset <strong><a href="{% url 'dataset_detail' dataset.pk %}">{{ dataset.name }}</a></strong>.
+          All tokens uploaded successfully!
+          <br>
+          <br>
+          <button class="btn btn-primary" @click="downloadIDs">
+            <i class="fa fa-download" aria-hidden="true"></i>
+            &nbsp;
+            Download the mapping ID <-> CuresDev ID
+          </button>
         </div>
       </div>
 
       <!-- Summary of CSV parsing -->
       <div class="row" x-show="false">
         <div class="col">
-          <div x-cloak x-show="rows && fileUploaded && !tokenized" class="alert alert-info" role="alert">
+          <div x-cloak x-show="rows && fileUploaded" class="alert alert-info" role="alert">
             <p>Loaded <b x-text="rows.length"></b> records. Columns parsed:</p>
             <ul>
               <template x-for="(head, index) in parsedColumns" :key="head">
@@ -513,7 +518,7 @@
           </div>
         </div>
         <div class="col">
-          <div x-cloak x-show="ignoredColumns && fileUploaded && !tokenized" class="alert alert-danger" role="alert">
+          <div x-cloak x-show="ignoredColumns && fileUploaded" class="alert alert-danger" role="alert">
             <p>Ignored the following columns:</p>
             <ul>
               <template x-for="(head, index) in ignoredColumns" :key="head">
