@@ -536,22 +536,22 @@
           <thead>
             <tr>
               <th>Column</th>
-              <th>Field</th>
+              <th>Required</th>
               <th>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><code>ID</code></td>
-              <td>Unique identifier</td>
-              <td>After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
+              <td>required</td>
+              <td>Unique identifier for each record. After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
             </tr>
             {% for field in fields %}
               <tr>
                 <td>
                   <code>{{ field.field }}</code>
                 </td>
-                <td>{{ field.name }}</td>
+                <td>{{ field.required }}</td>
                 <td>{{ field.description }}</td>
               </tr>
             {% endfor %}
@@ -576,4 +576,3 @@
   </div>
 </div>
 {% endblock content %}
-

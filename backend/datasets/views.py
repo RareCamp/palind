@@ -103,6 +103,7 @@ class DatasetUploadCSV(LoginRequiredMixin, DetailView):
                 "field": f.name.replace("_token", ""),
                 "name": f.verbose_name,
                 "description": f.help_text,
+                "required": "" if f.blank else "required",
             }
             for f in Submission._meta.get_fields()
             if f.name.endswith("_token")
