@@ -67,7 +67,6 @@
       <table class="table table-responsive table-striped" style="width:100%">
         <thead>
           <tr>
-            <th>#</th>
             <th>ID</th>
             <th>Created</th>
           </tr>
@@ -75,7 +74,6 @@
         <tbody>
           {% for patient in dataset.datasetpatient_set.all %}
             <tr>
-              <td>{{ forloop.counter }}</td>
               <td>{{ patient.public_id }}</td>
               <td>{{ patient.created_at }}</td>
             </tr>
