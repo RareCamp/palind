@@ -76,11 +76,13 @@
             <i class="align-middle" data-feather="database"></i> <span class="align-middle">Datasets</span>
           </a>
         </li>
+        {% comment %}
         <li class="sidebar-item">
           <a class="sidebar-link" href="#">
             <i class="align-middle" data-feather="git-merge"></i> <span class="align-middle">Crosswalk</span>
           </a>
         </li>
+        {% endcomment %}
         {% if request.user.is_superuser %}
           <li class="sidebar-header">ADMIN</li>
           <li class="sidebar-item">
