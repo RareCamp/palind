@@ -1,12 +1,12 @@
 <script>
   function sanitize(s) {
     s = s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    s = s.replace(/[^a-zA-Z]/gi, '');
+    s = s.replace(/[^a-zA-Z]/gi, "");
     s = s.toLowerCase();
     return s;
   }
 
-  function qgrams(s, q=2) {
+  function qgrams(s, q = 2) {
     if (s.length <= q) {
       return [s];
     }
@@ -17,18 +17,22 @@
     return result;
   }
 
-  function bloomFilter(chunks, length=1024, eps=2) {
+  function bloomFilter(chunks, length = 1024, eps = 2) {
     let bf = new Array(length).fill(false);
-    chunks.forEach(async chunk => {
-      console.log("N hashes: " + Math.round(Math.log(2)*length/chunks.length), "nchunnks: " + chunks.length);
-      for (var i = 0; i < Math.round(Math.log(2)*length/chunks.length); i++) {
+    chunks.forEach(async (chunk) => {
+      //console.log("N hashes: " + Math.round(Math.log(2)*length/chunks.length), "nchunnks: " + chunks.length);
+      for (
+        var i = 0;
+        i < Math.round((Math.log(2) * length) / chunks.length);
+        i++
+      ) {
         let index = parseInt(SHA256(chunk + "#" + i).slice(0, 10), 16) % length;
         bf[index] = true;
-        console.log(index, parseInt(SHA256(chunk + "#" + i).slice(0, 10), 16));
+        //console.log(index, parseInt(SHA256(chunk + "#" + i).slice(0, 10), 16));
       }
     });
     for (var i = 0; i < length; i++) {
-      if (Math.random() < (1 / (1 + Math.exp(eps)))) {
+      if (Math.random() < 1 / (1 + Math.exp(eps))) {
         bf[i] = !bf[i];
       }
     }

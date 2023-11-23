@@ -273,7 +273,7 @@
 <script>
   // Fetch request to backend with authorization header
   async function curesDevSubmit(data) {
-    await new Promise(r => setTimeout(r, 0));
+    //await new Promise(r => setTimeout(r, 0));
     const response = await fetch("/v2/submit/",
       {
         method: "POST",
@@ -289,74 +289,98 @@
 
   let data = {
     fileUploaded: false,
+    fileValid: false,
     uploading: false,
     uploaded: false,
     tableHeader: [],
-    parsedColumns: [],
-    ignoredColumns: [],
     clientIDs: [],
     rows: [],
     tokens: [],
     ids: [],
-    fields: { {% for field in fields %}"{{ field.field }}": "{{ field.name }}",{% endfor %} },
+    fields: { "id": "ID", {% for field in fields %}"{{ field.field }}": "{{ field.name }}",{% endfor %} },
+    nRequiredFields: -1,
     columns: [],
+    errors: [],
     rowsHtml: "",
+    formatErrors() {
+      let html = "<ul>";
+      this.errors.forEach(error => {
+        html += `<li>${error}</li>`;
+      });
+      html += "</ul>";
+      return html;
+    },
     chooseFile(file) {
       var reader = new FileReader();
       self = this;
+      this.errors = [];
       reader.onload = (e) => {
-        var rows = e.target.result.split("\n");
+        var rows = e.target.result.trim().split("\n");
         self.rows = [];
         self.clientIDs = [];
         self.rowsHtml = "";
 
-        // Get indices of known columns
+        // The first columns are fixed: "id" and the required fields
+        self.columns = ["id"{% for field in fields %}{% if field.required %}, "{{ field.field }}"{% endif %}{% endfor %}];
+        self.nRequiredFields = self.columns.length;
+
         const headerRow = rows[0].split(",");
-        let knownColumnIndices = [];
-        let idColumnIndex = -1;
-        for (let i = 0; i < headerRow.length; i++) {
-          if (headerRow[i] in self.fields) {
-            knownColumnIndices.push(i);
-            this.parsedColumns.push(headerRow[i]);
-          }
-          else if (headerRow[i] == "id") {
-            idColumnIndex = i;
-          }
-          else {
-            this.ignoredColumns.push(headerRow[i]);
+
+        // Add error messages for missing required columns
+        for (let i = 0; i < self.columns.length; i++) {
+          if (!headerRow.includes(self.columns[i])) {
+            self.errors.push(`Missing column <code>${self.columns[i]}</code>`);
           }
         }
 
-        // Set table header
-        self.tableHeader = ["ID"].concat(knownColumnIndices.map((index) => {
-          return self.fields[headerRow[index]];
-        }));
+        // Then, we add those fields that are also present in the CSV
+        self.columns = self.columns.concat(Object.keys(self.fields).filter(field => headerRow.includes(field) && !(self.columns.includes(field))));
+        const columnIndices = self.columns.map(col_name => headerRow.indexOf(col_name));
 
-        // Fill rows
+        // Check if there is any unkown extra column
+        self.errors = self.errors.concat(headerRow.filter(col_name => !(col_name in self.fields)).map(col_name => `Unknown column <code>${col_name}</code>`));
+
+        // Set table header and fill rows
+        self.tableHeader = self.columns.map(col_name => self.fields[col_name]);
         for (var i = 1; i < rows.length; i++) {
+          // Split the row into cells
           var cells = rows[i].split(",");
 
-          self.clientIDs.push(cells[idColumnIndex]);
+          // Save the client ID, which is the column with first index
+          self.clientIDs.push(cells[columnIndices[0]]);
 
-          cells = knownColumnIndices.map((index) => {
-            return cells[index];
-          });
-          if (cells.every((cell) => cell !== undefined)) {
-            self.rows.push(cells);
-          }
+          // Get the cells in the correct order, skipping the `id` column
+          cells = columnIndices.slice(1).map(index => cells[index] ?? "");
+
+          // Ignore row if all values are undefined
+          self.rows.push(cells);
         }
         self.rowsHtml = self.formatRows();
+      
+        /*
+        if (self.clientIDs.includes(undefined)) {
+          self.errors.push("Missing field <code>id</code> for some record.");
+        }
+        */
+
+        self.fileUploaded = true;
+        if (self.errors.length === 0) {
+          self.fileValid = true;
+        }      
       };
       reader.readAsText(file);
-
-
-      this.fileUploaded = true;
     },
     formatRows() {
       let ids = this.ids;
       return this.rows.map((row, index) => {
+        let clientID = this.clientIDs[index];
+        let classMissingClientID = "";
+        if (clientID === undefined) {
+          clientID = "";
+          classMissingClientID = `class="table-danger"`;
+        }
         let tr = "<tr>";
-        tr += "<td>" + this.clientIDs[index] + "</td>";
+        tr += `<td ${classMissingClientID}>${clientID}</td>`;
         if (index < ids.length) {
           let id_bolded = ids[index].slice(0, -4) + "<b>" + ids[index].slice(-4) + "</b>";
           tr += "<td class='font-monospace' colspan=" + (row.length+1) + "><a href=''>" + id_bolded + "</a></td>";
@@ -368,7 +392,11 @@
               return "<td class='font-monospace'>" + token_summary + "…</td>";
             }
             else {
-              return "<td>" + cell + "</td>";
+              let classMissingRequiredField = "";
+              if (cell === "" && j+1 < this.nRequiredFields) {
+                classMissingRequiredField = `class="table-danger"`;
+              }
+              return `<td ${classMissingRequiredField}>${cell}</td>`;
             }
           }).join("");
         }
@@ -393,7 +421,7 @@
       for (let row of this.tokens) {
         let requestData = {};
         row.forEach((token, index) => {
-          requestData[this.parsedColumns[index] + "_token"] = token.map(bit => bit ? "1" : "0").join("");
+          requestData[this.columns[index] + "_token"] = token.map(bit => bit ? "1" : "0").join("");
         });
         const response = await curesDevSubmit(requestData);
         this.ids.push(response.public_id);
@@ -459,7 +487,9 @@
           x-show="fileUploaded && !(uploading || uploaded)"
           @click="await uploadTokens()"
           style="margin-left: 1rem"
-          class="btn btn-primary btn-lg ml-2">
+          class="btn btn-primary btn-lg ml-2"
+          x-bind:disabled="!fileValid"
+          >
             <i class="fa fa-cogs" aria-hidden="true"></i>
             &nbsp;
             Generate
@@ -475,6 +505,16 @@
             &nbsp;
             Load another CSV
         </a>
+      </div>
+
+      <div x-cloak x-show="errors.length > 0" class="alert alert-danger" role="alert">
+        <div class="alert-icon">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <div class="alert-message">
+          <p>The file contains the following errors:</p>
+          <div x-html="formatErrors"></div>
+        </div>
       </div>
 
       <div x-cloak x-show="uploading" class="alert alert-info" role="alert">
@@ -505,30 +545,6 @@
         </div>
       </div>
 
-      <!-- Summary of CSV parsing -->
-      <div class="row" x-show="false">
-        <div class="col">
-          <div x-cloak x-show="rows && fileUploaded" class="alert alert-info" role="alert">
-            <p>Loaded <b x-text="rows.length"></b> records. Columns parsed:</p>
-            <ul>
-              <template x-for="(head, index) in parsedColumns" :key="head">
-                <li><code x-text="head"></code></li>
-              </template>
-            </ul>
-          </div>
-        </div>
-        <div class="col">
-          <div x-cloak x-show="ignoredColumns && fileUploaded" class="alert alert-danger" role="alert">
-            <p>Ignored the following columns:</p>
-            <ul>
-              <template x-for="(head, index) in ignoredColumns" :key="head">
-                <li><code x-text="head"></code></li>
-              </template>
-            </ul>
-          </div>
-        </div>
-      </div>
-
       <!-- Instructions -->
       <div x-cloak x-show="!fileUploaded">
         <h4 style="margin: 40px 0">Upload a CSV file with the following fields</h4>
@@ -542,7 +558,7 @@
           </thead>
           <tbody>
             <tr>
-              <td><code>ID</code></td>
+              <td><code>id</code></td>
               <td>required</td>
               <td>Unique identifier for each record. After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
             </tr>
@@ -563,7 +579,7 @@
       <table class="table" x-cloak x-show="fileUploaded">
         <thead>
           <tr>
-            <template x-for="(head, index) in tableHeader" :key="head">
+            <template x-for="(head, index) in tableHeader" :key="index">
               <th x-text="head"></th>
             </template>
             <th x-show="uploaded">CuresDev ID</th>

@@ -170,7 +170,7 @@ class SubmitView(View):
             full_name_token=data.get("full_name_token", ""),
             first_name_soundex_token=data.get("first_name_soundex_token", ""),
             last_name_soundex_token=data.get("last_name_soundex_token", ""),
-            gender_token=data.get("gender_token", ""),
+            sex_at_birth_token=data.get("sex_at_birth_token", ""),
             date_of_birth_token=data.get("date_of_birth_token", ""),
             address_at_bith_token=data.get("address_at_bith_token", ""),
             city_at_birth_token=data.get("city_at_birth_token", ""),

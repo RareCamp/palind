@@ -184,11 +184,11 @@ class Submission(models.Model):
         verbose_name="Last name soundex",
     )
 
-    gender_token = models.CharField(
+    sex_at_birth_token = models.CharField(
         max_length=1024,
-        blank=True,
+        blank=False,
         validators=[MinLengthValidator(1024)],
-        verbose_name="Gender",
+        verbose_name="Sex at birth",
         help_text="M or F",
     )
 
