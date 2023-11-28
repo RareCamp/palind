@@ -15,10 +15,12 @@
           <h3>
             <strong>{{ dataset.name }}</strong>
           </h3>
-          <span class="badge bg-primary">
-            {{ dataset.organization.name }}
-          </span>
-          &nbsp;
+          {% if dataset.organization %}
+            <span class="badge bg-primary">
+              {{ dataset.organization.name }}
+            </span>
+            &nbsp;
+          {% endif %}
           <span class="badge bg-success">
             Public
           </span>

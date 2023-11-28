@@ -53,7 +53,9 @@ class Dataset(models.Model):
 
     public = models.BooleanField(default=True)
 
-    organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE)
+    organization = models.ForeignKey(
+        "accounts.Organization", on_delete=models.CASCADE, null=True
+    )
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     api_token = models.CharField(max_length=36, default=uuid.uuid4, editable=False)
@@ -134,6 +136,8 @@ class Submission(models.Model):
 
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     dataset_patient = models.ForeignKey(DatasetPatient, on_delete=models.CASCADE)
+
+    disease = models.CharField(max_length=200, blank=True)
 
     #
     # Tokens

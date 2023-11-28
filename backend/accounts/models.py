@@ -1,5 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from datasets.models import Dataset
+
 
 from .managers import CustomUserManager
 
@@ -20,6 +25,12 @@ class CustomUser(AbstractUser):
         Organization, on_delete=models.CASCADE, related_name="users", null=True
     )
 
+    default_dataset = models.ForeignKey(
+        Dataset, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    is_prevalence_counting_user = models.BooleanField(default=False)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -35,3 +46,14 @@ class CustomUser(AbstractUser):
 
     class Meta:
         verbose_name = "User"
+
+
+@receiver(post_save, sender=CustomUser)
+def create_default_dataset(sender, instance, created, **kwargs):
+    if instance.default_dataset is None:
+        instance.default_dataset = Dataset.objects.create(
+            name="Default dataset",
+            description="Dataset for prevalence counting.",
+            created_by=instance,
+        )
+        instance.save()

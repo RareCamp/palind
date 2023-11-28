@@ -287,7 +287,22 @@
     return await response.json();
   }
 
+  const REQUIRED_FIELDS = [
+    {% if request.user.is_prevalence_counting_user %}
+      "disease_id",
+    {% else %}
+      "id",
+    {% endif %}
+
+    {% for field in fields %}
+      {% if field.required %}
+        "{{ field.field }}",
+      {% endif %}
+    {% endfor %}
+  ];
+
   let data = {
+    hideIDMapping: {{ request.user.is_prevalence_counting_user|lower }},
     fileUploaded: false,
     fileValid: false,
     uploading: false,
@@ -297,8 +312,14 @@
     rows: [],
     tokens: [],
     ids: [],
-    fields: { "id": "ID", {% for field in fields %}"{{ field.field }}": "{{ field.name }}",{% endfor %} },
-    nRequiredFields: -1,
+    fields: {
+      "id": "ID",
+      "disease_id": "Disease ID",
+      {% for field in fields %}
+        "{{ field.field }}": "{{ field.name }}",
+      {% endfor %}
+    },
+    nRequiredFields: REQUIRED_FIELDS.length,
     columns: [],
     errors: [],
     rowsHtml: "",
@@ -320,9 +341,8 @@
         self.clientIDs = [];
         self.rowsHtml = "";
 
-        // The first columns are fixed: "id" and the required fields
-        self.columns = ["id"{% for field in fields %}{% if field.required %}, "{{ field.field }}"{% endif %}{% endfor %}];
-        self.nRequiredFields = self.columns.length;
+        // The first columns are fixed: the required fields
+        self.columns = REQUIRED_FIELDS;
 
         const headerRow = rows[0].split(",");
 
@@ -349,8 +369,8 @@
           // Save the client ID, which is the column with first index
           self.clientIDs.push(cells[columnIndices[0]]);
 
-          // Get the cells in the correct order, skipping the `id` column
-          cells = columnIndices.slice(1).map(index => cells[index] ?? "");
+          // Get the cells in the correct order, skipping the `id` column FIXME
+          cells = columnIndices.slice(0).map(index => cells[index] ?? "");
 
           // Ignore row if all values are undefined
           self.rows.push(cells);
@@ -411,17 +431,29 @@
       // Tokenize
       this.tokens = [];
       for (let row of this.rows) {
-        this.tokens.push(await Promise.all(row.map(async (cell) => {
+        this.tokens.push(await Promise.all(row.map(async (cell, col) => {
           return await curesDevTokenize(cell);
         })));
         this.rowsHtml = this.formatRows();
       }
 
       this.ids = [];
-      for (let row of this.tokens) {
+      for (let i = 0; i < this.tokens.length; i++) {
+        let row = this.tokens[i];
         let requestData = {};
         row.forEach((token, index) => {
-          requestData[this.columns[index] + "_token"] = token.map(bit => bit ? "1" : "0").join("");
+          if (this.columns[index] === "id") {
+            // Do not upload the ID
+            return;
+          }
+          else if (this.columns[index] === "disease_id") {
+            // Upload the disease ID as is
+            requestData[this.columns[index]] = this.rows[i][index];
+            return;
+          }
+          else {
+            requestData[this.columns[index] + "_token"] = token.map(bit => bit ? "1" : "0").join("");
+          }
         });
         const response = await curesDevSubmit(requestData);
         this.ids.push(response.public_id);
@@ -535,13 +567,18 @@
         </div>
         <div class="alert-message">
           All tokens uploaded successfully!
-          <br>
-          <br>
-          <button class="btn btn-primary" @click="downloadIDs">
-            <i class="fa fa-download" aria-hidden="true"></i>
-            &nbsp;
-            Download the mapping ID <-> CuresDev ID
-          </button>
+          {% if request.user.is_prevalence_counting_user %}
+            <a href="{% url 'dataset_detail' dataset.pk %}">
+              Go back to the dataset</a>.
+          {% else %}
+            <br>
+            <br>
+            <button class="btn btn-primary" @click="downloadIDs">
+              <i class="fa fa-download" aria-hidden="true"></i>
+              &nbsp;
+              Download the mapping ID <-> CuresDev ID
+            </button>
+          {% endif %}
         </div>
       </div>
 
@@ -557,11 +594,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><code>id</code></td>
-              <td>required</td>
-              <td>Unique identifier for each record. After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
-            </tr>
+            {% if request.user.is_prevalence_counting_user %}
+              <tr>
+                <td><code>disease_id</code></td>
+                <td>required</td>
+                <td>Unique identifier of the disease from OMIM.</td>
+              </tr>
+            {% else %}
+              <tr>
+                <td><code>id</code></td>
+                <td>required</td>
+                <td>Unique identifier for each record. After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
+              </tr>
+            {% endif %}
             {% for field in fields %}
               <tr>
                 <td>
@@ -576,7 +621,7 @@
       </div>
 
       <!-- Table of CSV data -->
-      <table class="table" x-cloak x-show="fileUploaded">
+      <table class="table" x-cloak x-show="fileUploaded && !((uploading || uploaded) && hideIDMapping)">
         <thead>
           <tr>
             <template x-for="(head, index) in tableHeader" :key="index">

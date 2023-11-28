@@ -20,19 +20,42 @@ class CustomUserAdmin(UserAdmin):
         "organization",
         "is_staff",
         "is_active",
+        "is_prevalence_counting_user",
     )
     list_filter = (
         "organization",
         "is_active",
+        "is_prevalence_counting_user",
     )
     fieldsets = (
-        ("Login info", {"fields": ("email", "password", "is_active")}),
+        (
+            "Login info",
+            {
+                "fields": (
+                    "email",
+                    "password",
+                    "is_active",
+                    "is_prevalence_counting_user",
+                )
+            },
+        ),
         ("Organization", {"fields": ("organization",)}),
         ("Personal info", {"fields": ("first_name", "last_name", "picture")}),
         ("Permissions", {"fields": ("is_staff",)}),
     )
     add_fieldsets = (
-        ("Login info", {"fields": ("email", "password1", "password2", "is_active")}),
+        (
+            "Login info",
+            {
+                "fields": (
+                    "email",
+                    "password1",
+                    "password2",
+                    "is_active",
+                    "is_prevalence_counting_user",
+                )
+            },
+        ),
         ("Organization", {"fields": ("organization",)}),
         ("Personal info", {"fields": ("first_name", "last_name", "picture")}),
     )

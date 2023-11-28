@@ -4,6 +4,7 @@ from typing import Any, Dict
 import uuid
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -27,23 +28,23 @@ from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 #############
 
 
-class DatasetListView(LoginRequiredMixin, ListView):
+class AccessibleDatasetsMixin:
+    def get_queryset(self):
+        if self.request.user.is_prevalence_counting_user:
+            return Dataset.objects.filter(id=self.request.user.default_dataset.id)
+        return Dataset.objects.filter(organization__users=self.request.user)
+
+
+class DatasetListView(LoginRequiredMixin, AccessibleDatasetsMixin, ListView):
     model = Dataset
     template_name = "dashboard/dataset_list.html"
     context_object_name = "datasets"
 
-    def get_queryset(self):
-        return Dataset.objects.filter(organization__users=self.request.user)
 
-
-class DatasetDetailView(LoginRequiredMixin, DetailView):
+class DatasetDetailView(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
     model = Dataset
     template_name = "dashboard/dataset_detail.html"
     context_object_name = "dataset"
-
-    # Only allow users who are part of the organization to view it
-    def get_queryset(self):
-        return Dataset.objects.filter(organization__users=self.request.user)
 
 
 class DatasetCreateView(LoginRequiredMixin, CreateView):
@@ -58,13 +59,10 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class DatasetUpdateView(LoginRequiredMixin, UpdateView):
+class DatasetUpdateView(LoginRequiredMixin, AccessibleDatasetsMixin, UpdateView):
     model = Dataset
     template_name = "dashboard/dataset_update.html"
     fields = ["name", "description", "tags"]
-
-    def get_queryset(self):
-        return Dataset.objects.filter(organization=self.request.user.organization)
 
     def form_valid(self, form):
         form.instance.public = True  # TODO: remove this
@@ -88,13 +86,10 @@ class DatasetDeleteView(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DatasetUploadCSV(LoginRequiredMixin, DetailView):
+class DatasetUploadCSV(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
     model = Dataset
     template_name = "dashboard/dataset_upload_csv.html"
     context_object_name = "dataset"
-
-    def get_queryset(self):
-        return Dataset.objects.filter(organization=self.request.user.organization)
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         data = super().get_context_data(**kwargs)
@@ -154,16 +149,17 @@ class SubmitView(View):
 
         # Find dataset with this token
         try:
-            print(token)
             dataset = Dataset.objects.get(api_token=token)
         except:
             return HttpResponse(status=401, content="Invalid token")
 
         # Create submission
         data = json.loads(request.body.decode("utf-8"))
+        print("Data received:", data)
         submission = Submission(
             protocol_version="1.0.0",
             dataset=dataset,
+            disease=data.get("disease_id", ""),
             first_name_token=data.get("first_name_token", ""),
             middle_name_token=data.get("middle_name_token", ""),
             last_name_token=data.get("last_name_token", ""),
@@ -187,7 +183,10 @@ class SubmitView(View):
         submission.dataset_patient = patient
         submission.save()
 
-        print(token, dataset)
+        # Do not return the patient id if the user is a prevalence counting user
+        if request.user.is_prevalence_counting_user:
+            return JsonResponse({"public_id": "hidden"})
+
         return JsonResponse({"public_id": patient.public_id.url()})
 
 
