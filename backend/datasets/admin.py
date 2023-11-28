@@ -33,6 +33,7 @@ class SubmissionAdmin(admin.ModelAdmin):
         "id",
         "created_at",
         "dataset",
+        "disease",
         "dataset_patient",
         "protocol_version",
     )
