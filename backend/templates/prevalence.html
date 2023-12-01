@@ -13,6 +13,7 @@
         font-weight: 400;
         font-size: 16px;
         line-height: 22px;
+        background: #F4F7FE;
     }
     .title {
         font-family: 'Open Sans', sans-serif;
@@ -33,6 +34,17 @@
         line-height: 24px;
         color: #5D6473;
         margin-bottom: 0;
+    }
+    .legend {
+        font-family: 'Epilogue', sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #464E5F;
+        display: inline-block;
+        white-space: nowrap;
+        margin-right: 10px;
+        margin-bottom: 10px;
     }
     .small {
         font-family: 'Epilogue', sans-serif;
@@ -55,6 +67,7 @@
         font-weight: 400;
         font-size: 12px;
         line-height: 20px;
+        margin-bottom: 0;
     }
     .links.blue {
         color: #2B3674;
@@ -83,11 +96,16 @@
         padding: 8px 10px;
         border-radius: 16px;
         border: 1px solid #DBDBDB;
+        background: #fff;
+    }
+    .search-box .btn {
+        background: #fff;
     }
     .search-box input.form-control {
         font-size: 18px;
         line-height: 18.45px;
         padding: 3px;
+        background: #fff;
     }
     .btn {
         font-family: 'Roboto', sans-serif;
@@ -111,6 +129,7 @@
     }
     .btn-outline-primary:hover {
         background: #CD4610;
+        border: 1px solid #CD4610;
     }
     .btn-outline-primary .fa-bell {
         color: #CD4610;
@@ -213,132 +232,169 @@
                 </div>
             </div>
 
-            <div class="row mb-6">
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="d-flex align-items-center">
-                                    <img src="{% static 'disease.png' %}" width="32" height="30" class="rounded-circle me-2">
-                                    <div class="flex-grow-1" style="margin-left: 20px">
-                                        <h5 class="subsubtitle">Diseases</h5>
-                                        <h1 class="mt-0 number-primary">2,382</h1>
-                                    </div>
+            <div class="row mb-4" style="align-items: stretch">
+                <div class="col-12 col-md-3 d-flex" style="flex-direction: column">
+                    <div class="card" style="flex-grow: 1">
+                        <div class="card-body d-flex" style="align-items: center">
+                            <div class="d-flex align-items-center">
+                                <img src="{% static 'disease.png' %}" width="32" height="30" class="rounded-circle me-2">
+                                <div class="flex-grow-1" style="margin-left: 20px">
+                                    <h5 class="subsubtitle">Diseases</h5>
+                                    <h1 class="mt-0 number-primary">2,382</h1>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="d-flex align-items-center">
-                                    <img src="{% static 'users.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                    <div class="flex-grow-1" style="margin-left: 20px">
-                                        <h5 class="subsubtitle">Total patients</h5>
-                                        <h1 class="mt-0 number-primary">5,234</h1>
-                                    </div>
+                    <div class="card" style="flex-grow: 1">
+                        <div class="card-body d-flex" style="align-items: center">
+                            <div class="d-flex align-items-center">
+                                <img src="{% static 'users.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                <div class="flex-grow-1" style="margin-left: 20px">
+                                    <h5 class="subsubtitle">Total patients</h5>
+                                    <h1 class="mt-0 mb-0 number-primary">5,234</h1>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <h3 class="subtitle">
-                        By Disease
-                    </h3>
-                    <canvas id="barPlot" class="p-2"></canvas>
-                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                    <script>
-                        var ctx = document.getElementById('barPlot').getContext('2d');
-                        var gradient = ctx.createLinearGradient(200, 0, 300, 0);
-                        gradient.addColorStop(0, '#EBA082');   
-                        gradient.addColorStop(1, '#CD4610');
-                        var myChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['ALS', 'Cystic fibrosis', 'Angelman syndrome', 'Gaucher Disease', 'Krabbe Disease'],
-                                datasets: [{
-                                    label: '# of Votes',
-                                    data: [63, 50, 40, 32, 25],
-                                    backgroundColor: gradient,
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                indexAxis: 'y',
-                                barThickness: 14,
-                                borderRadius: 7,
-                                plugins: {
-                                    legend: {
-                                        display: false,
-                                        position: 'bottom',
+                <div class="col-12 col-md-6 d-flex" style="flex-direction: column">
+                    <div class="card" style="flex-grow: 1">
+                        <div class="card-body">
+                            <h3 class="subtitle">
+                                By Disease
+                            </h3>
+                            <canvas id="barPlot" style="padding-right: 1rem"></canvas>
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                            <script>
+                                var ctx = document.getElementById('barPlot').getContext('2d');
+                                var gradient = ctx.createLinearGradient(200, 0, 300, 0);
+                                gradient.addColorStop(0, '#EBA082');   
+                                gradient.addColorStop(1, '#CD4610');
+                                Chart.defaults.color = "#464E5F";
+                                var myChart = new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['ALS', 'Cystic fibrosis', 'Angelman syndrome', 'Gaucher Disease', 'Krabbe Disease', 'Aarskog syndrome'],
+                                        datasets: [{
+                                            label: '# of Patients',
+                                            data: [63, 50, 40, 32, 25, 2],
+                                            backgroundColor: gradient,
+                                        }]
                                     },
-                                    title: {
-                                        display: false,
-                                        text: 'Data Source Distribution'
-                                    }
-                                }
-                            }
-                        });
-                    </script>
-                </div>
-                <div class="col-3">
-                    <h3 class="subtitle">
-                        By Source
-                    </h3>
-                    <canvas id="myChart" class="p-2"></canvas>
-                    <script>
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'pie',
-                            data: {
-                                labels: ['Genetic testing', 'Registry', 'Yellow'],
-                                datasets: [{
-                                    label: '# of Votes',
-                                    data: [63, 20, 17],
-                                    backgroundColor: [
-                                        '#cd4610',
-                                        '#eba082',
-                                        '#d5d9de',
-                                    ],
-                                    borderColor: [
-                                        '#cd4610',
-                                        '#eba082',
-                                        '#d5d9de',
-                                    ],
-                                    borderWidth: 1,
-                                    radius: '80%',
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'bottom',
-                                        labels: {
-                                            boxWidth: 12,
-                                            color: '#464E5F',
-                                            padding: 20,
-                                            font: {
-                                                size: 12,
-                                                family: "'Epilogue', sans-serif",
-                                                weight: 500,
+                                    options: {
+                                        responsive: true,
+                                        indexAxis: 'y',
+                                        barThickness: 14,
+                                        borderRadius: 7,
+                                        scales: {
+                                            y: {
+                                                ticks: {
+                                                    font: {
+                                                        size: 14,
+                                                        family: "'Epilogue', sans-serif",
+                                                        weight: 500,
+                                                    }
+                                                },
+                                                grid: {
+                                                    display: false
+                                                },
                                             },
+                                            x: {
+                                                border: {
+                                                    display: false
+                                                },
+                                            }
                                         },
-                                    },
-                                    title: {
-                                        display: false,
-                                        text: 'Data Source Distribution'
+                                        plugins: {
+                                            legend: {
+                                                display: false,
+                                                position: 'bottom',
+                                            },
+                                            title: {
+                                                display: false,
+                                                text: 'Data Source Distribution'
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        });
-                    </script>
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 d-flex" style="flex-direction: column">
+                    <div class="card" style="flex-grow: 1">
+                        <div class="card-body">
+                            <h3 class="subtitle">
+                                By Source
+                            </h3>
+                            <canvas id="myChart" class="p-2"></canvas>
+                            <script>
+                                var ctx = document.getElementById('myChart').getContext('2d');
+                                var myChart = new Chart(ctx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: ['Genetic testing', 'Registry', 'Patient reported'],
+                                        datasets: [{
+                                            label: '% of Patients',
+                                            data: [63, 20, 17],
+                                            backgroundColor: [
+                                                '#cd4610',
+                                                '#eba082',
+                                                '#d5d9de',
+                                            ],
+                                            borderColor: [
+                                                '#cd4610',
+                                                '#eba082',
+                                                '#d5d9de',
+                                            ],
+                                            borderWidth: 1,
+                                            radius: '80%',
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        plugins: {
+                                            legend: {
+                                                display: false,
+                                                position: 'bottom',
+                                                labels: {
+                                                    boxWidth: 12,
+                                                    color: '#464E5F',
+                                                    padding: 20,
+                                                    font: {
+                                                        size: 12,
+                                                        family: "'Epilogue', sans-serif",
+                                                        weight: 500,
+                                                    },
+                                                },
+                                            },
+                                            title: {
+                                                display: false,
+                                                text: 'Data Source Distribution'
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                            <span class="legend">
+                                <i class="fa-solid fa-square fa-lg orange"></i>
+                                Genetic testing
+                            </span>
+                            <span class="legend">
+                                <i class="fa-solid fa-square fa-lg" style="color: #eba082"></i>
+                                Registry
+                            </span>
+                            <span class="legend">
+                                <i class="fa-solid fa-square fa-lg" style="color: #d5d9de"></i>
+                                Patient reported
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -391,7 +447,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -443,7 +499,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -495,7 +551,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -547,7 +603,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -599,7 +655,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -651,7 +707,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -703,7 +759,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
