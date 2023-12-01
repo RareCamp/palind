@@ -22,6 +22,11 @@ from datasets.views import (
 urlpatterns = (
     [
         path("", RedirectView.as_view(url="/datasets"), name="home"),
+        path(
+            "prevalence/",
+            TemplateView.as_view(template_name="prevalence.html"),
+            name="prevalence",
+        ),
         # API: create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
         # Accounts

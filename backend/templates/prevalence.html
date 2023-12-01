@@ -1,0 +1,762 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700&family=Epilogue:wght@400;500&family=Inter:wght@500&family=Open+Sans:wght@600&family=Poppins:wght@500;600&family=Roboto&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Epilogue', sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 22px;
+    }
+    .title {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        font-size: 32px;
+        margin-bottom: 1rem;
+    }
+    .subtitle {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        color: #2B3674;
+        font-size: 20px;
+    }
+    .subsubtitle {
+        font-family: 'Epilogue', sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 24px;
+        color: #5D6473;
+        margin-bottom: 0;
+    }
+    .small {
+        font-family: 'Epilogue', sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #5D6473;
+        margin-bottom: 0;
+    }
+    .small-light {
+        font-family: 'Epilogue', sans-serif;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 20px;
+        color: #5D6473;
+        margin-bottom: 0;
+    }
+    .links {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 20px;
+    }
+    .links.blue {
+        color: #2B3674;
+    }
+    .number-primary {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        color: #2B3674;
+        font-size: 24px;
+    }
+    .number-secondary {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        color: #2B3674;
+        font-size: 20px;
+    }
+    .alert {
+        border-radius: 16px;
+        background: #F4E8E8;
+        margin-bottom: 1.2rem;
+    }
+    .orange {
+        color: #CD4610;
+    }
+    .search-box {
+        padding: 8px 10px;
+        border-radius: 16px;
+        border: 1px solid #DBDBDB;
+    }
+    .search-box input.form-control {
+        font-size: 18px;
+        line-height: 18.45px;
+        padding: 3px;
+    }
+    .btn {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        border-radius: 0;
+        padding: 8px 15px;
+    }
+    .btn-primary {
+        background: #CD4610;
+        border: 1px solid #CD4610;
+    }
+    .btn-primary:hover {
+        background: #b53e0e;
+        border: 1px solid #b53e0e;
+    }
+    .btn-outline-primary {
+        border: 1px solid #CD4610;
+        color: #000;
+    }
+    .btn-outline-primary:hover {
+        background: #CD4610;
+    }
+    .btn-outline-primary .fa-bell {
+        color: #CD4610;
+        transition-property: color;
+        transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
+    }
+    .btn-outline-primary:hover .fa-bell {
+        color: #fff;
+        transition-property: color;
+        transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
+    }
+    .badge {
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        padding: 6px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+    .badge-success-light {
+        background: #D0F5D5;
+        color: #42BD53;
+    }
+    .badge-warning-light {
+        background: #FFE4CC;
+        color: #A66932;
+    }
+    .badge-danger-light {
+        background: #FFCCCC;
+        color: #CD4610;
+    }
+</style>
+
+{% endblock extra_head %}
+
+{% block body %}
+
+<div class="container">
+
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+        <span class="sidebar-brand-text align-middle">
+            <img class="p-2" width="50" height="50" src="{% static 'img/curesdev_logo.png' %}" alt="CuresDev Logo">
+            <img class="p-2" height="30" src="{% static 'curesdev_name.svg' %}" alt="CuresDev">
+        </span>
+
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav navbar-align">
+                <li class="nav-item">
+                    <a href="#" class="btn btn-light">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item" style="margin-left: 5px">
+                    <a href="#" class="btn btn-light">
+                        Marketplace
+                    </a>
+                </li>
+                <li class="nav-item" style="margin-left: 8px">
+                    <a href="#" class="btn btn-primary">
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="content">
+        <div class="container-fluid p-0">
+
+            <div class="row mb-2 mb-xl-3">
+                <div class="col-auto d-none d-sm-block">
+                    <h1 class="title">Prevalence Dashboard</h1>
+                </div>
+
+                <div class="col-auto ms-auto text-end mt-n1">
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="fa-regular fa-bell fa-xl"></i>
+                        &nbsp;
+                        Notify
+                    </a>
+                </div>
+            </div>
+
+            <div class="row mb-1">
+                <div class="col-12">
+                    <div class="alert py-3 px-4" role="alert">
+                        <img width="53" height="53" src="{% static 'exclamation.png' %}" alt="Warning" style="margin-right: 12px">
+                        The dashboard is being actively built with new data sources added daily. The data presented here might not be fully accurate or peer reviewed. Contact us before using this data for decision making or marketing purposes.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="input-group input-group-navbar search-box">
+                        <button class="btn" type="button">
+                            <i class="fa-solid fa-magnifying-glass fa-xl orange"></i>
+                        </button>
+                        <input type="text" class="form-control" placeholder="Search by disease or gene name…" aria-label="Search" size="50">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'disease.png' %}" width="32" height="30" class="rounded-circle me-2">
+                                    <div class="flex-grow-1" style="margin-left: 20px">
+                                        <h5 class="subsubtitle">Diseases</h5>
+                                        <h1 class="mt-0 number-primary">2,382</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'users.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                    <div class="flex-grow-1" style="margin-left: 20px">
+                                        <h5 class="subsubtitle">Total patients</h5>
+                                        <h1 class="mt-0 number-primary">5,234</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h3 class="subtitle">
+                        By Disease
+                    </h3>
+                    <canvas id="barPlot" class="p-2"></canvas>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        var ctx = document.getElementById('barPlot').getContext('2d');
+                        var gradient = ctx.createLinearGradient(200, 0, 300, 0);
+                        gradient.addColorStop(0, '#EBA082');   
+                        gradient.addColorStop(1, '#CD4610');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['ALS', 'Cystic fibrosis', 'Angelman syndrome', 'Gaucher Disease', 'Krabbe Disease'],
+                                datasets: [{
+                                    label: '# of Votes',
+                                    data: [63, 50, 40, 32, 25],
+                                    backgroundColor: gradient,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                indexAxis: 'y',
+                                barThickness: 14,
+                                borderRadius: 7,
+                                plugins: {
+                                    legend: {
+                                        display: false,
+                                        position: 'bottom',
+                                    },
+                                    title: {
+                                        display: false,
+                                        text: 'Data Source Distribution'
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+                <div class="col-3">
+                    <h3 class="subtitle">
+                        By Source
+                    </h3>
+                    <canvas id="myChart" class="p-2"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: ['Genetic testing', 'Registry', 'Yellow'],
+                                datasets: [{
+                                    label: '# of Votes',
+                                    data: [63, 20, 17],
+                                    backgroundColor: [
+                                        '#cd4610',
+                                        '#eba082',
+                                        '#d5d9de',
+                                    ],
+                                    borderColor: [
+                                        '#cd4610',
+                                        '#eba082',
+                                        '#d5d9de',
+                                    ],
+                                    borderWidth: 1,
+                                    radius: '80%',
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            boxWidth: 12,
+                                            color: '#464E5F',
+                                            padding: 20,
+                                            font: {
+                                                size: 12,
+                                                family: "'Epilogue', sans-serif",
+                                                weight: 500,
+                                            },
+                                        },
+                                    },
+                                    title: {
+                                        display: false,
+                                        text: 'Data Source Distribution'
+                                    }
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">ALS</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        25,789
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        22
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-success-light">
+                                        High
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links">
+                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">Angelman syndrome</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        15,839
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        20
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-success-light">
+                                        High
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links">
+                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">Schnitzler syndrome</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        98
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        20
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-success-light">
+                                        High
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links">
+                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">Krabbe Disease</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        135
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        12
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-success-light">
+                                        High
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links">
+                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">Cystic fibrosis</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        21,128
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        12
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-success-light">
+                                        High
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links">
+                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">Aarskog syndrome</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        &lt; 100
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        4
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-warning-light">
+                                        Medium
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links blue">
+                                        Not available
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">SSMD</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        &lt; 50
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        20
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-danger-light">
+                                        Low
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links blue">
+                                        Not available
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="subsubtitle">Gaucher disease</h5>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col mt-0">
+                                    <h1 class="mt-1 mb-0 number-primary">
+                                        4,847
+                                    </h1>
+                                    <span class="small-light">Patients</span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6 mt-0">
+                                    <p class="mb-1 small">
+                                        Contributors
+                                    </p>
+                                    <h3 class="number-secondary">
+                                        19
+                                    </h3>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-2 small">
+                                        Confidence
+                                    </p>
+                                    <span class="badge badge-success-light">
+                                        High
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-0 small">
+                                        Other sources
+                                    </p>
+                                    <p class="links">
+                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock body %}
