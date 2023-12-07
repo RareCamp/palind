@@ -18,15 +18,12 @@ from datasets.views import (
     DatasetExportCSVView,
     merge_view,
 )
+from prevalence.views import PrevalenceView
 
 urlpatterns = (
     [
         path("", RedirectView.as_view(url="/datasets"), name="home"),
-        path(
-            "prevalence/",
-            TemplateView.as_view(template_name="prevalence.html"),
-            name="prevalence",
-        ),
+        path("prevalence/", PrevalenceView.as_view(), name="prevalence"),
         # API: create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
         # Accounts

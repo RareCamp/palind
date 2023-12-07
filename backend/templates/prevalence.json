@@ -1,0 +1,33 @@
+{
+    "summary": {
+        "totalDiseases": 4,
+        "totalPatients": 4,
+        "totalContributors": 4
+    },
+  "diseases": [
+    {
+      "name": "ALS",
+      "description": "Amyotrophic lateral sclerosis (ALS), also known as Lou Gehrig's disease and motor neuron disease (MND), is a specific disease which causes the death of neurons controlling voluntary muscles. Some also use the term motor neuron disease for a group of conditions of which ALS is the most common.",
+      "patients": 25789,
+      "bySource": [
+        {
+          "name": "Genetic testing",
+          "patients": 24789
+        },
+        {
+          "name": "Registry",
+          "patients": 1000
+        }
+      ],
+      "contributors": 22,
+      "confidence": "high",
+      "source": "Genetic testing",
+      "sources": [
+        {
+          "name": "Publication",
+          "url": "http://www.alsa.org/research/about-als-research/genetics-of-als.html"
+        }
+      ]
+    }
+  ]
+}

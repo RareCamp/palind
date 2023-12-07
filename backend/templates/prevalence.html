@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static humanize %}
 
 {% block extra_head %}
 
@@ -148,15 +148,15 @@
         border-radius: 12px;
         font-size: 12px;
     }
-    .badge-success-light {
+    .badge-high-light {
         background: #D0F5D5;
         color: #42BD53;
     }
-    .badge-warning-light {
+    .badge-medium-light {
         background: #FFE4CC;
         color: #A66932;
     }
-    .badge-danger-light {
+    .badge-low-light {
         background: #FFCCCC;
         color: #CD4610;
     }
@@ -232,7 +232,9 @@
                                 <img src="{% static 'disease.png' %}" width="32" height="30" class="rounded-circle me-2">
                                 <div class="flex-grow-1" style="margin-left: 20px">
                                     <h5 class="subsubtitle">Diseases</h5>
-                                    <h1 class="mt-0 number-primary">2,382</h1>
+                                    <h1 class="mt-0 number-primary">
+                                        {{ global_stats.n_diseases|intcomma }}
+                                    </h1>
                                 </div>
                             </div>
                         </div>
@@ -243,7 +245,9 @@
                                 <img src="{% static 'users.png' %}" width="24" height="24" class="rounded-circle me-2">
                                 <div class="flex-grow-1" style="margin-left: 20px">
                                     <h5 class="subsubtitle">Total patients</h5>
-                                    <h1 class="mt-0 mb-0 number-primary">5,234</h1>
+                                    <h1 class="mt-0 mb-0 number-primary">
+                                        {{ global_stats.n_patients|intcomma }}
+                                    </h1>
                                 </div>
                             </div>
                         </div>
@@ -254,7 +258,9 @@
                                 <img src="{% static 'users.png' %}" width="24" height="24" class="rounded-circle me-2">
                                 <div class="flex-grow-1" style="margin-left: 20px">
                                     <h5 class="subsubtitle">Contributors</h5>
-                                    <h1 class="mt-0 mb-0 number-primary">122</h1>
+                                    <h1 class="mt-0 mb-0 number-primary">
+                                        {{ global_stats.n_contributors|intcomma }}
+                                    </h1>
                                 </div>
                             </div>
                         </div>
@@ -270,17 +276,19 @@
                             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                             <script>
                                 var ctx = document.getElementById('barPlot').getContext('2d');
-                                var gradient = ctx.createLinearGradient(200, 0, 300, 0);
+                                var gradient = ctx.createLinearGradient(500, 0, 1500, 0);
                                 gradient.addColorStop(0, '#EBA082');
                                 gradient.addColorStop(1, '#CD4610');
                                 Chart.defaults.color = "#464E5F";
                                 var myChart = new Chart(ctx, {
                                     type: 'bar',
                                     data: {
-                                        labels: ['ALS', 'Cystic fibrosis', 'Angelman syndrome', 'Gaucher Disease', 'Krabbe Disease', 'Aarskog syndrome'],
+                                        labels: [{% for d in patients_by_disease %}'{{ d.disease.name }}',{% endfor %}],
+                                        //labels: ['ALS', 'Cystic fibrosis', 'Angelman syndrome', 'Gaucher Disease', 'Krabbe Disease', 'Aarskog syndrome'],
                                         datasets: [{
                                             label: '# of Patients',
-                                            data: [63, 50, 40, 32, 25, 2],
+                                            //data: [63, 50, 40, 32, 25, 2],
+                                            data: [{% for d in patients_by_disease %}{{ d.n_patients }},{% endfor %}],
                                             backgroundColor: gradient,
                                         }]
                                     },
@@ -336,10 +344,12 @@
                                 var myChart = new Chart(ctx, {
                                     type: 'pie',
                                     data: {
-                                        labels: ['Genetic testing', 'Registry', 'Patient reported'],
+                                        labels: [{% for source in patients_by_source %}'{{ source.name }}',{% endfor %}],
+                                        //labels: ['Genetic testing', 'Registry', 'Patient reported'],
                                         datasets: [{
                                             label: '% of Patients',
-                                            data: [63, 20, 17],
+                                            //data: [63, 20, 17],
+                                            data: [{% for source in patients_by_source %}{{ source.n_patients }},{% endfor %}],
                                             backgroundColor: [
                                                 '#cd4610',
                                                 '#eba082',
@@ -487,17 +497,20 @@
             </div>
 
             <div class="row">
+                {% for disease in diseases %}
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
                         <div class="card-body" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#defaultModalPrimary">
                             <div class="row">
-                                <h5 class="subsubtitle">ALS</h5>
+                                <h5 class="subsubtitle">
+                                    {{ disease.disease.name }}
+                                </h5>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col mt-0">
                                     <h1 class="mt-1 mb-0 number-primary">
-                                        25,789
+                                        {{ disease.n_patients|intcomma }}
                                     </h1>
                                     <span class="small-light">Patients</span>
                                 </div>
@@ -513,7 +526,7 @@
                                         Contributors
                                     </p>
                                     <h3 class="number-secondary">
-                                        22
+                                        {{ disease.n_contributors|intcomma }}
                                     </h3>
                                 </div>
 
@@ -521,8 +534,8 @@
                                     <p class="mb-2 small">
                                         Confidence
                                     </p>
-                                    <span class="badge badge-success-light">
-                                        High
+                                    <span class="badge badge-{{ disease.confidence }}-light">
+                                        {{ disease.confidence|capfirst }}
                                     </span>
                                 </div>
                             </div>
@@ -532,7 +545,9 @@
                                         Other sources
                                     </p>
                                     <p class="links">
-                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                        {% for source in disease.disease.urlsource_set.all %}
+                                            <a href="{{ source.url }}">{{ source.name }}</a>{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
                                     </p>
                                 </div>
                             </div>
@@ -540,370 +555,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">Angelman syndrome</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        15,839
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        20
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-success-light">
-                                        High
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links">
-                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">Schnitzler syndrome</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        98
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        20
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-success-light">
-                                        High
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links">
-                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">Krabbe Disease</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        135
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        12
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-success-light">
-                                        High
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links">
-                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">Cystic fibrosis</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        21,128
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        12
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-success-light">
-                                        High
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links">
-                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">Aarskog syndrome</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        &lt; 100
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        4
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-warning-light">
-                                        Medium
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links blue">
-                                        Not available
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">SSMD</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        &lt; 50
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        20
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-danger-light">
-                                        Low
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links blue">
-                                        Not available
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <h5 class="subsubtitle">Gaucher disease</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col mt-0">
-                                    <h1 class="mt-1 mb-0 number-primary">
-                                        4,847
-                                    </h1>
-                                    <span class="small-light">Patients</span>
-                                </div>
-
-                                <div class="col-auto">
-                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6 mt-0">
-                                    <p class="mb-1 small">
-                                        Contributors
-                                    </p>
-                                    <h3 class="number-secondary">
-                                        19
-                                    </h3>
-                                </div>
-
-                                <div class="col-6">
-                                    <p class="mb-2 small">
-                                        Confidence
-                                    </p>
-                                    <span class="badge badge-success-light">
-                                        High
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-0 small">
-                                        Other sources
-                                    </p>
-                                    <p class="links">
-                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </main>
