@@ -160,6 +160,9 @@
         background: #FFCCCC;
         color: #CD4610;
     }
+    .modal {
+        --bs-modal-width: 1000px;
+    }
 </style>
 
 {% endblock extra_head %}
@@ -393,10 +396,100 @@
                 </div>
             </div>
 
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="input-group input-group-navbar search-box">
+                        <button class="btn" type="button">
+                            <i class="fa-solid fa-magnifying-glass fa-xl orange"></i>
+                        </button>
+                        <input type="text" class="form-control" placeholder="Search by disease or gene name…" aria-label="Search" size="50">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="defaultModalPrimary" tabindex="-1" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header mt-2">
+                            <h1>Angelman Syndrome</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body m-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <p class="mb-0">
+                                        {% lorem %}
+                                    </p>
+                                    <h3>Contributors</h3>
+                                    <h3>Other sources</h3>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card">
+                                        <div class="card-body" style="cursor: pointer">
+                                            <div class="row">
+                                                <h5 class="subsubtitle">ALS</h5>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col mt-0">
+                                                    <h1 class="mt-1 mb-0 number-primary">
+                                                        25,789
+                                                    </h1>
+                                                    <span class="small-light">Patients</span>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <img src="{% static 'users_gray.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-6 mt-0">
+                                                    <p class="mb-1 small">
+                                                        Contributors
+                                                    </p>
+                                                    <h3 class="number-secondary">
+                                                        22
+                                                    </h3>
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <p class="mb-2 small">
+                                                        Confidence
+                                                    </p>
+                                                    <span class="badge badge-success-light">
+                                                        High
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <p class="mb-0 small">
+                                                        Other sources
+                                                    </p>
+                                                    <p class="links">
+                                                        <a href="#">Orphanet</a>, <a href="#">Publication</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        Last refreshed
+                                        <br>
+                                        Nov 10, 2023
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#defaultModalPrimary">
                             <div class="row">
                                 <h5 class="subsubtitle">ALS</h5>
                             </div>
@@ -443,7 +536,7 @@
                                     </p>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -815,4 +908,7 @@
         </div>
     </main>
 </div>
+
+<script src="https://demo.adminkit.io/js/app.js"></script>
+
 {% endblock body %}
