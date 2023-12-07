@@ -248,19 +248,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card" style="flex-grow: 1">
+                        <div class="card-body d-flex" style="align-items: center">
+                            <div class="d-flex align-items-center">
+                                <img src="{% static 'users.png' %}" width="24" height="24" class="rounded-circle me-2">
+                                <div class="flex-grow-1" style="margin-left: 20px">
+                                    <h5 class="subsubtitle">Contributors</h5>
+                                    <h1 class="mt-0 mb-0 number-primary">122</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-12 col-md-6 d-flex" style="flex-direction: column">
                     <div class="card" style="flex-grow: 1">
                         <div class="card-body">
                             <h3 class="subtitle">
-                                By Disease
+                                Patients by Disease
                             </h3>
-                            <canvas id="barPlot" style="padding-right: 1rem"></canvas>
+                            <canvas id="barPlot" style="padding-right: 1rem; height: 100%"></canvas>
                             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                             <script>
                                 var ctx = document.getElementById('barPlot').getContext('2d');
                                 var gradient = ctx.createLinearGradient(200, 0, 300, 0);
-                                gradient.addColorStop(0, '#EBA082');   
+                                gradient.addColorStop(0, '#EBA082');
                                 gradient.addColorStop(1, '#CD4610');
                                 Chart.defaults.color = "#464E5F";
                                 var myChart = new Chart(ctx, {
@@ -317,7 +328,7 @@
                     <div class="card" style="flex-grow: 1">
                         <div class="card-body">
                             <h3 class="subtitle">
-                                By Source
+                                Patients by Source
                             </h3>
                             <canvas id="myChart" class="p-2"></canvas>
                             <script>
