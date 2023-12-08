@@ -1,7 +1,10 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Max
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views import View
+from django.views.generic import TemplateView
 
 from .models import DiseaseStats, GlobalStats
 
@@ -77,3 +80,12 @@ class PrevalenceDataView(View):
         }
 
         return JsonResponse(data)
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class UpdatePrevalenceStatsView(TemplateView):
+    template_name = "update_prevalence.html"
+
+    def get(self, request, *args, **kwargs):
+        # TODO
+        return super().get(request, *args, **kwargs)

@@ -83,11 +83,24 @@
           </a>
         </li>
         {% endcomment %}
+        <li class="sidebar-header">PREVALENCE</li>
+        <li class="sidebar-item {% if "prevalence" in request.resolver_match.url_name %}active{% endif %}">
+          <a class="sidebar-link" href="{% url 'prevalence' %}">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span class="align-middle">Prevalence dashboard</span>
+          </a>
+        </li>
         {% if request.user.is_superuser %}
           <li class="sidebar-header">ADMIN</li>
           <li class="sidebar-item">
             <a class="sidebar-link" href="/admin">
               <i class="align-middle" data-feather="tool"></i> <span class="align-middle">Admin page</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="{% url 'prevalence_update' %}">
+              <i class="fa-solid fa-gears"></i>
+              <span class="align-middle">Update prevalence stats</span>
             </a>
           </li>
           <li class="sidebar-header">DEMO</li>
