@@ -74,6 +74,7 @@ class PrevalenceDataView(View):
         )
 
         data = {
+            "version": 0.1,
             "diseases": diseases,
             "summary": global_stats_data,
             "patients_by_source": patients_by_source,
