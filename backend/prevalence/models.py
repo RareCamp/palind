@@ -1,4 +1,9 @@
+import collections
+import itertools
+
 from django.db import models
+
+from datasets.models import DatasetPatient, are_similar
 
 
 class GlobalStats(models.Model):
@@ -27,7 +32,7 @@ class Disease(models.Model):
 
 class URLSource(models.Model):
     disease = models.ForeignKey(Disease, on_delete=models.CASCADE)
-    
+
     name = models.CharField(max_length=200)
     url = models.URLField(max_length=200)
 
@@ -47,3 +52,43 @@ class DiseaseStats(models.Model):
     confidence = models.CharField(
         max_length=20, choices=[("low", "low"), ("medium", "medium"), ("high", "high")]
     )
+
+
+def count_diseases_prevalence():
+    patients = collections.defaultdict(list)
+    unique_patients = collections.defaultdict(list)
+    contributors = collections.defaultdict(set)
+
+    for p in DatasetPatient.objects.all():
+        submission = p.submission_set.last()
+        disease = submission.disease
+        if disease:
+            patients[disease].append(submission)
+
+    for disease_name, disease_patients in patients.items():
+        disease, _ = Disease.objects.get_or_create(name=disease_name)
+
+        for p in disease_patients:
+            if not any(are_similar(p, up) for up in unique_patients[disease_name]):
+                unique_patients[disease_name].append(p)
+                contributors[disease_name].add(p.dataset.created_by.organization.pk)
+
+        DiseaseStats.objects.create(
+            disease=disease,
+            n_contributors=len(contributors[disease_name]),
+            n_patients=len(unique_patients[disease_name]),
+            confidence="low",  # TODO
+        )
+
+    gs = GlobalStats.objects.create(
+        n_diseases=len(unique_patients),
+        n_contributors=len(set(itertools.chain(*contributors.values()))),
+        n_patients=sum(len(v) for v in unique_patients.values()),
+    )
+
+    return {
+        "total_patients": sum(len(v) for v in patients.values()),
+        "unique_patients": gs.n_patients,
+        "contributors": gs.n_contributors,
+    }
+

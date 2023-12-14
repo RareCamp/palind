@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.views.generic import TemplateView
 
-from .models import DiseaseStats, GlobalStats
+from .models import DiseaseStats, GlobalStats, count_diseases_prevalence
 
 
 class PrevalenceView(TemplateView):
@@ -88,5 +88,5 @@ class UpdatePrevalenceStatsView(TemplateView):
     template_name = "update_prevalence.html"
 
     def get(self, request, *args, **kwargs):
-        # TODO
+        count_diseases_prevalence()
         return super().get(request, *args, **kwargs)

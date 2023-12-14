@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 
 from django.contrib.auth.models import User
 
-from .models import Dataset, Submission
+from .models import Dataset
 
 
 class TestSubmissionCreate(TestCase):

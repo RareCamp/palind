@@ -155,7 +155,7 @@ class SubmitView(View):
 
         # Create submission
         data = json.loads(request.body.decode("utf-8"))
-        print("Data received:", data)
+        # print("Data received:", data)
         submission = Submission(
             protocol_version="1.0.0",
             dataset=dataset,
