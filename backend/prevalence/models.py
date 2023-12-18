@@ -14,12 +14,20 @@ class GlobalStats(models.Model):
     n_contributors = models.PositiveIntegerField(default=0)
     n_patients = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        verbose_name = "   Global Stats"
+        verbose_name_plural = "   Global Stats"
+
 
 class PatientsBySource(models.Model):
     global_stats = models.ForeignKey(GlobalStats, on_delete=models.CASCADE)
 
     source = models.CharField(max_length=200)
     n_patients = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = " Patients by Source"
+        verbose_name_plural = " Patients by Source"
 
 
 class Disease(models.Model):
@@ -39,6 +47,9 @@ class URLSource(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "URL Source"
+
 
 class DiseaseStats(models.Model):
     disease = models.ForeignKey(Disease, on_delete=models.CASCADE)
@@ -53,6 +64,10 @@ class DiseaseStats(models.Model):
         max_length=20, choices=[("low", "low"), ("medium", "medium"), ("high", "high")]
     )
 
+    class Meta:
+        verbose_name = "  Disease Stats"
+        verbose_name_plural = "  Disease Stats"
+
 
 def count_diseases_prevalence():
     patients = collections.defaultdict(list)
@@ -61,9 +76,8 @@ def count_diseases_prevalence():
 
     for p in DatasetPatient.objects.all():
         submission = p.submission_set.last()
-        disease = submission.disease
-        if disease:
-            patients[disease].append(submission)
+        if submission.disease:
+            patients[submission.disease].append(submission)
 
     for disease_name, disease_patients in patients.items():
         disease, _ = Disease.objects.get_or_create(name=disease_name)
@@ -91,4 +105,3 @@ def count_diseases_prevalence():
         "unique_patients": gs.n_patients,
         "contributors": gs.n_contributors,
     }
-
