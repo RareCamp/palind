@@ -31,16 +31,17 @@
                     <p class="text-muted mb-2">
                       {{ dataset.description }}
                     </p>
-                    {% if dataset.tags or dataset.source %}
-                      <div class="mb-2">
-                        {% if dataset.source %}
-                          <span class="badge bg-info">{{ dataset.source }}</span>
-                        {% endif %}
-                        {% for tag in dataset.tags.all %}
-                          <span class="badge badge-primary-light">{{ tag.name }}</span>
-                        {% endfor %}
-                      </div>
-                    {% endif %}
+                    <div class="mb-2">
+                      <span class="badge bg-success">
+                        Public
+                      </span>
+                      {% if dataset.source %}
+                        <span class="badge bg-info">{{ dataset.source }}</span>
+                      {% endif %}
+                      {% for tag in dataset.tags.all %}
+                        <span class="badge badge-primary-light">{{ tag.name }}</span>
+                      {% endfor %}
+                    </div>
                     {% if dataset.to_delete %}
                       <div class="mb-3">
                         <span class="badge badge-danger-light">Scheduled for deletion</span>
