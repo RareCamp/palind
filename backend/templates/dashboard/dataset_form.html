@@ -9,12 +9,16 @@
                     <input class="form-control" type="text" name="name" maxlength="200" required="" id="id_name" value="{{ dataset.name }}">
                 </div>
             </div>
-            <div class="mb-4 row">
-                <label class="col-form-label col-sm-2 text-sm-end">Disease</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" maxlength="200" value="{{ dataset.disease }}" disabled>
+            {% if dataset.disease %}
+                {# Display for edit form where the disease is already set #}
+                {# The disease should be set in the admin site #}
+                <div class="mb-4 row">
+                    <label class="col-form-label col-sm-2 text-sm-end">Disease</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" maxlength="200" value="{{ dataset.disease }}" disabled>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             <div class="mb-4 row">
                 <label class="col-form-label col-sm-2 text-sm-end">Description</label>
                 <div class="col-sm-10">
