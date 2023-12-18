@@ -44,12 +44,20 @@ class Tag(models.Model):
         return self.name
 
 
+class Source(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Dataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)
 
     public = models.BooleanField(default=True)
 
