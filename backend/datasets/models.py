@@ -57,12 +57,16 @@ class Dataset(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True, blank=True)
+
+    disease = models.ForeignKey(
+        "prevalence.Disease", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     public = models.BooleanField(default=True)
 
     organization = models.ForeignKey(
-        "accounts.Organization", on_delete=models.CASCADE, null=True
+        "accounts.Organization", on_delete=models.CASCADE, null=True, blank=True
     )
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
