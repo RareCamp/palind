@@ -50,7 +50,7 @@ class DatasetDetailView(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView)
 class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
     template_name = "dashboard/dataset_create.html"
-    fields = ["name", "description", "tags"]
+    fields = ["name", "description", "tags", "source"]
 
     def form_valid(self, form):
         form.instance.public = True  # TODO: remove this
@@ -62,7 +62,7 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
 class DatasetUpdateView(LoginRequiredMixin, AccessibleDatasetsMixin, UpdateView):
     model = Dataset
     template_name = "dashboard/dataset_update.html"
-    fields = ["name", "description", "tags"]
+    fields = ["name", "description", "tags", "source"]
 
     def form_valid(self, form):
         form.instance.public = True  # TODO: remove this

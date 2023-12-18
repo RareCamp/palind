@@ -25,6 +25,10 @@
             Public
           </span>
           &nbsp;
+          {% if dataset.source %}
+            <span class="badge bg-info">{{ dataset.source }}</span>
+          {% endif %}
+          &nbsp;
           {% for tag in dataset.tags.all %}
             <span class="badge badge-primary-light">{{ tag.name }}</span>
           {% endfor %}
