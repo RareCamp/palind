@@ -5,7 +5,7 @@ import uuid
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import Http404, HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -51,6 +51,11 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
     model = Dataset
     template_name = "dashboard/dataset_create.html"
     fields = ["name", "description", "tags", "source"]
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_prevalence_counting_user:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.public = True  # TODO: remove this
