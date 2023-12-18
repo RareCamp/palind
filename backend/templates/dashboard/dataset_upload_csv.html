@@ -346,6 +346,11 @@
 
         const headerRow = rows[0].split(",");
 
+        if (!headerRow.includes("disease_id")) {
+          headerRow.push("disease_id");
+          rows = rows.map(row => row + "," + "{{ dataset.disease }}");
+        }
+
         // Add error messages for missing required columns
         for (let i = 0; i < self.columns.length; i++) {
           if (!headerRow.includes(self.columns[i])) {
@@ -393,14 +398,17 @@
     formatRows() {
       let ids = this.ids;
       return this.rows.map((row, index) => {
-        let clientID = this.clientIDs[index];
-        let classMissingClientID = "";
-        if (clientID === undefined) {
-          clientID = "";
-          classMissingClientID = `class="table-danger"`;
-        }
-        let tr = "<tr>";
-        tr += `<td ${classMissingClientID}>${clientID}</td>`;
+        {% if request.user.is_prevalence_counting_user %}
+          let tr = "<tr>";
+        {% else %}
+          let clientID = this.clientIDs[index];
+          let classMissingClientID = "";
+          if (clientID === undefined) {
+            clientID = "";
+            classMissingClientID = `class="table-danger"`;
+          }
+          let tr = `<tr><td ${classMissingClientID}>${clientID}</td>`;
+        {% endif %}
         if (index < ids.length) {
           let id_bolded = ids[index].slice(0, -4) + "<b>" + ids[index].slice(-4) + "</b>";
           tr += "<td class='font-monospace' colspan=" + (row.length+1) + "><a href=''>" + id_bolded + "</a></td>";
@@ -597,8 +605,8 @@
             {% if request.user.is_prevalence_counting_user %}
               <tr>
                 <td><code>disease_id</code></td>
-                <td>required</td>
-                <td>Unique identifier of the disease from OMIM.</td>
+                <td></td>
+                <td>Unique identifier of the disease. If left empty, "{{ dataset.disease }}" will be used.</td>
               </tr>
             {% else %}
               <tr>
