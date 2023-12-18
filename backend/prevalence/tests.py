@@ -1,3 +1,4 @@
+import collections
 import random
 import string
 
@@ -19,7 +20,7 @@ class TestPrevalenceCounting(TestCase):
         N_ORGANIZATIONS = 5
         N_USERS_PER_ORGANIZATION = 2
         N_DATASETS_PER_USER = 2
-        N_SUBMISSIONS_PER_DATASET = 20
+        N_SUBMISSIONS_PER_DATASET = 5
 
         def random_token(length=1024):
             return "".join(random.choice("01") for _ in range(length))
@@ -33,6 +34,12 @@ class TestPrevalenceCounting(TestCase):
         # Create diseases
         for letter in DISEASE_NAMES:
             Disease.objects.create(name=letter)
+
+        diseases_submitted = set()
+        tokens_submitted = set()
+        tokens_submitted_per_disease = collections.defaultdict(set)
+        contributors_submitted = set()
+        contributors_per_disease = collections.defaultdict(set)
 
         # Create organizations
         for i in range(N_ORGANIZATIONS):
@@ -60,6 +67,13 @@ class TestPrevalenceCounting(TestCase):
                         disease = random.choice(DISEASE_NAMES)
                         token = random.choice(tokens[disease])
 
+                        # Add to submitted sets for comparison later
+                        diseases_submitted.add(disease)
+                        tokens_submitted.add(disease + token)
+                        tokens_submitted_per_disease[disease].add(token)
+                        contributors_submitted.add(organization.pk)
+                        contributors_per_disease[disease].add(organization.pk)
+
                         reponse = client.post(
                             "/v2/submit/",
                             data={
@@ -75,10 +89,22 @@ class TestPrevalenceCounting(TestCase):
                         self.assertEqual(reponse.status_code, 200)
 
         # Count prevalence
-        result = count_diseases_prevalence()
-        print(result)
+        count_diseases_prevalence()
 
-        print(GlobalStats.objects.all().values())
+        # Check global stats
+        self.assertEqual(GlobalStats.objects.last().n_diseases, len(diseases_submitted))
+        self.assertEqual(GlobalStats.objects.last().n_patients, len(tokens_submitted))
+        self.assertEqual(
+            GlobalStats.objects.last().n_contributors, len(contributors_submitted)
+        )
 
+        # Check stats per disease
         for ds in DiseaseStats.objects.all():
-            print(ds.disease.name, ds.n_contributors, ds.n_patients)
+            self.assertEqual(
+                ds.n_patients, len(tokens_submitted_per_disease[ds.disease.name])
+            )
+            print(ds.disease.name, contributors_per_disease[ds.disease.name])
+            # TODO: there is some bug in the contributor counting
+            self.assertEqual(
+                ds.n_contributors, len(contributors_per_disease[ds.disease.name])
+            )
