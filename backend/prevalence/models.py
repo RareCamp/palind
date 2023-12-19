@@ -79,6 +79,7 @@ def count_diseases_prevalence():
         if submission.disease:
             patients[submission.disease].append(submission)
 
+    disease_stats = []
     for disease_name, disease_patients in patients.items():
         disease, _ = Disease.objects.get_or_create(name=disease_name)
 
@@ -87,21 +88,19 @@ def count_diseases_prevalence():
             if not any(are_similar(p, up) for up in unique_patients[disease_name]):
                 unique_patients[disease_name].append(p)
 
-        DiseaseStats.objects.create(
-            disease=disease,
-            n_contributors=len(contributors[disease_name]),
-            n_patients=len(unique_patients[disease_name]),
-            confidence="low",  # TODO
+        disease_stats.append(
+            DiseaseStats.objects.create(
+                disease=disease,
+                n_contributors=len(contributors[disease_name]),
+                n_patients=len(unique_patients[disease_name]),
+                confidence="low",  # TODO
+            )
         )
 
-    gs = GlobalStats.objects.create(
+    global_stats = GlobalStats.objects.create(
         n_diseases=len(unique_patients),
         n_contributors=len(set(itertools.chain(*contributors.values()))),
         n_patients=sum(len(v) for v in unique_patients.values()),
     )
 
-    return {
-        "total_patients": sum(len(v) for v in patients.values()),
-        "unique_patients": gs.n_patients,
-        "contributors": gs.n_contributors,
-    }
+    return global_stats, disease_stats
