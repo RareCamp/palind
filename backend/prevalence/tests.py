@@ -12,6 +12,7 @@ from .models import Disease, DiseaseStats, GlobalStats, count_diseases_prevalenc
 
 class TestPrevalenceCounting(TestCase):
     def test_prevalence_count(self):
+        random.seed(42)
         client = Client()
 
         DISEASE_NAMES = string.ascii_uppercase
@@ -103,8 +104,6 @@ class TestPrevalenceCounting(TestCase):
             self.assertEqual(
                 ds.n_patients, len(tokens_submitted_per_disease[ds.disease.name])
             )
-            print(ds.disease.name, contributors_per_disease[ds.disease.name])
-            # TODO: there is some bug in the contributor counting
             self.assertEqual(
                 ds.n_contributors, len(contributors_per_disease[ds.disease.name])
             )
