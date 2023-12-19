@@ -147,13 +147,12 @@ class SubmitView(View):
     """
 
     def post(self, request):
-        # Get Auth token bearer from header
-        token = uuid.UUID(
-            request.META.get("HTTP_AUTHORIZATION", None).replace("Bearer ", "")
-        )
-
-        # Find dataset with this token
         try:
+            # Get Auth token bearer from header
+            token = uuid.UUID(
+                request.META.get("HTTP_AUTHORIZATION", "").replace("Bearer ", "")
+            )
+            # Find dataset with this token
             dataset = Dataset.objects.get(api_token=token)
         except:
             return HttpResponse(status=401, content="Invalid token")

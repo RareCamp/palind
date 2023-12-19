@@ -19,15 +19,9 @@ class TestSubmissionCreate(TestCase):
         self.assertEqual(reponse.status_code, 401)  # 401 Unauthorized
 
         # Post with invalid token
-        reponse = self.client.post("/v2/submit/", {"Authorization": "Bearer 123"})
-        self.assertEqual(reponse.status_code, 401)  # 401 Unauthorized
-
-        # Create user
-        user = User.objects.create(username="test")
-
-        # Create dataset
-        dataset = Dataset.objects.create(
-            name="Test",
-            description="Test",
-            created_by=User.objects.create(username="test"),
+        reponse = self.client.post(
+            "/v2/submit/",
+            HTTP_AUTHORIZATION="Bearer 123",
+            content_type="application/json",
         )
+        self.assertEqual(reponse.status_code, 401)  # 401 Unauthorized
