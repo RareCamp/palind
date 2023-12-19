@@ -83,9 +83,9 @@ def count_diseases_prevalence():
         disease, _ = Disease.objects.get_or_create(name=disease_name)
 
         for p in disease_patients:
+            contributors[disease_name].add(p.dataset.created_by.organization.pk)
             if not any(are_similar(p, up) for up in unique_patients[disease_name]):
                 unique_patients[disease_name].append(p)
-                contributors[disease_name].add(p.dataset.created_by.organization.pk)
 
         DiseaseStats.objects.create(
             disease=disease,
