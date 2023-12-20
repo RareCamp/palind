@@ -34,6 +34,14 @@ class Disease(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
+    # do_id = models.CharField(max_length=20, blank=True)
+
+    # omim_id = models.CharField(max_length=20, blank=True)
+    # orpha_id = models.CharField(max_length=20, blank=True)
+    # icd10_id = models.CharField(max_length=20, blank=True)
+    # snomed_id = models.CharField(max_length=20, blank=True)
+    # synonyms = models.TextField(blank=True)
+
     def __str__(self):
         return self.name
 
