@@ -4,10 +4,13 @@
 <h1 class="h2 mb-4">
     Logged out
 </h1>
+{% endblock lead %}
+
+{% block form %}
 <p class="lead">
     You are now logged out.
 </p>
 <p class="lead">
     <a href="{% url 'login' %}">Log in again</a>
 </p>
-{% endblock lead %}
+{% endblock form %}
