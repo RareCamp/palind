@@ -34,13 +34,30 @@ class Disease(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
-    # do_id = models.CharField(max_length=20, blank=True)
+    do_id = models.CharField(max_length=20, blank=True)
+    do_json = models.JSONField(blank=True, null=True)
 
-    # omim_id = models.CharField(max_length=20, blank=True)
-    # orpha_id = models.CharField(max_length=20, blank=True)
-    # icd10_id = models.CharField(max_length=20, blank=True)
-    # snomed_id = models.CharField(max_length=20, blank=True)
-    # synonyms = models.TextField(blank=True)
+    # External IDs
+    SNOMEDCT_US_2023_03_01 = models.CharField(max_length=200, blank=True)
+    UMLS_CUI = models.CharField(max_length=200, blank=True)
+    ICD10CM = models.CharField(max_length=200, blank=True)
+    ICD9CM = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2021_09_01 = models.CharField(max_length=200, blank=True)
+    MESH = models.CharField(max_length=200, blank=True)
+    NCI = models.CharField(max_length=200, blank=True)
+    ORDO = models.CharField(max_length=200, blank=True)
+    GARD = models.CharField(max_length=200, blank=True)
+    EFO = models.CharField(max_length=200, blank=True)
+    OMIM = models.CharField(max_length=200, blank=True)
+    ICDO = models.CharField(max_length=200, blank=True)
+    KEGG = models.CharField(max_length=200, blank=True)
+    MEDDRA = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2021_07_31 = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2020_03_01 = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2023_10_01 = models.CharField(max_length=200, blank=True)
+    ICD11 = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2022_07_31 = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2023_09_01 = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return self.name

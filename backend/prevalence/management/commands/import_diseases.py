@@ -29,13 +29,28 @@ class Command(BaseCommand):
         # Get the parent of all edges
         parents = [edge["obj"] for edge in edges if edge["pred"] == "is_a"]
 
-        # TODO: do not import deprecated
-
         # Create a disease for each node that is not a parent of any other node
         with transaction.atomic():
             for node in nodes:
                 if node["id"] not in parents:
+                    # Do not import deprecated
+                    if node.get("meta", {}).get("deprecated", False):
+                        continue
+
+                    # All diseases are classes
+                    if node.get("type", "") != "CLASS":
+                        continue
+
+                    # Extract xrefs
+                    xrefs = dict([x["val"].split(":") for x in node.get("meta", {}).get("xrefs", [])])
+
+                    # Create disease
                     Disease.objects.create(
-                        name=node.get("lbl", ""),
-                        description=node.get("meta", {}).get("definition", ""),
+                        do_id=node["id"],
+                        name=node.get("lbl", "").capitalize(),
+                        description=node.get("meta", {})
+                        .get("definition", {})
+                        .get("val", ""),
+                        do_json=node,
+                        **xrefs,
                     )

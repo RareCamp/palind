@@ -1,5 +1,4 @@
 asgiref==3.7.2
-backports.zoneinfo==0.2.1
 beautifulsoup4==4.12.2
 black==23.7.0
 click==8.1.6

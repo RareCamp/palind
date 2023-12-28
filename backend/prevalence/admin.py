@@ -33,7 +33,11 @@ class PatientsBySourceAdmin(admin.ModelAdmin):
     list_display = ("source", "n_patients")
 
 
-admin.site.register(Disease)
+class DiseaseAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "do_id", "OMIM", "ORDO", "UMLS_CUI", "NCI")
+
+
+admin.site.register(Disease, DiseaseAdmin)
 admin.site.register(URLSource, URLSourceAdmin)
 admin.site.register(GlobalStats, GlobalStatsAdmin)
 admin.site.register(DiseaseStats, DiseaseStatsAdmin)
