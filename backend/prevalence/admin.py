@@ -35,6 +35,7 @@ class PatientsBySourceAdmin(admin.ModelAdmin):
 
 class DiseaseAdmin(admin.ModelAdmin):
     list_display = ("name", "description", "do_id", "OMIM", "ORDO", "UMLS_CUI", "NCI")
+    search_fields = ["do_json"]
 
 
 admin.site.register(Disease, DiseaseAdmin)

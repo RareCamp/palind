@@ -20,6 +20,7 @@ class DatasetAdmin(admin.ModelAdmin):
         "created_by",
         "api_token",
     )
+    autocomplete_fields = ["disease"]
 
 
 class DatasetPatientAdmin(admin.ModelAdmin):
