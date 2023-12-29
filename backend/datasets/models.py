@@ -50,6 +50,15 @@ class Source(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def color(self):
+        # Create a gradient from cd4610 to  0f4c81, and pick a color based on the pk rank
+        pks = list(Source.objects.all().values_list("pk", flat=True))
+        FROM = 0xCD4610
+        TO = 0x0F4C81
+        print(pks.index(self.pk) // len(pks))
+        return f"#{int(FROM + (TO - FROM) * (pks.index(self.pk) // len(pks))):06x}"
+
 
 class Dataset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

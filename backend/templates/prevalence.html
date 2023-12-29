@@ -284,10 +284,8 @@
                                     type: 'bar',
                                     data: {
                                         labels: [{% for d in patients_by_disease %}'{{ d.disease.name }}',{% endfor %}],
-                                        //labels: ['ALS', 'Cystic fibrosis', 'Angelman syndrome', 'Gaucher Disease', 'Krabbe Disease', 'Aarskog syndrome'],
                                         datasets: [{
                                             label: '# of Patients',
-                                            //data: [63, 50, 40, 32, 25, 2],
                                             data: [{% for d in patients_by_disease %}{{ d.n_patients }},{% endfor %}],
                                             backgroundColor: gradient,
                                         }]
@@ -345,10 +343,8 @@
                                     type: 'pie',
                                     data: {
                                         labels: [{% for source in patients_by_source %}'{{ source.name }}',{% endfor %}],
-                                        //labels: ['Genetic testing', 'Registry', 'Patient reported'],
                                         datasets: [{
-                                            label: '% of Patients',
-                                            //data: [63, 20, 17],
+                                            label: 'Patients',
                                             data: [{% for source in patients_by_source %}{{ source.n_patients }},{% endfor %}],
                                             backgroundColor: [
                                                 '#cd4610',
@@ -389,18 +385,12 @@
                                     }
                                 });
                             </script>
-                            <span class="legend">
-                                <i class="fa-solid fa-square fa-lg orange"></i>
-                                Genetic testing
-                            </span>
-                            <span class="legend">
-                                <i class="fa-solid fa-square fa-lg" style="color: #eba082"></i>
-                                Registry
-                            </span>
-                            <span class="legend">
-                                <i class="fa-solid fa-square fa-lg" style="color: #d5d9de"></i>
-                                Patient reported
-                            </span>
+                            {% for source in patients_by_source %}
+                                <span class="legend">
+                                    <i class="fa-solid fa-square fa-lg" style="color: {{ source.source.color }}"></i>
+                                    {{ source.source.name }}
+                                </span>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
