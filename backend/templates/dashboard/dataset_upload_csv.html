@@ -438,34 +438,32 @@
     uploadTokens: async function() {
       this.uploading = true;
 
-      // Tokenize
-      this.tokens = [];
-      for (let row of this.rows) {
-        this.tokens.push(await Promise.all(row.map(async (cell, col) => {
-          return await curesDevTokenize(cell);
-        })));
-        this.rowsHtml = this.formatRows();
-      }
-
       this.ids = [];
-      for (let i = 0; i < this.tokens.length; i++) {
-        let row = this.tokens[i];
+      for (let row of this.rows) {
+        // Tokenize
+        let tokens = await Promise.all(row.map(async (cell, col) => {
+          return await curesDevTokenize(cell);
+        }));
+
+        // Create request
         let requestData = {};
-        row.forEach((token, index) => {
+        tokens.forEach((token, index) => {
           if (this.columns[index] === "id") {
             // Do not upload the ID
             return;
           }
           else if (this.columns[index] === "disease_id") {
             // Upload the disease ID as is
-            requestData[this.columns[index]] = this.rows[i][index];
+            requestData[this.columns[index]] = row[index];
             return;
           }
           else {
             requestData[this.columns[index] + "_token"] = token.map(bit => bit ? "1" : "0").join("");
           }
         });
+        // Submit
         const response = await curesDevSubmit(requestData);
+
         this.ids.push(response.public_id);
         this.tableHeader = this.tableHeader.slice(0, 1);
         this.rowsHtml = this.formatRows();
