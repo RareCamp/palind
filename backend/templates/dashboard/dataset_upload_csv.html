@@ -336,7 +336,7 @@
       self = this;
       this.errors = [];
       reader.onload = (e) => {
-        var rows = e.target.result.trim().split("\n");
+        var rows = e.target.result.trim().split(/\r?\n/);
         self.rows = [];
         self.clientIDs = [];
         self.rowsHtml = "";
