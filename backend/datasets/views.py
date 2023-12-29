@@ -20,6 +20,7 @@ from django.views.generic import (
 from django.views.decorators.csrf import csrf_exempt
 
 from accounts.models import Organization
+from prevalence.models import Disease
 
 from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 
@@ -159,11 +160,23 @@ class SubmitView(View):
 
         # Create submission
         data = json.loads(request.body.decode("utf-8"))
-        # print("Data received:", data)
+
+        # Get disease either from omim_id or from dataset
+        if "disease_id" in data:
+            try:
+                disease = Disease.objects.filter(OMIM=data["disease_id"]).first()
+            except:
+                return HttpResponse(status=400, content="Invalid disease_id")
+        elif dataset.disease:
+            disease = dataset.disease
+        else:
+            return HttpResponse(status=400, content="Missing disease_id")
+
+
         submission = Submission(
             protocol_version="1.0.0",
             dataset=dataset,
-            disease=data.get("disease_id", ""),
+            disease=disease,
             first_name_token=data.get("first_name_token", ""),
             middle_name_token=data.get("middle_name_token", ""),
             last_name_token=data.get("last_name_token", ""),

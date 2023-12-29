@@ -22,7 +22,7 @@ class GlobalStats(models.Model):
 class PatientsBySource(models.Model):
     global_stats = models.ForeignKey(GlobalStats, on_delete=models.CASCADE)
 
-    source = models.CharField(max_length=200)
+    source = models.ForeignKey("datasets.Source", on_delete=models.CASCADE)
     n_patients = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -77,6 +77,7 @@ class URLSource(models.Model):
 
 
 class DiseaseStats(models.Model):
+    global_stats = models.ForeignKey(GlobalStats, on_delete=models.CASCADE)
     disease = models.ForeignKey(Disease, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -98,6 +99,7 @@ def count_diseases_prevalence():
     patients = collections.defaultdict(list)
     unique_patients = collections.defaultdict(list)
     contributors = collections.defaultdict(set)
+    sources = collections.defaultdict(int)
 
     for p in DatasetPatient.objects.all():
         submission = p.submission_set.last()
@@ -112,9 +114,10 @@ def count_diseases_prevalence():
             contributors[disease_name].add(p.dataset.created_by.organization.pk)
             if not any(are_similar(p, up) for up in unique_patients[disease_name]):
                 unique_patients[disease_name].append(p)
+                sources[p.dataset.source] += 1
 
         disease_stats.append(
-            DiseaseStats.objects.create(
+            DiseaseStats(
                 disease=disease,
                 n_contributors=len(contributors[disease_name]),
                 n_patients=len(unique_patients[disease_name]),
@@ -127,5 +130,15 @@ def count_diseases_prevalence():
         n_contributors=len(set(itertools.chain(*contributors.values()))),
         n_patients=sum(len(v) for v in unique_patients.values()),
     )
+
+    for source, n in sources.items():
+        PatientsBySource.objects.create(
+            source=source, n_patients=n, global_stats=global_stats
+        )
+
+    # Assign all disease stats to the global stats
+    for ds in disease_stats:
+        ds.global_stats = global_stats
+        ds.save()
 
     return global_stats, disease_stats

@@ -287,6 +287,8 @@
     return await response.json();
   }
 
+  const OMIM_IDS = [{% for omim in omim_ids %}"{{ omim }}", {% endfor %}];
+
   const REQUIRED_FIELDS = [
     {% if request.user.is_prevalence_counting_user %}
       "disease_id",
