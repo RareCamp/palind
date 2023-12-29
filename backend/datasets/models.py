@@ -231,13 +231,6 @@ class Submission(models.Model):
         verbose_name="Zip code at birth",
         help_text="Zip code",
     )
-    abbr_zip_code_at_birth_token = models.CharField(
-        max_length=1024,
-        blank=True,
-        validators=[MinLengthValidator(1024)],
-        verbose_name="Abbreviated zip code at birth",
-        help_text="Abbreviated zip code",
-    )
     address_at_bith_token = models.CharField(
         max_length=1024,
         blank=True,

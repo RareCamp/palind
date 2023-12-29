@@ -111,6 +111,9 @@ class DatasetUploadCSV(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
             and "soundex" not in f.name
             and "full" not in f.name
         ]
+        data["omim_ids"] = Disease.objects.exclude(OMIM="").values_list(
+            "OMIM", flat=True
+        )
         return data
 
 
