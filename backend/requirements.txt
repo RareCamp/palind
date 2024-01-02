@@ -1,4 +1,5 @@
 asgiref==3.7.2
+backports.zoneinfo==0.2.1
 beautifulsoup4==4.12.2
 black==23.7.0
 click==8.1.6
@@ -12,6 +13,7 @@ django-livereload-server==0.4
 djangorestframework==3.14.0
 djlint==1.34.0
 EditorConfig==0.12.3
+Faker==22.0.0
 gunicorn==21.2.0
 html-tag-names==0.1.2
 html-void-elements==0.1.0
@@ -24,6 +26,7 @@ pathspec==0.11.1
 Pillow==10.1.0
 platformdirs==3.9.1
 psycopg2-binary==2.9.6
+python-dateutil==2.8.2
 pytz==2023.3
 PyYAML==6.0.1
 randominfo==2.0.2
