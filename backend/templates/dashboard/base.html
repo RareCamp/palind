@@ -85,7 +85,7 @@
         {% endcomment %}
         <li class="sidebar-header">PREVALENCE</li>
         <li class="sidebar-item {% if "prevalence" in request.resolver_match.url_name %}active{% endif %}">
-          <a class="sidebar-link" href="{% url 'prevalence' %}">
+          <a class="sidebar-link" href="{% url 'prevalence' %}" target="_blank">
             <i class="fa-solid fa-chart-simple"></i>
             <span class="align-middle">Prevalence dashboard</span>
           </a>
