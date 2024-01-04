@@ -33,14 +33,22 @@
                     </p>
                     <div class="mb-2">
                       <span class="badge bg-primary">
-                        {{ dataset.disease }}
+                        {% if dataset.disease %}
+                          {{ dataset.disease }}
+                        {% else %}
+                          Disease unspecified
+                        {% endif %}
                       </span>
                       <span class="badge bg-success">
                         Public
                       </span>
-                      {% if dataset.source %}
-                        <span class="badge bg-info">{{ dataset.source }}</span>
-                      {% endif %}
+                      <span class="badge bg-info">
+                        {% if dataset.source %}
+                          {{ dataset.source }}
+                        {% else %}
+                          Source unspecified
+                        {% endif %}
+                      </span>
                       {% for tag in dataset.tags.all %}
                         <span class="badge badge-primary-light">{{ tag.name }}</span>
                       {% endfor %}
