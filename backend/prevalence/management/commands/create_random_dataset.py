@@ -18,7 +18,8 @@ class Command(BaseCommand):
         diseases = (
             Disease.objects.exclude(OMIM__exact="")
             .annotate(name_len=Length("name"))
-            .filter(name_len__lt=30)
+            .exclude(name__regex=r"\d")
+            .filter(name_len__lt=15)
             .order_by("?")
         )
 
