@@ -1,4 +1,6 @@
 asgiref==3.7.2
+# https://stackoverflow.com/questions/71712258/error-could-not-build-wheels-for-backports-zoneinfo-which-is-required-to-insta
+backports.zoneinfo==0.2.1;python_version<"3.9"
 beautifulsoup4==4.12.2
 black==23.7.0
 click==8.1.6
