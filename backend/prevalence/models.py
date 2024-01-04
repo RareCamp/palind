@@ -114,7 +114,8 @@ def count_diseases_prevalence():
             contributors[disease_name].add(p.dataset.created_by.organization.pk)
             if not any(are_similar(p, up) for up in unique_patients[disease_name]):
                 unique_patients[disease_name].append(p)
-                sources[p.dataset.source] += 1
+                if p.dataset.source:
+                    sources[p.dataset.source] += 1
 
         disease_stats.append(
             DiseaseStats(
