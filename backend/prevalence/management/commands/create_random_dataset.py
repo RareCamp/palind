@@ -26,18 +26,18 @@ class Command(BaseCommand):
         faker = Faker()
 
         HEADER = [
-                "disease_id",
-                "first_name",
-                "last_name",
-                "date_of_birth",
-                "middle_name",
-                "sex_at_birth",
-                "city_at_birth",
-                "zip_code_at_birth",
-                "address_at_bith",
-                "state_at_birth",
-                "country_at_birth",
-            ]
+            "disease_id",
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "middle_name",
+            "sex_at_birth",
+            "city_at_birth",
+            "zip_code_at_birth",
+            "address_at_bith",
+            "state_at_birth",
+            "country_at_birth",
+        ]
 
         rows = []
         for disease in diseases:
@@ -45,8 +45,9 @@ class Command(BaseCommand):
             num_patients = 1 + 10 * np.random.poisson(1)
 
             for _ in range(num_patients):
-                rows.append((
-                        disease.OMIM,
+                rows.append(
+                    (
+                        disease.do_id,
                         faker.first_name(),
                         faker.last_name(),
                         faker.date_of_birth(),
@@ -58,8 +59,9 @@ class Command(BaseCommand):
                         faker.street_address(),
                         faker.state_abbr(),
                         faker.country_code(representation="alpha-3"),
-                ))
-            
+                    )
+                )
+
             if len(rows) > 100:
                 break
 
