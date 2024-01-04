@@ -111,8 +111,8 @@ class DatasetUploadCSV(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
             and "soundex" not in f.name
             and "full" not in f.name
         ]
-        data["omim_ids"] = Disease.objects.exclude(OMIM="").values_list(
-            "OMIM", flat=True
+        data["do_ids"] = Disease.objects.exclude(do_id="").values_list(
+            "do_id", flat=True
         )
         return data
 
@@ -164,17 +164,16 @@ class SubmitView(View):
         # Create submission
         data = json.loads(request.body.decode("utf-8"))
 
-        # Get disease either from omim_id or from dataset
+        # Get disease either from do_id or from dataset
         if "disease_id" in data:
             try:
-                disease = Disease.objects.filter(OMIM=data["disease_id"]).first()
+                disease = Disease.objects.filter(do_id=data["disease_id"]).first()
             except:
                 return HttpResponse(status=400, content="Invalid disease_id")
         elif dataset.disease:
             disease = dataset.disease
         else:
             return HttpResponse(status=400, content="Missing disease_id")
-
 
         submission = Submission(
             protocol_version="1.0.0",

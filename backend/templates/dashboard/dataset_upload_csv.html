@@ -287,7 +287,7 @@
     return await response.json();
   }
 
-  const OMIM_IDS = [{% for omim in omim_ids %}"{{ omim }}", {% endfor %}];
+  const DO_IDS = [{% for id in do_ids %}"{{ id }}", {% endfor %}];
 
   const REQUIRED_FIELDS = [
     {% if request.user.is_prevalence_counting_user %}
@@ -350,8 +350,10 @@
 
         if (!headerRow.includes("disease_id")) {
           headerRow.push("disease_id");
-          rows = rows.map(row => row + "," + "{{ dataset.disease }}");
+          rows = rows.map(row => row + "," + "{{ dataset.disease.do_id }}");
         }
+
+        // TODO: check if the disease ID is valid (in DO_IDS)
 
         // Add error messages for missing required columns
         for (let i = 0; i < self.columns.length; i++) {
@@ -398,6 +400,8 @@
       reader.readAsText(file);
     },
     formatRows() {
+      // TODO: paint in red the unknown disease IDs
+
       let ids = this.ids;
       return this.rows.map((row, index) => {
         {% if request.user.is_prevalence_counting_user %}
