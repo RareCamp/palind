@@ -8,3 +8,6 @@ class OrganizationDetailView(LoginRequiredMixin, DetailView):
     model = Organization
     template = "organization_detail.html"
     context_object_name = "organization"
+
+    def get_object(self, queryset=None):
+        return self.request.user.organization

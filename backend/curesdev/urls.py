@@ -18,19 +18,27 @@ from datasets.views import (
     DatasetExportCSVView,
     merge_view,
 )
-from prevalence.views import PrevalenceView, PrevalenceDataView, UpdatePrevalenceStatsView
+from prevalence.views import (
+    PrevalenceView,
+    PrevalenceDataView,
+    UpdatePrevalenceStatsView,
+)
 
 urlpatterns = (
     [
         path("", RedirectView.as_view(url="/datasets"), name="home"),
         path("prevalence/", PrevalenceView.as_view(), name="prevalence"),
         path("prevalence.json", PrevalenceDataView.as_view(), name="prevalence_data"),
-        path("prevalence/update", UpdatePrevalenceStatsView.as_view(), name="prevalence_update"),
+        path(
+            "prevalence/update",
+            UpdatePrevalenceStatsView.as_view(),
+            name="prevalence_update",
+        ),
         # API: create a submission
         path("v2/submit/", SubmitView.as_view(), name="submit"),
         # Accounts
         path(
-            "organization/<int:pk>/",
+            "organization/",
             OrganizationDetailView.as_view(),
             name="organization_detail",
         ),
