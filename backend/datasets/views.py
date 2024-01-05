@@ -77,13 +77,10 @@ class DatasetUpdateView(LoginRequiredMixin, AccessibleDatasetsMixin, UpdateView)
         return super().form_valid(form)
 
 
-class DatasetDeleteView(LoginRequiredMixin, DeleteView):
+class DatasetDeleteView(LoginRequiredMixin, AccessibleDatasetsMixin, DeleteView):
     model = Dataset
     template_name = "dashboard/dataset_confirm_delete.html"
     success_url = reverse_lazy("dataset_list")
-
-    def get_queryset(self):
-        return Dataset.objects.filter(organization=self.request.user.organization)
 
     def form_valid(self, form):
         self.object = self.get_object()
@@ -117,11 +114,8 @@ class DatasetUploadCSV(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
         return data
 
 
-class DatasetExportCSVView(LoginRequiredMixin, DetailView):
+class DatasetExportCSVView(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
     model = Dataset
-
-    def get_queryset(self):
-        return Dataset.objects.filter(organization=self.request.user.organization)
 
     def render_to_response(self, context, **response_kwargs):
         dataset = self.get_object()
@@ -207,16 +201,6 @@ class SubmitView(View):
             return JsonResponse({"public_id": "hidden"})
 
         return JsonResponse({"public_id": patient.public_id.url()})
-
-
-# class OrganizationDetailView(DetailView):
-#     model = Organization
-#     template_name = "organization.html"
-#     context_object_name = "organization"
-
-#     # Only allow users who are part of the organization to view it
-#     def get_queryset(self):
-#         return Organization.objects.filter(users=self.request.user)
 
 
 #########
