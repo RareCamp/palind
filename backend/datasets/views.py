@@ -29,20 +29,20 @@ from .models import Dataset, DatasetPatient, Submission, are_similar, dice
 #############
 
 
-class AccessibleDatasetsMixin:
+class AccessibleDatasetsMixin(LoginRequiredMixin):
     def get_queryset(self):
         if self.request.user.is_prevalence_counting_user:
             return Dataset.objects.filter(id=self.request.user.default_dataset.id)
         return Dataset.objects.filter(organization__users=self.request.user)
 
 
-class DatasetListView(LoginRequiredMixin, AccessibleDatasetsMixin, ListView):
+class DatasetListView(AccessibleDatasetsMixin, ListView):
     model = Dataset
     template_name = "dashboard/dataset_list.html"
     context_object_name = "datasets"
 
 
-class DatasetDetailView(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
+class DatasetDetailView(AccessibleDatasetsMixin, DetailView):
     model = Dataset
     template_name = "dashboard/dataset_detail.html"
     context_object_name = "dataset"
@@ -65,7 +65,7 @@ class DatasetCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class DatasetUpdateView(LoginRequiredMixin, AccessibleDatasetsMixin, UpdateView):
+class DatasetUpdateView(AccessibleDatasetsMixin, UpdateView):
     model = Dataset
     template_name = "dashboard/dataset_update.html"
     fields = ["name", "description", "tags", "source"]
@@ -77,7 +77,7 @@ class DatasetUpdateView(LoginRequiredMixin, AccessibleDatasetsMixin, UpdateView)
         return super().form_valid(form)
 
 
-class DatasetDeleteView(LoginRequiredMixin, AccessibleDatasetsMixin, DeleteView):
+class DatasetDeleteView(AccessibleDatasetsMixin, DeleteView):
     model = Dataset
     template_name = "dashboard/dataset_confirm_delete.html"
     success_url = reverse_lazy("dataset_list")
@@ -89,7 +89,7 @@ class DatasetDeleteView(LoginRequiredMixin, AccessibleDatasetsMixin, DeleteView)
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DatasetUploadCSV(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
+class DatasetUploadCSV(AccessibleDatasetsMixin, DetailView):
     model = Dataset
     template_name = "dashboard/dataset_upload_csv.html"
     context_object_name = "dataset"
@@ -114,7 +114,7 @@ class DatasetUploadCSV(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
         return data
 
 
-class DatasetExportCSVView(LoginRequiredMixin, AccessibleDatasetsMixin, DetailView):
+class DatasetExportCSVView(AccessibleDatasetsMixin, DetailView):
     model = Dataset
 
     def render_to_response(self, context, **response_kwargs):
