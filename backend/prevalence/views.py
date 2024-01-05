@@ -6,6 +6,8 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.views.generic import TemplateView
 
+from datasets.views import SuperUserRequiredMixin
+
 from .models import DiseaseStats, GlobalStats, count_diseases_prevalence
 
 
@@ -81,8 +83,7 @@ class PrevalenceDataView(View):
         return JsonResponse(data)
 
 
-@method_decorator(staff_member_required, name="dispatch")
-class UpdatePrevalenceStatsView(TemplateView):
+class UpdatePrevalenceStatsView(SuperUserRequiredMixin, TemplateView):
     template_name = "update_prevalence.html"
 
     def get(self, request, *args, **kwargs):

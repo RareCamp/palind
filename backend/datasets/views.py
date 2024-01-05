@@ -3,8 +3,7 @@ import json
 from typing import Any, Dict
 import uuid
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import Http404, HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -34,6 +33,11 @@ class AccessibleDatasetsMixin(LoginRequiredMixin):
         if self.request.user.is_prevalence_counting_user:
             return Dataset.objects.filter(id=self.request.user.default_dataset.id)
         return Dataset.objects.filter(organization__users=self.request.user)
+
+
+class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class DatasetListView(AccessibleDatasetsMixin, ListView):
@@ -208,7 +212,7 @@ class SubmitView(View):
 #########
 
 
-class LinkerDemo(LoginRequiredMixin, TemplateView):
+class LinkerDemo(SuperUserRequiredMixin, TemplateView):
     template_name = "demos/linker_demo.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
