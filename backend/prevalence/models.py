@@ -34,7 +34,7 @@ class Disease(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
-    do_id = models.CharField(max_length=20, blank=True)
+    do_id = models.CharField(max_length=200, blank=True)
     do_json = models.JSONField(blank=True, null=True)
 
     # External IDs
