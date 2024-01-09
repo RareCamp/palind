@@ -2,14 +2,14 @@ import os
 
 from .settings import *
 
-DEBUG = True
+DEBUG = False
 
 # SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-# ALLOWED_HOSTS = ["localhost", "ymbdp7523p.us-east-1.awsapprunner.com", "*"]
+ALLOWED_HOSTS = [".awsapprunner.com"]
 # CSRF_TRUSTED_ORIGINS = ["https://ymbdp7523p.us-east-1.awsapprunner.com/"]
 
-#SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
