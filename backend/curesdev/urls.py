@@ -7,7 +7,6 @@ from django.conf.urls.static import static
 
 from accounts.views import OrganizationDetailView
 from datasets.views import (
-    LinkerDemo,
     SubmitView,
     DatasetCreateView,
     DatasetListView,
@@ -16,7 +15,6 @@ from datasets.views import (
     DatasetDeleteView,
     DatasetUploadCSV,
     DatasetExportCSVView,
-    merge_view,
 )
 from prevalence.views import (
     PrevalenceView,
@@ -72,8 +70,8 @@ urlpatterns = (
             TemplateView.as_view(template_name="demos/bloom_filter_demo.html"),
             name="bloom-filter-demo",
         ),
-        path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
-        path("merge-datasets", merge_view, name="merge-datasets"),
+        # path("linker-demo", LinkerDemo.as_view(), name="linker-demo"),
+        # path("merge-datasets", merge_view, name="merge-datasets"),
         # Admin site
         path("admin/", admin.site.urls),
         # Debug toolbar
