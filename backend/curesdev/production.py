@@ -4,7 +4,7 @@ from .settings import *
 
 DEBUG = False
 
-# SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = [".awsapprunner.com"]
 # CSRF_TRUSTED_ORIGINS = ["https://ymbdp7523p.us-east-1.awsapprunner.com/"]
