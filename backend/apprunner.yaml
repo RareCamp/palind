@@ -12,3 +12,5 @@ run:
   secrets:
     - name: DATABASE_SECRET
       value-from: "arn:aws:secretsmanager:us-east-1:762786077843:secret:dev/PALIND/Postgres-NV3uf6"
+    - name: DJANGO_SECRET_KEY
+      value-from: "arn:aws:secretsmanager:us-east-1:762786077843:secret:dev/palind/django_secret_key-G5MEAK"
