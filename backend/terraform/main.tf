@@ -65,14 +65,15 @@ resource "aws_iam_role" "get_secrets" {
 # RDS
 
 resource "aws_db_instance" "default" {
-  #identifier                  = "palind-db"
+  identifier                  = "palind-db"
   allocated_storage           = 10
   engine                      = "postgres"
   engine_version              = "15.3"
   instance_class              = "db.t3.micro"
   username                    = "postgres"
   manage_master_user_password = true
-  #storage_encrypted           = true
+  storage_encrypted           = true
+  publicly_accessible         = true # Only in dev?
 }
 
 # App runner
@@ -128,7 +129,6 @@ resource "aws_apprunner_service" "django_tf" {
             DJANGO_DB_HOST = aws_db_instance.default.address
             DJANGO_DB_PORT = aws_db_instance.default.port
             DJANGO_DB_NAME = aws_db_instance.default.db_name
-
           }
         }
         configuration_source = "API"
@@ -154,17 +154,3 @@ resource "aws_apprunner_service" "django_tf" {
   }
 }
 
-# EC2 instance to debug
-
-# data "aws_ami" "ubuntu" {
-#   most_recent = true
-#   filter {
-#     name   = "name"
-#     values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
-#   }
-# }
-
-# resource "aws_instance" "debug" {
-#   instance_type = "t2.micro"
-#   key_name      = "palind_debug"
-# }
