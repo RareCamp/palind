@@ -89,12 +89,24 @@ WSGI_APPLICATION = "curesdev.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-try:
+if os.getenv("DATABASE_SECRET"):
     DATABASE_URL = json.loads(os.getenv("DATABASE_SECRET"))["DATABASE_URL"]
-except:
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+elif os.getenv("DJANGO_DB_USER_PASSWORD"):
+    user_password = json.loads(os.getenv("DJANGO_DB_USER_PASSWORD"))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'HOST': os.getenv("DJANGO_DB_HOST"),
+            'PORT': os.getenv("DJANGO_DB_PORT"),
+            'USER': user_password["username"],
+            'PASSWORD': user_password["password"],
+            'NAME': os.getenv("DJANGO_DB_NAME"),
+        }
+    }
+else:
     DATABASE_URL = "sqlite:///db.sqlite3"
-
-DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
 
 
 # Password validation
