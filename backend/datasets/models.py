@@ -30,7 +30,6 @@ def are_similar(a, b):
         return False
 
     dices = [dice(a, b).round(2) for a, b in pairs_of_tokens]
-    # print(dices)
 
     # Protocol 2: all but 1 field with Dice score > 0.7x
     THRESHOLD = 0.6
@@ -88,7 +87,9 @@ class Dataset(models.Model):
 
     def find_matching_patient(self, submission):
         for patient in self.datasetpatient_set.all():
-            if are_similar(patient.submission_set.first(), submission):
+            if patient.submission_set.first() and are_similar(
+                patient.submission_set.first(), submission
+            ):
                 return patient
         return None
 
@@ -254,7 +255,10 @@ class Submission(models.Model):
     )
 
     def __str__(self):
-        return f"Submission {self.id} for {self.dataset_patient.public_id.url()}"
+        try:
+            return f"Submission {self.id} for {self.dataset_patient.public_id.url()}"
+        except:
+            return f"Submission {self.id} without dataset_patient"
 
 
 class GlobalPatient(models.Model):

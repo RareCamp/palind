@@ -4,6 +4,7 @@ from typing import Any, Dict
 import uuid
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db import transaction
 from django.http import Http404, HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator

@@ -413,7 +413,14 @@
             clientID = "";
             classMissingClientID = `class="table-danger"`;
           }
-          let tr = `<tr><td ${classMissingClientID}>${clientID}</td>`;
+          let tr = "";
+
+          if (this.uploading || this.uploaded) {
+            tr = `<tr><td ${classMissingClientID}>${clientID}</td>`;
+          }
+          else {
+            tr = `<tr>`;
+          }
         {% endif %}
         if (index < ids.length) {
           let id_bolded = ids[index].slice(0, -4) + "<b>" + ids[index].slice(-4) + "</b>";
@@ -639,7 +646,7 @@
             <template x-for="(head, index) in tableHeader" :key="index">
               <th x-text="head"></th>
             </template>
-            <th x-show="uploaded">CuresDev ID</th>
+            <th x-show="uploaded || uploading">CuresDev ID</th>
           </tr>
         </thead>
         <tbody x-html="rowsHtml">
