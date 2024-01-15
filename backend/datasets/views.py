@@ -214,50 +214,50 @@ class SubmitView(View):
 #########
 
 
-# Commented out as they are not properly secured
-# class LinkerDemo(SuperUserRequiredMixin, TemplateView):
-#     template_name = "demos/linker_demo.html"
+class LinkerDemo(SuperUserRequiredMixin, TemplateView):
+    template_name = "demos/linker_demo.html"
 
-#     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-#         data = super().get_context_data(**kwargs)
-#         data["organizations"] = Organization.objects.all()
-#         return data
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+        data["organizations"] = Organization.objects.all()
+        return data
 
 
-# def merge_view(request):
-#     # Get two get parameters
-#     dataset1 = request.GET.get("dataset1", None)
-#     dataset2 = request.GET.get("dataset2", None)
+def merge_view(request):
+    # Get two get parameters
+    dataset1 = request.GET.get("dataset1", None)
+    dataset2 = request.GET.get("dataset2", None)
 
-#     dataset1 = Dataset.objects.get(pk=dataset1)
-#     dataset2 = Dataset.objects.get(pk=dataset2)
+    dataset1 = Dataset.objects.get(pk=dataset1)
+    dataset2 = Dataset.objects.get(pk=dataset2)
 
-#     matches = []
+    matches = []
 
-#     for p1 in dataset1.datasetpatient_set.all():
-#         s1 = p1.submission_set.first()
-#         for p2 in dataset2.datasetpatient_set.all():
-#             s2 = p2.submission_set.first()
-#             if are_similar(s1, s2):
-#                 matches.append(
-#                     {
-#                         "patient1": p1.public_id.url(),
-#                         "patient2": p2.public_id.url(),
-#                         "similarity": 0.99,
-#                         "fields_similarity": [
-#                             {
-#                                 "field": f.verbose_name,
-#                                 "similarity": (
-#                                     100 * dice(getattr(s1, f.name), getattr(s2, f.name))
-#                                 ),
-#                             }
-#                             for f in Submission._meta.get_fields()
-#                             if f.name.endswith("_token")
-#                             if getattr(s1, f.name) != "" and getattr(s2, f.name) != ""
-#                         ],
-#                     }
-#                 )
-#                 matches[-1]["similarity"] = sum(
-#                     f["similarity"] for f in matches[-1]["fields_similarity"]
-#                 ) / len(matches[-1]["fields_similarity"])
-#     return JsonResponse(matches, safe=False)
+    for p1 in dataset1.datasetpatient_set.all():
+        s1 = p1.submission_set.first()
+        for p2 in dataset2.datasetpatient_set.all():
+            s2 = p2.submission_set.first()
+            print(s1, s2)
+            if are_similar(s1, s2):
+                matches.append(
+                    {
+                        "patient1": p1.public_id.url(),
+                        "patient2": p2.public_id.url(),
+                        "similarity": 0.99,
+                        "fields_similarity": [
+                            {
+                                "field": f.verbose_name,
+                                "similarity": (
+                                    100 * dice(getattr(s1, f.name), getattr(s2, f.name))
+                                ),
+                            }
+                            for f in Submission._meta.get_fields()
+                            if f.name.endswith("_token")
+                            if getattr(s1, f.name) != "" and getattr(s2, f.name) != ""
+                        ],
+                    }
+                )
+                matches[-1]["similarity"] = sum(
+                    f["similarity"] for f in matches[-1]["fields_similarity"]
+                ) / len(matches[-1]["fields_similarity"])
+    return JsonResponse(matches, safe=False)
