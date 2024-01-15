@@ -172,7 +172,8 @@ class SubmitView(View):
         elif dataset.disease:
             disease = dataset.disease
         else:
-            return HttpResponse(status=400, content="Missing disease_id")
+            if dataset.user.is_prevalence_counting_user:
+                return HttpResponse(status=400, content="Missing disease_id")
 
         submission = Submission(
             protocol_version="1.0.0",

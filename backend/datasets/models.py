@@ -159,7 +159,9 @@ class Submission(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     dataset_patient = models.ForeignKey(DatasetPatient, on_delete=models.CASCADE)
 
-    disease = models.ForeignKey("prevalence.Disease", on_delete=models.CASCADE)
+    disease = models.ForeignKey(
+        "prevalence.Disease", on_delete=models.CASCADE, null=True
+    )
 
     #
     # Tokens
