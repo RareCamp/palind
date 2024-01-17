@@ -95,13 +95,13 @@ if os.getenv("DATABASE_SECRET"):
 elif os.getenv("DJANGO_DB_USER_PASSWORD"):
     user_password = json.loads(os.getenv("DJANGO_DB_USER_PASSWORD"))
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'HOST': os.getenv("DJANGO_DB_HOST"),
-            'PORT': os.getenv("DJANGO_DB_PORT"),
-            'USER': user_password["username"],
-            'PASSWORD': user_password["password"],
-            'NAME': os.getenv("DJANGO_DB_NAME"),
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": os.getenv("DJANGO_DB_HOST"),
+            "PORT": os.getenv("DJANGO_DB_PORT"),
+            "USER": user_password["username"],
+            "PASSWORD": user_password["password"],
+            "NAME": os.getenv("DJANGO_DB_NAME"),
         }
     }
 else:
