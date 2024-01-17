@@ -3,6 +3,7 @@ import json
 from typing import Any, Dict
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
 from django.http import Http404, HttpResponseRedirect, JsonResponse, HttpResponse
@@ -222,8 +223,18 @@ class LinkerDemo(SuperUserRequiredMixin, TemplateView):
         data["organizations"] = Organization.objects.all()
         return data
 
+    # Forbid access if settings.DEBUG == False
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.DEBUG:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
 
 def merge_view(request):
+    # Forbid access if settings.DEBUG == False
+    if not settings.DEBUG:
+        raise Http404()
+
     # Get two get parameters
     dataset1 = request.GET.get("dataset1", None)
     dataset2 = request.GET.get("dataset2", None)
