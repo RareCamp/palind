@@ -227,12 +227,13 @@ class LinkerDemo(SuperUserRequiredMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if not settings.DEBUG:
             raise Http404()
+
         return super().dispatch(request, *args, **kwargs)
 
 
 def merge_view(request):
-    # Forbid access if settings.DEBUG == False
-    if not settings.DEBUG:
+    # Only allow access to superuser on DEBUG mode
+    if not settings.DEBUG or not request.user.is_authenticated:
         raise Http404()
 
     # Get two get parameters
