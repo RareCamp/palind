@@ -72,8 +72,20 @@ resource "aws_db_instance" "default" {
   instance_class              = "db.t3.micro"
   username                    = "postgres"
   manage_master_user_password = true
-  storage_encrypted           = true
   publicly_accessible         = true # Only in dev?
+}
+
+# Retrieve Subnets and Security Group
+
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_security_groups" "selected" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 # App runner
@@ -83,17 +95,19 @@ resource "aws_apprunner_connection" "django" {
   provider_type   = "GITHUB"
 }
 
-# resource "aws_apprunner_vpc_connector" "django" {
-#   vpc_connector_name = "django"
-#   subnets = [
-#     "subnet-010a14a4f8e29d0fb",
-#     "subnet-04223d75069133fc7",
-#     "subnet-0b989271de0c9e6bf",
-#   ]
-#   security_groups = [
-#     "sg-0defecd7dd61b6a07",
-#   ]
-# }
+data "aws_subnets" "selected" {
+  filter {
+    name = "availability-zone-id"
+    values = ["use1-az1", "use1-az2", "use1-az6"]
+  }
+}
+
+resource "aws_apprunner_vpc_connector" "django" {
+  vpc_connector_name = "django"
+  # Subnets that support App Runner
+  subnets         = data.aws_subnets.selected.ids
+  security_groups = data.aws_security_groups.selected.ids
+}
 
 resource "aws_apprunner_service" "django_tf" {
   service_name = "django_tf"
@@ -147,9 +161,8 @@ resource "aws_apprunner_service" "django_tf" {
     }
 
     egress_configuration {
-      egress_type = "VPC"
-      #   vpc_connector_arn = aws_apprunner_vpc_connector.django.arn
-      vpc_connector_arn = "arn:aws:apprunner:us-east-1:762786077843:vpcconnector/Default/1/d26e4ddf27bb43d296017b8303aaba92"
+      egress_type       = "VPC"
+      vpc_connector_arn = aws_apprunner_vpc_connector.django.arn
     }
   }
 }
