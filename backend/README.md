@@ -38,3 +38,13 @@ Now, you can run the local development server with:
 
 Visit [localhost:8000](http://localhost:8000) to access the site and
 [localhost:8000/admin](http://localhost:8000/admin) to access the admin site.
+
+## Install and run Terraform on AWS CloudShell
+
+    git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+    mkdir ~/bin
+    ln -s ~/.tfenv/bin/* ~/bin/
+    tfenv install 1.7.0
+    tfenv use 1.7.0
+    terraform --version
+    terraform init
