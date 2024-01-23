@@ -4,6 +4,10 @@ provider "aws" {
 
 # Variables
 
+variable "parent_domain_zone_id" {
+  default = "Z01915732ZBZKC8D32TPT"
+}
+
 variable "domain_name" {
   default = "app.curesdev.com"
 }
@@ -23,7 +27,8 @@ terraform {
 }
 
 resource "aws_s3_bucket" "bucket_terraform_state" {
-  bucket = "palind-terraform-state-${var.environment}"
+  #bucket = "palind-terraform-state-${var.environment}"
+  bucket = "palind-terraform-state"
 }
 
 # S3
@@ -97,7 +102,7 @@ resource "aws_db_instance" "default" {
   instance_class              = "db.t3.micro"
   username                    = "postgres"
   manage_master_user_password = true
-  publicly_accessible         = true # Only in dev?
+  publicly_accessible         = var.environment == "dev" ? true : false
 }
 
 # Retrieve Subnets and Security Group
@@ -122,7 +127,7 @@ resource "aws_apprunner_connection" "django" {
 
 data "aws_subnets" "selected" {
   filter {
-    name = "availability-zone-id"
+    name   = "availability-zone-id"
     values = ["use1-az1", "use1-az2", "use1-az6"]
   }
 }
@@ -193,8 +198,8 @@ resource "aws_apprunner_service" "django" {
 }
 
 resource "aws_apprunner_custom_domain_association" "app_domain" {
-  domain_name = var.domain_name
-  service_arn = aws_apprunner_service.django.arn
+  domain_name          = var.domain_name
+  service_arn          = aws_apprunner_service.django.arn
   enable_www_subdomain = false
 }
 
@@ -205,25 +210,29 @@ resource "aws_route53_zone" "app_domain" {
 }
 
 resource "aws_route53_record" "validation_records_linglinger_1" {
-  name     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].name
-  type     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].type
-  records  = [tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].value]
-  ttl      = 300
-  zone_id  = aws_route53_zone.app_domain.id
+  name    = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].name
+  type    = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].type
+  records = [tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].value]
+  ttl     = 300
+  zone_id = aws_route53_zone.app_domain.id
 }
 
 resource "aws_route53_record" "validation_records_linglinger_2" {
-  name     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].name
-  type     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].type
-  records  = [tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].value]
-  ttl      = 300
-  zone_id  = aws_route53_zone.app_domain.id
+  name    = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].name
+  type    = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].type
+  records = [tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].value]
+  ttl     = 300
+  zone_id = aws_route53_zone.app_domain.id
 }
 
 resource "aws_route53_record" "custom_domain" {
-  name    = aws_apprunner_custom_domain_association.app_domain.domain_name
+  name    = var.domain_name
   type    = "A"
-  records = [aws_apprunner_service.django.service_url]
-  ttl     = 300
   zone_id = aws_route53_zone.app_domain.id
+
+  alias {
+    evaluate_target_health = true
+    name                   = aws_apprunner_service.django.service_url
+    zone_id                = var.parent_domain_zone_id
+  }
 }
