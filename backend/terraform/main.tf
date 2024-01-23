@@ -91,7 +91,6 @@ resource "aws_iam_role" "get_secrets" {
 # RDS
 
 resource "aws_db_instance" "default" {
-  identifier                  = "palind-db"
   allocated_storage           = 10
   engine                      = "postgres"
   engine_version              = "15.3"
