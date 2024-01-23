@@ -192,3 +192,38 @@ resource "aws_apprunner_service" "django" {
   }
 }
 
+resource "aws_apprunner_custom_domain_association" "app_domain" {
+  domain_name = var.domain_name
+  service_arn = aws_apprunner_service.django.arn
+  enable_www_subdomain = false
+}
+
+# Route53
+
+resource "aws_route53_zone" "app_domain" {
+  name = var.domain_name
+}
+
+resource "aws_route53_record" "validation_records_linglinger_1" {
+  name     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].name
+  type     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].type
+  records  = [tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[0].value]
+  ttl      = 300
+  zone_id  = aws_route53_zone.app_domain.id
+}
+
+resource "aws_route53_record" "validation_records_linglinger_2" {
+  name     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].name
+  type     = tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].type
+  records  = [tolist(aws_apprunner_custom_domain_association.app_domain.certificate_validation_records)[1].value]
+  ttl      = 300
+  zone_id  = aws_route53_zone.app_domain.id
+}
+
+resource "aws_route53_record" "custom_domain" {
+  name    = aws_apprunner_custom_domain_association.app_domain.domain_name
+  type    = "A"
+  records = [aws_apprunner_service.django.service_url]
+  ttl     = 300
+  zone_id = aws_route53_zone.app_domain.id
+}
