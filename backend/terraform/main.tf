@@ -2,6 +2,32 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# Variables
+
+variable "domain_name" {
+  default = "app.curesdev.com"
+}
+
+variable "environment" {
+  default = "prod"
+}
+
+# Backend
+
+terraform {
+  backend "s3" {
+    bucket = "palind-terraform-state"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+resource "aws_s3_bucket" "bucket_terraform_state" {
+  bucket = "palind-terraform-state-${var.environment}"
+}
+
+# S3
+
 # Secrets
 
 data "aws_secretsmanager_random_password" "django_secret_key" {
