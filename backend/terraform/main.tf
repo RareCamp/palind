@@ -134,8 +134,8 @@ resource "aws_apprunner_vpc_connector" "django" {
   security_groups = data.aws_security_groups.selected.ids
 }
 
-resource "aws_apprunner_service" "django_tf" {
-  service_name = "django_tf"
+resource "aws_apprunner_service" "django" {
+  service_name = "django"
 
   instance_configuration {
     cpu               = "512"
