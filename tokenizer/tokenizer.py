@@ -20,7 +20,7 @@ EPSILONS = {
     "disease_omim_id": 0.3,
     "gene_name": 0.3,
     "city_at_birth": 3.0,
-    "address_at_birth": 0.3,
+    "address_at_birth": 3.0,
     "zip_code_at_birth": 0.4,
     "state_at_birth": 0.2,
     "country_at_birth": 0.2,

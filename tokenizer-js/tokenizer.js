@@ -72,7 +72,7 @@ class PIITokenizer {
             "diseaseOmimId": 0.3,
             "geneName": 0.3,
             "cityAtBirth": 3.0,
-            "addressAtBirth": 0.3,
+            "addressAtBirth": 3.0,
             "zipCodeAtBirth": 0.4,
             "stateAtBirth": 0.2,
             "countryAtBirth": 0.2,
