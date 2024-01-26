@@ -267,8 +267,9 @@
   Load data to <strong>{{ dataset.name }}</strong>
 </h2>
 
-{% include "sha256.html" %}
-{% include "tokenize.html" %}
+<script>
+  {% include "tokenize.js" %}
+</script>
 
 <script>
   // Fetch request to backend with authorization header
