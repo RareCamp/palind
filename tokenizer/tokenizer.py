@@ -7,6 +7,34 @@ from random import random
 import requests
 
 
+EPSILONS = {
+    "first_name": 3.0,
+    "first_name_soundex": 3.0,
+    "last_name": 3.0,
+    "last_name_soundex": 3.0,
+    "middle_name": 3.0,
+    "full_name": 3.0,
+    "date_of_birth": 0.4,
+    "former_name": 3.0,
+    "sex_at_birth": 0.2,
+    "disease_omim_id": 0.3,
+    "gene_name": 0.3,
+    "city_at_birth": 3.0,
+    "address_at_birth": 0.3,
+    "zip_code_at_birth": 0.4,
+    "state_at_birth": 0.2,
+    "country_at_birth": 0.2,
+    "parent1_first_name": 3.0,
+    "parent1_last_name": 3.0,
+    "parent1_full_name": 3.0,
+    "parent1_email": 3.0,
+    "parent2_first_name": 3.0,
+    "parent2_last_name": 3.0,
+    "parent2_full_name": 3.0,
+    "parent2_email": 3.0,
+}
+
+
 class PIITokenizer:
     def __init__(self, l=1024, eps=3):
         self.l = l
@@ -61,11 +89,11 @@ class PIITokenizer:
     # Tokenizers
     #
 
-    def _tokenize(self, fields):
-        if fields == [""]:
+    def _tokenize(self, field_name, chunks):
+        if chunks == [""]:
             return ""
 
-        return tokenize(fields, self.l, self.eps)
+        return tokenize(chunks, self.l, self.eps)
 
     def tokenize(
         self,
@@ -159,45 +187,120 @@ class PIITokenizer:
         #
 
         # Names expanded with bigrams
-        first_name_token = self._tokenize(expand(first_name))
-        middle_name_token = self._tokenize(expand(middle_name))
-        last_name_token = self._tokenize(expand(last_name))
-        full_name_token = self._tokenize(expand(full_name))
-        parent1_first_name_token = self._tokenize(expand(parent1_first_name))
-        parent1_last_name_token = self._tokenize(expand(parent1_last_name))
-        parent2_first_name_token = self._tokenize(expand(parent2_first_name))
-        parent2_last_name_token = self._tokenize(expand(parent2_last_name))
-        parent1_full_name_token = self._tokenize(expand(parent1_full_name))
-        parent2_full_name_token = self._tokenize(expand(parent2_full_name))
+        first_name_token = self._tokenize("first_name", expand(first_name))
+        middle_name_token = self._tokenize("middle_name", expand(middle_name))
+        last_name_token = self._tokenize("last_name", expand(last_name))
+        full_name_token = self._tokenize("full_name", expand(full_name))
+        parent1_first_name_token = self._tokenize(
+            "parent1_first_name", expand(parent1_first_name)
+        )
+        parent1_last_name_token = self._tokenize(
+            "parent1_last_name", expand(parent1_last_name)
+        )
+        parent2_first_name_token = self._tokenize(
+            "parent2_first_name", expand(parent2_first_name)
+        )
+        parent2_last_name_token = self._tokenize(
+            "parent2_last_name", expand(parent2_last_name)
+        )
+        parent1_full_name_token = self._tokenize(
+            "parent1_full_name", expand(parent1_full_name)
+        )
+        parent2_full_name_token = self._tokenize(
+            "parent2_full_name", expand(parent2_full_name)
+        )
 
         # Emails are not expanded
-        email_token = self._tokenize([email])
-        parent1_email_token = self._tokenize([parent1_email])
-        parent2_email_token = self._tokenize([parent2_email])
+        email_token = self._tokenize("email", [email])
+        parent1_email_token = self._tokenize("parent1_email", [parent1_email])
+        parent2_email_token = self._tokenize("parent2_email", [parent2_email])
 
         # Soundex
-        first_name_soundex_token = self._tokenize([first_name_soundex])
-        last_name_soundex_token = self._tokenize([last_name_soundex])
-        parent1_first_name_soundex_token = self._tokenize([soundex(parent1_first_name)])
-        parent1_last_name_soundex_token = self._tokenize([soundex(parent1_last_name)])
-        parent2_first_name_soundex_token = self._tokenize([soundex(parent2_first_name)])
-        parent2_last_name_soundex_token = self._tokenize([soundex(parent2_last_name)])
+        first_name_soundex_token = self._tokenize(
+            "first_name_soundex", [first_name_soundex]
+        )
+        last_name_soundex_token = self._tokenize(
+            "last_name_soundex", [last_name_soundex]
+        )
+        parent1_first_name_soundex_token = self._tokenize(
+            "parent1_first_name_soundex", [soundex(parent1_first_name)]
+        )
+        parent1_last_name_soundex_token = self._tokenize(
+            "parent1_last_name_soundex", [soundex(parent1_last_name)]
+        )
+        parent2_first_name_soundex_token = self._tokenize(
+            "parent2_first_name_soundex", [soundex(parent2_first_name)]
+        )
+        parent2_last_name_soundex_token = self._tokenize(
+            "parent2_last_name_soundex", [soundex(parent2_last_name)]
+        )
+
+        middle_name_token = self._tokenize("middle_name", expand(middle_name))
+        last_name_token = self._tokenize("last_name", expand(last_name))
+        full_name_token = self._tokenize("full_name", expand(full_name))
+        parent1_first_name_token = self._tokenize(
+            "parent1_first_name", expand(parent1_first_name)
+        )
+        parent1_last_name_token = self._tokenize(
+            "parent1_last_name", expand(parent1_last_name)
+        )
+        parent2_first_name_token = self._tokenize(
+            "parent2_first_name", expand(parent2_first_name)
+        )
+        parent2_last_name_token = self._tokenize(
+            "parent2_last_name", expand(parent2_last_name)
+        )
+        parent1_full_name_token = self._tokenize(
+            "parent1_full_name", expand(parent1_full_name)
+        )
+        parent2_full_name_token = self._tokenize(
+            "parent2_full_name", expand(parent2_full_name)
+        )
+
+        # Emails are not expanded
+        email_token = self._tokenize("email", [email])
+        parent1_email_token = self._tokenize("parent1_email", [parent1_email])
+        parent2_email_token = self._tokenize("parent2_email", [parent2_email])
+
+        # Soundex
+        first_name_soundex_token = self._tokenize(
+            "first_name_soundex", [first_name_soundex]
+        )
+        last_name_soundex_token = self._tokenize(
+            "last_name_soundex", [last_name_soundex]
+        )
+        parent1_first_name_soundex_token = self._tokenize(
+            "parent1_first_name_soundex", [soundex(parent1_first_name)]
+        )
+        parent1_last_name_soundex_token = self._tokenize(
+            "parent1_last_name_soundex", [soundex(parent1_last_name)]
+        )
+        parent2_first_name_soundex_token = self._tokenize(
+            "parent2_first_name_soundex", [soundex(parent2_first_name)]
+        )
+        parent2_last_name_soundex_token = self._tokenize(
+            "parent2_last_name_soundex", [soundex(parent2_last_name)]
+        )
 
         # Gender
-        gender_token = self._tokenize([gender])
+        gender_token = self._tokenize("gender", [gender])
 
         # Location at birth
-        country_at_birth_token = self._tokenize([country_at_birth])
-        state_at_birth_token = self._tokenize([state_at_birth])
-        city_at_birth_token = self._tokenize(expand(city_at_birth))
-        zip_code_at_birth_token = self._tokenize([zip_code_at_birth])
-        abbr_zip_code_at_birth_token = self._tokenize([abbr_zip_code_at_birth])
+        country_at_birth_token = self._tokenize("country_at_birth", [country_at_birth])
+        state_at_birth_token = self._tokenize("state_at_birth", [state_at_birth])
+        city_at_birth_token = self._tokenize("city_at_birth", expand(city_at_birth))
+        zip_code_at_birth_token = self._tokenize(
+            "zip_code_at_birth", [zip_code_at_birth]
+        )
+        abbr_zip_code_at_birth_token = self._tokenize(
+            "abbr_zip_code_at_birth", [abbr_zip_code_at_birth]
+        )
 
         # Date of birth
-        date_of_birth_token = self._tokenize([date_of_birth])
+        date_of_birth_token = self._tokenize("date_of_birth", [date_of_birth])
 
         # OMIM
-        omim_token = self._tokenize([omim])
+        omim_token = self._tokenize("omim", [omim])
 
         return {
             "first_name_token": first_name_token,

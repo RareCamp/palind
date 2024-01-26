@@ -47,4 +47,10 @@ Visit [localhost:8000](http://localhost:8000) to access the site and
     tfenv install 1.7.0
     tfenv use 1.7.0
     terraform --version
+
+    # Copy main.tf
+
     terraform init
+
+    terraform plan
+    terraform apply
