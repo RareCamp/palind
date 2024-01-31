@@ -29,35 +29,6 @@ async function tokenizeChunks(chunks, l = 1024, eps = 3.0, eta = null) {
     return bf.map(bit => cryptoRandom() <= eta ? bit : 1 - bit).join('');
 }
 
-
-function qGrams(s, q = 2) {
-    if (s.length <= q) {
-        return [s];
-    }
-    const grams = [];
-    for (var i = 0; i < s.length - q + 1; i++) {
-        grams.push(s.slice(i, i + q));
-    }
-    return grams;
-}
-
-function expand(s) {
-    let grams;
-    if (s.length === 0) {
-        return [''];
-    } else if (s.length === 1) {
-        grams = [s];
-    } else if (s.length <= 3) {
-        grams = [...qGrams(s, 2), ...qGrams(s, 1)];
-    } else {
-        grams = qGrams(s, 2);
-    }
-
-    const counter = {};
-    const timesSeen = g => (counter[g] = (counter[g] || 0) + 1);
-    return grams.map(g => `${g}:${timesSeen(g)}`);
-}
-
 class PIITokenizer {
     constructor() {
         this.l = 1024;
@@ -217,16 +188,16 @@ class PIITokenizer {
         // Tokenize
 
         // Names expanded with bigrams
-        let firstNameToken = await this.tokenizeField("firstName", expand(firstName));
-        let middleNameToken = await this.tokenizeField("middleName", expand(middleName));
-        let lastNameToken = await this.tokenizeField("lastName", expand(lastName));
-        let fullNameToken = await this.tokenizeField("fullName", expand(fullName));
-        let parent1FirstNameToken = await this.tokenizeField("parent1FirstName", expand(parent1FirstName));
-        let parent1LastNameToken = await this.tokenizeField("parent1LastName", expand(parent1LastName));
-        let parent2FirstNameToken = await this.tokenizeField("parent2FirstName", expand(parent2FirstName));
-        let parent2LastNameToken = await this.tokenizeField("parent2LastName", expand(parent2LastName));
-        let parent1FullNameToken = await this.tokenizeField("parent1FullName", expand(parent1FullName));
-        let parent2FullNameToken = await this.tokenizeField("parent2FullName", expand(parent2FullName));
+        let firstNameToken = await this.tokenizeField("firstName", this.expand(firstName));
+        let middleNameToken = await this.tokenizeField("middleName", this.expand(middleName));
+        let lastNameToken = await this.tokenizeField("lastName", this.expand(lastName));
+        let fullNameToken = await this.tokenizeField("fullName", this.expand(fullName));
+        let parent1FirstNameToken = await this.tokenizeField("parent1FirstName", this.expand(parent1FirstName));
+        let parent1LastNameToken = await this.tokenizeField("parent1LastName", this.expand(parent1LastName));
+        let parent2FirstNameToken = await this.tokenizeField("parent2FirstName", this.expand(parent2FirstName));
+        let parent2LastNameToken = await this.tokenizeField("parent2LastName", this.expand(parent2LastName));
+        let parent1FullNameToken = await this.tokenizeField("parent1FullName", this.expand(parent1FullName));
+        let parent2FullNameToken = await this.tokenizeField("parent2FullName", this.expand(parent2FullName));
 
         // Emails are not expanded
         let emailToken = await this.tokenizeField("email", [email]);
@@ -247,7 +218,7 @@ class PIITokenizer {
         // Location at birth
         let countryAtBirthToken = await this.tokenizeField("countryAtBirth", [countryAtBirth]);
         let stateAtBirthToken = await this.tokenizeField("stateAtBirth", [stateAtBirth]);
-        let cityAtBirthToken = await this.tokenizeField("cityAtBirth", expand(cityAtBirth));
+        let cityAtBirthToken = await this.tokenizeField("cityAtBirth", this.expand(cityAtBirth));
         let zipCodeAtBirthToken = await this.tokenizeField("zipCodeAtBirth", [zipCodeAtBirth]);
 
         // Date of birth
@@ -349,6 +320,37 @@ class PIITokenizer {
         soundex = soundex.slice(0, 4).padEnd(4, "0");
 
         return soundex;
+    }
+
+    expand(s) {
+        let grams;
+        if (s.length === 0) {
+            return [''];
+        } else if (s.length === 1) {
+            grams = [s];
+        } else if (s.length <= 3) {
+            grams = [...this.qGrams(s, 2), ...this.qGrams(s, 1)];
+        } else {
+            grams = this.qGrams(s, 2);
+        }
+
+        const counter = {};
+        const timesSeen = g => (counter[g] = (counter[g] || 0) + 1);
+        return grams.map(g => `${g}:${timesSeen(g)}`);
+    }
+
+    qGrams(s, q = 2) {
+        if (s.length < q) {
+            return [];
+        }
+        else if (s.length == q) {
+            return [s];
+        }
+        const grams = [];
+        for (var i = 0; i < s.length - q + 1; i++) {
+            grams.push(s.slice(i, i + q));
+        }
+        return grams;
     }
 }
 

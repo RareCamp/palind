@@ -30,14 +30,6 @@ describe('PIITokenizer', () => {
             gender: gender
         });
     });
-});
-
-describe('Soundex', () => {
-    let tokenizer;
-
-    beforeEach(() => {
-        tokenizer = new PIITokenizer();
-    });
 
     test('soundex', () => {
         expect(tokenizer.soundex("Bangalore")).toBe("B524");
@@ -61,4 +53,29 @@ describe('Soundex', () => {
         expect(tokenizer.soundex("Ashcroft ")).toBe("A261");
         expect(tokenizer.soundex("¿")).toBe("¿000");
     });
+
+    test('expand', () => {
+        expect(tokenizer.expand("hello")).toEqual(["he:1", "el:1", "ll:1", "lo:1"]);
+        expect(tokenizer.expand("")).toEqual([""]);
+        expect(tokenizer.expand("a")).toEqual(["a:1"]);
+        expect(tokenizer.expand("ab")).toEqual(["ab:1", "a:1", "b:1"]);
+        expect(tokenizer.expand("abc")).toEqual(["ab:1", "bc:1", "a:1", "b:1", "c:1"]);
+        expect(tokenizer.expand("aab")).toEqual(["aa:1", "ab:1", "a:1", "a:2", "b:1"]);
+        expect(tokenizer.expand("aaa")).toEqual(["aa:1", "aa:2", "a:1", "a:2", "a:3"]);
+        expect(tokenizer.expand("aaaa")).toEqual(["aa:1", "aa:2", "aa:3"]);
+        expect(tokenizer.expand("barbara")).toEqual(["ba:1", "ar:1", "rb:1", "ba:2", "ar:2", "ra:1"]);
+        expect(tokenizer.expand("he llo")).toEqual(["he:1", "e :1", " l:1", "ll:1", "lo:1"]);
+    });
+
+    test('qGrams', () => {
+        expect(tokenizer.qGrams("hello", 1)).toEqual(["h", "e", "l", "l", "o"]);
+        expect(tokenizer.qGrams("hello", 2)).toEqual(["he", "el", "ll", "lo"]);
+        expect(tokenizer.qGrams("hello", 3)).toEqual(["hel", "ell", "llo"]);
+        expect(tokenizer.qGrams("hello", 4)).toEqual(["hell", "ello"]);
+        expect(tokenizer.qGrams("hello", 5)).toEqual(["hello"]);
+        expect(tokenizer.qGrams("hello", 6)).toEqual([]);
+
+        expect(tokenizer.qGrams("aa", 1)).toEqual(["a", "a"]);
+    });
 });
+
