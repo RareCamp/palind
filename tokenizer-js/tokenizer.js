@@ -69,8 +69,6 @@ class PIITokenizer {
             "dateOfBirth": 0.4,
             "formerName": 3.0,
             "sexAtBirth": 0.2,
-            "diseaseOmimId": 0.3,
-            "geneName": 0.3,
             "cityAtBirth": 3.0,
             "addressAtBirth": 3.0,
             "zipCodeAtBirth": 0.4,
