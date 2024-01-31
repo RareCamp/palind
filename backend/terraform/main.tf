@@ -103,6 +103,7 @@ resource "aws_db_instance" "default" {
   username                    = "postgres"
   manage_master_user_password = true
   publicly_accessible         = var.environment == "dev" ? true : false
+  storage_encrypted           = true
 }
 
 # Retrieve Subnets and Security Group
