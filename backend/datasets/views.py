@@ -201,6 +201,7 @@ class SubmitView(View):
 
         # Set the patient and save submission
         submission.dataset_patient = patient
+        submission.full_clean()  # Validate submission
         submission.save()
 
         # Do not return the patient id if the user is a prevalence counting user

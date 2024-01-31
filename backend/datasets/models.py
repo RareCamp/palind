@@ -2,13 +2,16 @@ import uuid
 from django.conf import settings
 
 
-from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.forms import ValidationError
 from django.urls import reverse
 
 import numpy as np
+
+
+TOKEN_LENGTH = 1024
 
 
 def dice(a, b) -> float:
@@ -55,7 +58,6 @@ class Source(models.Model):
         pks = list(Source.objects.all().values_list("pk", flat=True))
         FROM = 0xCD4610
         TO = 0x0F4C81
-        print(pks.index(self.pk) // len(pks))
         return f"#{int(FROM + (TO - FROM) * (pks.index(self.pk) // len(pks))):06x}"
 
 
@@ -146,6 +148,13 @@ class Run(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
+def validate_token(token):
+    if len(token) != TOKEN_LENGTH:
+        raise ValidationError("Token must be TOKEN_LENGTH characters long")
+    if set(token) - {"0", "1"}:
+        raise ValidationError("Token must only contain 0 and 1")
+
+
 class Submission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -169,89 +178,89 @@ class Submission(models.Model):
 
     # Required fields
     first_name_token = models.CharField(
-        max_length=1024,
-        validators=[MinLengthValidator(1024)],
+        max_length=TOKEN_LENGTH,
+        validators=[validate_token],
         verbose_name="First name",
     )
     last_name_token = models.CharField(
-        max_length=1024,
-        validators=[MinLengthValidator(1024)],
+        max_length=TOKEN_LENGTH,
+        validators=[validate_token],
         verbose_name="Last name",
     )
     date_of_birth_token = models.CharField(
-        max_length=1024,
-        validators=[MinLengthValidator(1024)],
+        max_length=TOKEN_LENGTH,
+        validators=[validate_token],
         verbose_name="Date of birth",
         help_text="YYYY-MM-DD",
     )
 
     # Optional fields
     middle_name_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Middle name",
     )
 
     full_name_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Full name",
     )
     first_name_soundex_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="First name soundex",
     )
     last_name_soundex_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Last name soundex",
     )
 
     sex_at_birth_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=False,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Sex at birth",
         help_text="M or F",
     )
 
     city_at_birth_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="City at birth",
         help_text="City name",
     )
     zip_code_at_birth_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Zip code at birth",
         help_text="Zip code",
     )
     address_at_bith_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Address at birth",
         help_text="Street address",
     )
     state_at_birth_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="State at birth",
         help_text="ISO 3166-2",
     )
     country_at_birth_token = models.CharField(
-        max_length=1024,
+        max_length=TOKEN_LENGTH,
         blank=True,
-        validators=[MinLengthValidator(1024)],
+        validators=[validate_token],
         verbose_name="Country at birth",
         help_text="ISO 3166-1 alpha-3",
     )
