@@ -406,12 +406,12 @@ def soundex(token):
     }
 
     # Enode as per the dictionary
-    for char in token[1:]:
+    for i, char in enumerate(token[1:], start=1):
         for key in dictionary.keys():
             if char in key:
                 code = dictionary[key]
                 if code != ".":
-                    if code != soundex[-1]:
+                    if char != token[i - 1] and code != soundex[-1]:
                         soundex += code
 
     # Trim or Pad to make Soundex a
