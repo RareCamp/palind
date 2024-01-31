@@ -1,12 +1,14 @@
 import crypto from 'crypto';
 import fetch from 'node-fetch';
 
-function soundex(s) {
-    // TODO
-    return s;
+
+const MAX_UINT32 = Math.pow(2, 32) - 1;
+
+async function cryptoRandom() {
+    return crypto.getRandomValues(new Uint32Array(1))[0] / MAX_UINT32;
 }
 
-function tokenizeChunks(chunks, l = 1024, eps = 3.0, eta = null) {
+async function tokenizeChunks(chunks, l = 1024, eps = 3.0, eta = null) {
     const kn = Math.floor(l * Math.log(2));  // =~ 0.6931 * l
 
     // Dynamic number of hash functions
@@ -24,7 +26,7 @@ function tokenizeChunks(chunks, l = 1024, eps = 3.0, eta = null) {
     if (eta === null) {  // eta = probability of keeping the bit the same
         eta = 1.0 - 1.0 / (1.0 + Math.exp(eps));
     }
-    return bf.map(bit => Math.random() <= eta ? bit : 1 - bit).join('');
+    return bf.map(bit => cryptoRandom() <= eta ? bit : 1 - bit).join('');
 }
 
 
@@ -133,12 +135,12 @@ class PIITokenizer {
         }
     }
 
-    tokenizeField(fieldName, chunks) {
+    async tokenizeField(fieldName, chunks) {
         if (chunks.length === 1 && chunks[0] === '') {
             return '';
         }
 
-        return tokenizeChunks(chunks, this.l, this.epsilons[fieldName]);
+        return await tokenizeChunks(chunks, this.l, this.epsilons[fieldName]);
     }
 
     async tokenize({
@@ -206,8 +208,8 @@ class PIITokenizer {
 
         // Create derived fields
         let fullName = this.normalize(`${firstName}${middleName}${lastName}`);
-        let firstNameSoundex = soundex(firstName);
-        let lastNameSoundex = soundex(lastName);
+        let firstNameSoundex = this.soundex(firstName);
+        let lastNameSoundex = this.soundex(lastName);
 
         let parent1FullName = this.normalize(`${parent1FirstName}${parent1LastName}`);
         let parent2FullName = this.normalize(`${parent2FirstName}${parent2LastName}`);
@@ -215,41 +217,41 @@ class PIITokenizer {
         // Tokenize
 
         // Names expanded with bigrams
-        let firstNameToken = this.tokenizeField("firstName", expand(firstName));
-        let middleNameToken = this.tokenizeField("middleName", expand(middleName));
-        let lastNameToken = this.tokenizeField("lastName", expand(lastName));
-        let fullNameToken = this.tokenizeField("fullName", expand(fullName));
-        let parent1FirstNameToken = this.tokenizeField("parent1FirstName", expand(parent1FirstName));
-        let parent1LastNameToken = this.tokenizeField("parent1LastName", expand(parent1LastName));
-        let parent2FirstNameToken = this.tokenizeField("parent2FirstName", expand(parent2FirstName));
-        let parent2LastNameToken = this.tokenizeField("parent2LastName", expand(parent2LastName));
-        let parent1FullNameToken = this.tokenizeField("parent1FullName", expand(parent1FullName));
-        let parent2FullNameToken = this.tokenizeField("parent2FullName", expand(parent2FullName));
+        let firstNameToken = await this.tokenizeField("firstName", expand(firstName));
+        let middleNameToken = await this.tokenizeField("middleName", expand(middleName));
+        let lastNameToken = await this.tokenizeField("lastName", expand(lastName));
+        let fullNameToken = await this.tokenizeField("fullName", expand(fullName));
+        let parent1FirstNameToken = await this.tokenizeField("parent1FirstName", expand(parent1FirstName));
+        let parent1LastNameToken = await this.tokenizeField("parent1LastName", expand(parent1LastName));
+        let parent2FirstNameToken = await this.tokenizeField("parent2FirstName", expand(parent2FirstName));
+        let parent2LastNameToken = await this.tokenizeField("parent2LastName", expand(parent2LastName));
+        let parent1FullNameToken = await this.tokenizeField("parent1FullName", expand(parent1FullName));
+        let parent2FullNameToken = await this.tokenizeField("parent2FullName", expand(parent2FullName));
 
         // Emails are not expanded
-        let emailToken = this.tokenizeField("email", [email]);
-        let parent1EmailToken = this.tokenizeField("parent1Email", [parent1Email]);
-        let parent2EmailToken = this.tokenizeField("parent2Email", [parent2Email]);
+        let emailToken = await this.tokenizeField("email", [email]);
+        let parent1EmailToken = await this.tokenizeField("parent1Email", [parent1Email]);
+        let parent2EmailToken = await this.tokenizeField("parent2Email", [parent2Email]);
 
         // Soundex
-        let firstNameSoundexToken = this.tokenizeField("firstNameSoundex", [firstNameSoundex]);
-        let lastNameSoundexToken = this.tokenizeField("lastNameSoundex", [lastNameSoundex]);
-        let parent1FirstNameSoundexToken = this.tokenizeField("parent1FirstNameSoundex", [soundex(parent1FirstName)]);
-        let parent1LastNameSoundexToken = this.tokenizeField("parent1LastNameSoundex", [soundex(parent1LastName)]);
-        let parent2FirstNameSoundexToken = this.tokenizeField("parent2FirstNameSoundex", [soundex(parent2FirstName)]);
-        let parent2LastNameSoundexToken = this.tokenizeField("parent2LastNameSoundex", [soundex(parent2LastName)]);
+        let firstNameSoundexToken = await this.tokenizeField("firstNameSoundex", [firstNameSoundex]);
+        let lastNameSoundexToken = await this.tokenizeField("lastNameSoundex", [lastNameSoundex]);
+        let parent1FirstNameSoundexToken = await this.tokenizeField("parent1FirstNameSoundex", [this.soundex(parent1FirstName)]);
+        let parent1LastNameSoundexToken = await this.tokenizeField("parent1LastNameSoundex", [this.soundex(parent1LastName)]);
+        let parent2FirstNameSoundexToken = await this.tokenizeField("parent2FirstNameSoundex", [this.soundex(parent2FirstName)]);
+        let parent2LastNameSoundexToken = await this.tokenizeField("parent2LastNameSoundex", [this.soundex(parent2LastName)]);
 
         // Gender
-        let genderToken = this.tokenizeField("gender", [gender]);
+        let genderToken = await this.tokenizeField("gender", [gender]);
 
         // Location at birth
-        let countryAtBirthToken = this.tokenizeField("countryAtBirth", [countryAtBirth]);
-        let stateAtBirthToken = this.tokenizeField("stateAtBirth", [stateAtBirth]);
-        let cityAtBirthToken = this.tokenizeField("cityAtBirth", expand(cityAtBirth));
-        let zipCodeAtBirthToken = this.tokenizeField("zipCodeAtBirth", [zipCodeAtBirth]);
+        let countryAtBirthToken = await this.tokenizeField("countryAtBirth", [countryAtBirth]);
+        let stateAtBirthToken = await this.tokenizeField("stateAtBirth", [stateAtBirth]);
+        let cityAtBirthToken = await this.tokenizeField("cityAtBirth", expand(cityAtBirth));
+        let zipCodeAtBirthToken = await this.tokenizeField("zipCodeAtBirth", [zipCodeAtBirth]);
 
         // Date of birth
-        let dateOfBirthToken = this.tokenizeField("dateOfBirth", [dateOfBirth]);
+        let dateOfBirthToken = await this.tokenizeField("dateOfBirth", [dateOfBirth]);
 
         return {
             // Name
@@ -300,6 +302,53 @@ class PIITokenizer {
         }
 
         return await response.json();
+    }
+
+    soundex(s) {
+        s = s.toUpperCase();
+
+        if (s === "") {
+            return "0000";
+        }
+
+        let soundex = "";
+
+        // Retain the First Letter
+        soundex += s[0];
+
+        // Create a dictionary which maps
+        // letters to respective soundex
+        // codes. Vowels and 'H', 'W', and
+        // 'Y' will be represented by '.'
+        const dictionary = {
+            "BFPV": "1",
+            "CGJKQSXZ": "2",
+            "DT": "3",
+            "L": "4",
+            "MN": "5",
+            "R": "6",
+            "AEIOUHWY": ".",
+        };
+
+        // Encode as per the dictionary
+        for (let i = 1; i < s.length; i++) {
+            for (let key in dictionary) {
+                if (key.includes(s[i])) {
+                    let code = dictionary[key];
+                    if (code !== ".") {
+                        if (s[i] != s[i - 1] && code !== soundex[soundex.length - 1]) {
+                            soundex += code;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Trim or Pad to make Soundex a
+        // 4-character code
+        soundex = soundex.slice(0, 4).padEnd(4, "0");
+
+        return soundex;
     }
 }
 
