@@ -17,8 +17,6 @@ EPSILONS = {
     "date_of_birth": 0.4,
     "former_name": 3.0,
     "sex_at_birth": 0.2,
-    "disease_omim_id": 0.3,
-    "gene_name": 0.3,
     "city_at_birth": 3.0,
     "address_at_birth": 3.0,
     "zip_code_at_birth": 0.4,
@@ -81,10 +79,6 @@ class PIITokenizer:
         # TODO: check email
         pass
 
-    def _validate_omim(self, omim):
-        # TODO: check OMIM
-        pass
-
     #
     # Tokenizers
     #
@@ -117,9 +111,6 @@ class PIITokenizer:
         parent2_first_name="",
         parent2_last_name="",
         parent2_email="",
-        # OMIM
-        gene_name="",
-        omim="",
     ):
         #
         # Normalize names
@@ -167,9 +158,6 @@ class PIITokenizer:
 
         if state_at_birth:
             self._validate_state(state_at_birth)
-
-        if omim:
-            self._validate_omim(omim)
 
         #
         # Create derived fields
@@ -299,9 +287,6 @@ class PIITokenizer:
         # Date of birth
         date_of_birth_token = self._tokenize("date_of_birth", [date_of_birth])
 
-        # OMIM
-        omim_token = self._tokenize("omim", [omim])
-
         return {
             "first_name_token": first_name_token,
             "middle_name_token": middle_name_token,
@@ -330,8 +315,6 @@ class PIITokenizer:
             "parent2_first_name_soundex_token": parent2_first_name_soundex_token,
             "parent2_last_name_soundex_token": parent2_last_name_soundex_token,
             "parent2_email_token": parent2_email_token,
-            # OMIM
-            "omim_token": omim_token,
         }
 
     def submit(self, url, dataset_api_token, token):
