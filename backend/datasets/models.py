@@ -27,7 +27,10 @@ def are_similar(a, b):
     pairs_of_tokens = [
         (getattr(a, field), getattr(b, field))
         for field in token_fields
-        if getattr(a, field) != "" and getattr(b, field) != ""
+        if hasattr(a, field)
+        and hasattr(b, field)
+        and getattr(a, field) != ""
+        and getattr(b, field) != ""
     ]
     if len(pairs_of_tokens) == 0:
         return False
