@@ -173,7 +173,7 @@ class SubmitView(View):
         elif dataset.disease:
             disease = dataset.disease
         else:
-            if dataset.user.is_prevalence_counting_user:
+            if dataset.created_by.is_prevalence_counting_user:
                 return HttpResponse(status=400, content="Missing disease_id")
 
         submission = Submission(
@@ -205,7 +205,7 @@ class SubmitView(View):
         submission.save()
 
         # Do not return the patient id if the user is a prevalence counting user
-        if request.user.is_prevalence_counting_user:
+        if dataset.created_by.is_prevalence_counting_user:
             return JsonResponse({"public_id": "hidden"})
 
         return JsonResponse({"public_id": patient.public_id.url()})
