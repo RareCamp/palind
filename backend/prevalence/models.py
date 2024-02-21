@@ -103,7 +103,7 @@ def count_diseases_prevalence():
 
     for p in DatasetPatient.objects.all():
         submission = p.submission_set.last()
-        if submission.disease:
+        if submission and submission.disease:
             patients[submission.disease].append(submission)
 
     disease_stats = []
