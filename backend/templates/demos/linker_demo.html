@@ -136,11 +136,9 @@
             <option value="" disabled>Select a dataset</option>
             {% for organization in organizations %}
               {% for dataset in organization.dataset_set.all %}
-                {% if dataset.datasetpatient_set.count >= 3%}
-                  <option x-show="organization{{ i }} === '{{ organization.name }}'" value="{{ dataset.pk }}">
-                    {{ dataset.name }} ({{ dataset.datasetpatient_set.count }} patients)
-                  </option>
-                {% endif %}
+                <option x-show="organization{{ i }} === '{{ organization.name }}'" value="{{ dataset.pk }}" {% if dataset.datasetpatient_set.count < 3 %}disabled{% endif %}>
+                  {{ dataset.name }} ({{ dataset.datasetpatient_set.count }} patients)
+                </option>
               {% endfor %}
             {% endfor %}
           </select>
