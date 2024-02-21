@@ -443,7 +443,11 @@
                                                 <div class="row mb-3">
                                                     <div class="col mt-0">
                                                         <h1 class="mt-1 mb-0 number-primary">
-                                                            {{ disease.n_patients|intcomma }}
+                                                            {% if disease.n_patients < 25 %}
+                                                                &lt;25
+                                                            {% else %}
+                                                                {{ disease.n_patients|intcomma }}
+                                                            {% endif %}
                                                         </h1>
                                                         <span class="small-light">Patients</span>
                                                     </div>
@@ -509,7 +513,11 @@
                             <div class="row mb-3">
                                 <div class="col mt-0">
                                     <h1 class="mt-1 mb-0 number-primary">
-                                        {{ disease.n_patients|intcomma }}
+                                        {% if disease.n_patients < 25 %}
+                                            &lt;25
+                                        {% else %}
+                                            {{ disease.n_patients|intcomma }}
+                                        {% endif %}
                                     </h1>
                                     <span class="small-light">Patients</span>
                                 </div>
