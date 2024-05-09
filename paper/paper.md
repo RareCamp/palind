@@ -1,5 +1,5 @@
 
-# Curesdev tokenization and linkage protocol
+# PALIND tokenization and linkage protocol
 
 Here we present a tokenization and linkage protocol for anonymizing and linking patient records. The protocol is based on Bloom filters and differential privacy, and it is resilient to typos and misspellings.
 

@@ -9,7 +9,7 @@ variable "parent_domain_zone_id" {
 }
 
 variable "domain_name" {
-  default = "app.curesdev.com"
+  default = "app.palind.io"
 }
 
 variable "environment" {
@@ -157,7 +157,7 @@ resource "aws_apprunner_service" "django" {
     }
 
     code_repository {
-      repository_url   = "https://github.com/curesdev/palind"
+      repository_url   = "https://github.com/RareCamp/palind"
       source_directory = "/backend"
 
       code_configuration {

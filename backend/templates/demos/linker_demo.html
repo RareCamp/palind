@@ -102,13 +102,13 @@
       }
     },
     downloadCSV() {
-      let csvContent = "data:text/csv;charset=utf-8," + "curesdev_id1,curesdev_id2\n" +
+      let csvContent = "data:text/csv;charset=utf-8," + "palind_id1,palind_id2\n" +
         this.matches.map((m, index) => { return m.patient1 + "," + m.patient2; }).join("\n");
 
       let encodedUri = encodeURI(csvContent);
       var link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "curesdev_linked_patients.csv");
+      link.setAttribute("download", "palind_linked_patients.csv");
       document.body.appendChild(link);
       link.click();
     },

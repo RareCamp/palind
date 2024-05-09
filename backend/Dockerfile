@@ -6,7 +6,7 @@ COPY requirements.txt requirements.txt
 RUN python -m pip install -r requirements.txt
 
 WORKDIR /app
-COPY curesdev curesdev
+COPY palind palind
 COPY manage.py manage.py
 COPY datasets datasets
 COPY accounts accounts

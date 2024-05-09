@@ -54,6 +54,6 @@ function bloomFilter(chunks, length = 1024, eps = 2) {
     return bf;
 }
 
-async function curesDevTokenize(s) {
+async function palindTokenize(s) {
     return bloomFilter(qgrams(sanitize(s)));
 }

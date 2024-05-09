@@ -1,4 +1,4 @@
-# CuresDev Personal Identifiable Information (PII) Tokenizer Specification
+# PALIND Personal Identifiable Information (PII) Tokenizer Specification
 
 In this document we describe the specification of the CureDev PII tokenizer version 1.0.
 

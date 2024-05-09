@@ -273,7 +273,7 @@
 
 <script>
   // Fetch request to backend with authorization header
-  async function curesDevSubmit(data) {
+  async function palindSubmit(data) {
     //await new Promise(r => setTimeout(r, 0));
     const response = await fetch("/v2/submit/",
       {
@@ -454,7 +454,7 @@
       for (let row of this.rows) {
         // Tokenize
         let tokens = await Promise.all(row.map(async (cell, col) => {
-          return await curesDevTokenize(cell);
+          return await palindTokenize(cell);
         }));
 
         // Create request
@@ -474,7 +474,7 @@
           }
         });
         // Submit
-        const response = await curesDevSubmit(requestData);
+        const response = await palindSubmit(requestData);
 
         this.ids.push(response.public_id);
         this.tableHeader = this.tableHeader.slice(0, 1);
@@ -485,13 +485,13 @@
       this.uploaded = true;
     },
     downloadIDs() {
-      let csvContent = "data:text/csv;charset=utf-8," + "id,curesdev_id\n" +
+      let csvContent = "data:text/csv;charset=utf-8," + "id,palind_id\n" +
         this.ids.map((id, index) => { return this.clientIDs[index] + "," + id; }).join("\n");
 
       let encodedUri = encodeURI(csvContent);
       var link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "curesdev_ids.csv");
+      link.setAttribute("download", "palind_ids.csv");
       document.body.appendChild(link);
       link.click();
     },
@@ -525,7 +525,7 @@
                 <i class="fa fa-info-circle"></i>
               </div>
               <div class="alert-message">
-                The CSV data will not be uploaded to CuresDev,
+                The CSV data will not be uploaded to PALIND,
               only the tokenized data will be sent.
               </div>
             </div>
@@ -596,7 +596,7 @@
             <button class="btn btn-primary" @click="downloadIDs">
               <i class="fa fa-download" aria-hidden="true"></i>
               &nbsp;
-              Download the mapping ID <-> CuresDev ID
+              Download the mapping ID <-> PALIND ID
             </button>
           {% endif %}
         </div>
@@ -624,7 +624,7 @@
               <tr>
                 <td><code>id</code></td>
                 <td>required</td>
-                <td>Unique identifier for each record. After uploading the records, you can download a table linking this ID to the CuresDev PatientID</td>
+                <td>Unique identifier for each record. After uploading the records, you can download a table linking this ID to the PALIND PatientID</td>
               </tr>
             {% endif %}
             {% for field in fields %}
@@ -647,7 +647,7 @@
             <template x-for="(head, index) in tableHeader" :key="index">
               <th x-text="head"></th>
             </template>
-            <th x-show="uploaded || uploading">CuresDev ID</th>
+            <th x-show="uploaded || uploading">PALIND ID</th>
           </tr>
         </thead>
         <tbody x-html="rowsHtml">

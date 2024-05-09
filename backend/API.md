@@ -2,8 +2,8 @@
 
 # How to use the API
 
-    # BASE_URL=https://dev.curesdev.com
-    # BASE_URL=https://app.curesdev.com
+    # BASE_URL=https://dev.palind.io
+    # BASE_URL=https://app.palind.io
     BASE_URL=http://localhost:8000
 
     SUBMIT_URL=$BASE_URL/v2/submit/

@@ -6,8 +6,8 @@ DEBUG = True
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = [".awsapprunner.com", ".curesdev.com"]
-CSRF_TRUSTED_ORIGINS = ["https://*.awsapprunner.com", "https://*.curesdev.com"]
+ALLOWED_HOSTS = [".awsapprunner.com", ".palind.io"]
+CSRF_TRUSTED_ORIGINS = ["https://*.awsapprunner.com", "https://*.palind.io"]
 
 # SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True

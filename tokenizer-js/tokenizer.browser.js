@@ -255,7 +255,7 @@ class PIITokenizer {
         };
     }
 
-    async submit(base_url = 'app.curesdev.com', datasetApiToken, tokens) {
+    async submit(base_url = 'app.palind.io', datasetApiToken, tokens) {
         const response = await fetch(base_url, {
             method: 'POST',
             headers: {

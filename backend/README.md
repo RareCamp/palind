@@ -1,13 +1,13 @@
-# CuresDev backend
+# PALIND backend
 
-Django app implementing the CuresDev backend spec.
+Django app implementing the PALIND backend spec.
 
 You can run the app using Docker or as a development environment.
 
 # How to build and run demo server using Docker
 
-    docker build . -t curesdev
-    docker run -p 8000:8000 curesdev
+    docker build . -t palind 
+    docker run -p 8000:8000 palind 
 
 Then, open a browser and visit [http://localhost:8000/dataset/1/upload-csv](http://localhost:8000/dataset/1/upload-csv)
 
@@ -70,7 +70,7 @@ export DJANGO_DB_USER_PASSWORD='{"username": "postgres", "password": "XXX"}'  # 
 6. Visit [localhost:8000/admin](http://localhost:8000/admin) and log in with the superuser credentials.
 7. Create an organization and add the superuser to it.
 8. Fill in the name and last name of the superuser.
-9. Visit [app.curesdev.com/admin](https://app.curesdev.com/admin) and log in with the superuser credentials to check that you have access to the production site.
+9. Visit [app.palind.io/admin](https://app.palind.io/admin) and log in with the superuser credentials to check that you have access to the production site.
 10. Download the `HumanDO.json` from [GitHub](https://github.com/DiseaseOntology/HumanDiseaseOntology/tree/main/src/ontology).
 11. Run `./manage.py import_diseases HumanDO.json` to fill the database with the diseases.
 12. Remove Inbound rule from the VPC > Security Group.
