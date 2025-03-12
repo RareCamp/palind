@@ -6,6 +6,8 @@ You can run the app using Docker or as a development environment.
 
 # How to build and run demo server using Docker
 
+    # Create empty sqlite file for first time
+    sqlite3 db.sqlite3 "VACCUM;"
     docker build . -t palind 
     docker run -p 8000:8000 palind 
 
