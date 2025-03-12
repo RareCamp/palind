@@ -12,6 +12,7 @@ COPY datasets datasets
 COPY accounts accounts
 COPY static static
 COPY templates templates
+COPY prevalence prevalence
 
 COPY db.sqlite3 db.sqlite3
 
