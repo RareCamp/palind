@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data  # For SQLite database persistence
+      - ./static:/app/static  # For static files
+      - ./media:/app/media  # For user-uploaded files
+    environment:
+      - DEBUG=1
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped 

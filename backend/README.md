@@ -6,11 +6,21 @@ You can run the app using Docker or as a development environment.
 
 # How to build and run demo server using Docker
 
-    # Create empty sqlite file for first time
-    docker build . -t palind 
-    docker run -p 8000:8000 palind 
+    docker compose up
+
 
 Then, open a browser and visit [http://localhost:8000/dataset/1/upload-csv](http://localhost:8000/dataset/1/upload-csv)
+
+## Run DB Migrations
+
+Run this command if this is the first time starting a container (OR) you have changed any data models:
+
+    docker compose exec web python manage.py migrate
+
+## Setup Admin username & password (One Time Setup)
+Use this to setup a new username & password for Admin console
+
+    docker compose exec web python manage.py createsuperuser
 
 ## Admin site
 

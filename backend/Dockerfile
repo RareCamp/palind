@@ -10,11 +10,8 @@ COPY palind palind
 COPY manage.py manage.py
 COPY datasets datasets
 COPY accounts accounts
-COPY static static
 COPY templates templates
 COPY prevalence prevalence
-
-COPY db.sqlite3 db.sqlite3
 
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000

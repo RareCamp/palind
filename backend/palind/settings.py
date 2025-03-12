@@ -105,8 +105,12 @@ elif os.getenv("DJANGO_DB_USER_PASSWORD"):
         }
     }
 else:
-    DATABASE_URL = "sqlite:///db.sqlite3"
-    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "data" / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
