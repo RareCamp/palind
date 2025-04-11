@@ -26,6 +26,7 @@ class Command(BaseCommand):
         faker = Faker()
 
         HEADER = [
+            "id",
             "disease_id",
             "first_name",
             "last_name",
@@ -47,6 +48,7 @@ class Command(BaseCommand):
             for _ in range(num_patients):
                 rows.append(
                     (
+                        faker.uuid4(),
                         disease.do_id,
                         faker.first_name(),
                         faker.last_name(),

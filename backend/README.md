@@ -52,6 +52,15 @@ Now, you can run the local development server with:
 Visit [localhost:8000](http://localhost:8000) to access the site and
 [localhost:8000/admin](http://localhost:8000/admin) to access the admin site.
 
+## How to create a random dataset
+
+Execute command to create two CSV files that you can upload 
+
+    docker compose exec web python manage.py create_random_dataset
+
+
+
+
 ## Install and run Terraform on AWS CloudShell
 
     git clone https://github.com/tfutils/tfenv.git ~/.tfenv
