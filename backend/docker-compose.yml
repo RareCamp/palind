@@ -6,10 +6,14 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - .:/app  # Mount the entire backend directory
       - ./data:/app/data  # For SQLite database persistence
       - ./static:/app/static  # For static files
       - ./media:/app/media  # For user-uploaded files
     environment:
       - DEBUG=1
       - PYTHONUNBUFFERED=1
+      # Add this to enable auto-reload
+      - DJANGO_DEBUG=true
+    command: python manage.py runserver 0.0.0.0:8000
     restart: unless-stopped 
