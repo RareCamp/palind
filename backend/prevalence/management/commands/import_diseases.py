@@ -44,6 +44,10 @@ class Command(BaseCommand):
                     # Extract xrefs
                     xrefs = dict([x["val"].split(":") for x in node.get("meta", {}).get("xrefs", [])])
 
+                    # rename MIM to OMIM in the dictionary
+                    xrefs["OMIM"] = xrefs.get("MIM", "")
+                    xrefs.pop("MIM", None)
+
                     # Create disease
                     Disease.objects.create(
                         do_id=node["id"],
@@ -52,5 +56,5 @@ class Command(BaseCommand):
                         .get("definition", {})
                         .get("val", ""),
                         do_json=node,
-                        **xrefs,
+                        **xrefs
                     )

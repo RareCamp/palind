@@ -58,6 +58,7 @@ class Disease(models.Model):
     ICD11 = models.CharField(max_length=200, blank=True)
     SNOMEDCT_US_2022_07_31 = models.CharField(max_length=200, blank=True)
     SNOMEDCT_US_2023_09_01 = models.CharField(max_length=200, blank=True)
+    SNOMEDCT_US_2024_03_01 = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return self.name

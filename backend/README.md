@@ -8,14 +8,16 @@ You can run the app using Docker or as a development environment.
 
     docker compose up
 
-
 Then, open a browser and visit [http://localhost:8000/dataset/1/upload-csv](http://localhost:8000/dataset/1/upload-csv)
 
 ## Run DB Migrations
 
 Run this command if this is the first time starting a container (OR) you have changed any data models:
 
-    docker compose exec web python manage.py migrate
+Then, visit:
+- Application: http://localhost:8000
+- Admin interface: http://localhost:8000/admin
+- Upload CSV: http://localhost:8000/dataset/1/upload-csv
 
 ## Setup Admin username & password (One Time Setup)
 Use this to setup a new username & password for Admin console
